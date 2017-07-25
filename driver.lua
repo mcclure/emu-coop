@@ -102,25 +102,22 @@ end
 function GameDriver:childWake()
 	self:sendTable({"hello", version=version.release, guid=self.spec.guid})
 
-	local entered = {}
 	for k,v in pairs(self.spec.sync) do
-		-- The memory watch registration is awkward, and it has to be this way because of a bug in some versions of snes9x-rr.
-		-- Sometimes when a 8-bit registerwrite watch address is odd (not 16-bit word aligned?) snes9x will get confused and trigger for the corresponding word-aligned address instead.
-		-- To work around this we register one 16-bit watch address and then call both real callbacks (if any). This does mean memoryWrite() must tolerate spurious extra calls.
-		if not entered[k] then
-			entered[k] = true
-			local addr = k - (k%2)
-			local syncTable = self.spec.sync -- Assume sync table is not replaced at runtime
-			local function callback(a,b) -- I have no idea what "b" is but snes9x passes it
-				for offset=0,1 do
-					local checkAddr = addr + offset
-					local record = syncTable[checkAddr]
-					if record then self:memoryWrite(checkAddr, b, record) end
-				end
-			end
+		local syncTable = self.spec.sync -- Assume sync table is not replaced at runtime
+		local baseAddr = k - (k%2)       -- 16-bit aligned equivalent of address
 
-			memory.registerwrite (k, 2, callback)
+		local function callback(a,b) -- I have no idea what "b" is but snes9x passes it
+			-- So, this is pretty awful: There is a bug in some versions of snes9x-rr where you if you have registered a registerwrite for an even and odd address,
+			-- SOMETIMES (not always) writing to the odd address will trigger the even address's callback instead. So when we get a callback we trigger the underlying
+			-- callback twice, once for each byte in the current word. This does mean memoryWrite() must tolerate spurious extra calls.
+			for offset=0,1 do
+				local checkAddr = baseAddr + offset
+				local record = syncTable[checkAddr]
+				if record then self:memoryWrite(checkAddr, b, record) end
+			end
 		end
+
+		memory.registerwrite (k, 1, callback)
 	end
 end
 

@@ -16,14 +16,14 @@ local function zeroRising(value, previousValue) -- "Allow if replacing 'no item'
 	return (value ~= 0 and previousValue == 0), (value)
 end
 
-local function zeroRisingOrUpgradeFlute(value, previousValue)
-	return ( (value ~= 0 and previousValue == 0) or (value == 2 and previousValue == 1) ), (value)
+local function zeroRisingOrUpgradeFlute(value, previousValue) -- "Allow if replacing 'no item', or if replacing 'flute' with 'bird+flute'"
+	return ( (value ~= 0 and previousValue == 0) or (value == 3 and previousValue == 2) ), (value)
 end
 
 local mushroomByte = 0x7EF344
 
 return {
-	guid = "5aa171c4-0e3f-4919-8578-870cea6dbe91",
+	guid = "36525567-3df9-4aeb-b8ae-dd90e739c66d",
 	format = "1.0",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT"},
