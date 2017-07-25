@@ -154,7 +154,7 @@ end
 function GameDriver:handleTable(t)
 	if t[1] == "hello" then
 		if t.guid ~= self.spec.guid then
-			self.pipe:abort("Partner has a different game mode file installed")
+			self.pipe:abort("Partner has an incompatible .lua file for this game.")
 			print("Partner's game mode file has guid:\n" .. tostring(t.guid) .. "\nbut yours has:\n" .. tostring(self.spec.guid))
 		end
 		return
