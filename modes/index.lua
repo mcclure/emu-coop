@@ -4,4 +4,5 @@
 modes = {
 	require "modes.lttp",
 	require "modes.lttp_randomizer",
+	require "modes.super_metroid",
 }

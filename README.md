@@ -4,9 +4,15 @@ This directory contains some Lua scripts that, when loaded by a compliant emulat
 
 Each game you want to use this with requires a "mode" file in the modes/ directory. Currently included are modes for Link to the Past and the Link to the Past "Randomizer".
 
-## License
+## Author / License
 
-These files were written by <<andi.m.mcclure@gmail.com>>. Unless otherwise noted, the license is:
+These files were written by <<andi.m.mcclure@gmail.com>>.
+
+Big thanks to:
+* The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
+* Alex Zandra and Maya Shinohara for help testing
+
+Unless otherwise noted, the license is:
 
 	Copyright (C) 2017 Andi McClure
 
