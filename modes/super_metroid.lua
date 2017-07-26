@@ -8,23 +8,23 @@
 -- This file is available under Creative Commons CC0 
 
 -- When you get a missile, super missile or power bomb, your current count goes up by the size of the expansion
-local function makeMissileTrigger(targetAddr)
+local function makeMissileTrigger(targetAddr) -- 2 byte size
 	return function(value, previousValue)
 		local current = memory.readword(targetAddr)
 		memory.writeword(targetAddr, current + (value - previousValue))
 	end
 end
 
-local function difference(a, b) -- 1 byte
+local function difference(a, b) -- 1 byte size
 	return AND(a, XOR(b, 0xFF))
 end
 
 -- When you get an item, any bit that goes high in the "available" byte should also go high in the "equipped" byte
 -- (but only if it is ALSO in the mask of bits we're watching)
-local function makeItemTrigger(targetAddr, mask)
+local function makeItemTrigger(targetAddr, mask) -- 2 byte size
 	return function(value, previousValue)
-		local current = memory.readword(targetAddr)
-		memory.writeword(targetAddr, OR(current, AND(mask, difference(value, previousValue))))
+		local current = memory.readbyte(targetAddr)
+		memory.writebyte(targetAddr, OR(current, AND(mask, difference(value, previousValue))))
 	end
 end
 
@@ -34,7 +34,7 @@ return {
 	name = "Super Metroid",
 	match = {"stringtest", addr=0xFFC0, value="Super Metroid"},
 
-	running = {"test", addr = 0x7E0998, gte = 0x8, lte = 0x23},
+	running = {"test", addr = 0x7E0998, gte = 0x8, lte = 0x18}, -- Possibly could go as low as 0x12, not all state values are of known purpose
 	sync = {
 		[0x7E09C4] = {name="Energy Tank", kind="high", size=2,
 			receiveTrigger=function(value, previousValue)
@@ -59,7 +59,7 @@ return {
 
 			-- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
 			receiveTrigger=function(value, previousValue)
-				local current = memory.readword(targetAddr)
+				local current = memory.readbyte(targetAddr)
 				local rising = AND(0x0F, difference(value, previousValue))
 				local result = OR(current, rising)
 				if AND(rising, 0x08) then
@@ -67,7 +67,7 @@ return {
 				elseif AND(rising, 0x04) then
 					result = AND(result, XOR(0xFF, 0x08))
 				end
-				memory.writeword(0x7E09A6, result)
+				memory.writebyte(0x7E09A6, result)
 			end
 		},
 
