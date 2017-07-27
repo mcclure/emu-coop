@@ -2,7 +2,7 @@
 
 This is an emulator hack that turns 1-player games into 2-player games by sharing in-game inventory over the internet.
 
-![(A screenshot.)](lantern.png)
+![A screenshot. The Link on the right is now holding a lantern.](lantern.png)
 
 It currently works with Legend of Zelda: A Link to the Past; the [Link to the Past Randomizer](http://vt.alttp.run/randomizer); Super Metroid; and Legend of Zelda for the NES (plus its randomizer). It works well for any game that has locks and keys and backtracking.
 
@@ -10,13 +10,13 @@ It currently works with Legend of Zelda: A Link to the Past; the [Link to the Pa
 
 In order to run emu-coop, you will need an emulator that can run Lua scripts, such as snes9x-rr or FCEUX. (BizHawk does not work but could in a later version). If you already have an emulator, you can just download:
 
-* TODO
+* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.0.zip) (Version 1.0)
 
 If you **don't** have one, here is a copy of snes9x-rr with the coop script bundled in:
 
-* TODO
+* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0/snes9x-coop-1.0.zip) (Version 1.0)
 
-The above are for Windows. If you are on Mac or Linux, you can get it working by dropping built copies of LuaSocket and IUP into the folder with the Lua files. I will try to get a Mac version uploaded soon.
+The above are for Windows. If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
 
 ## Running
 
@@ -24,7 +24,7 @@ Once you have the scripts and emulator, open snes9x-rr and the ROM you wish to p
 
 Emu-coop communicates using Internet Relay Chat. You will get a popup asking which IRC server you want to connect to, what nickname you want to use, and what the nickname of your Player 2 will be. Once you're connected, tell your Player 2 to connect to the same network and enter your nick in their emulator. You should see either "Connected to partner", or an error message, pop up on your game screen.
 
-If you halt a game in the middle and have to restart-- say, maybe your emulator crashed, or your Internet disconnected, or you died in Super Metroid-- you might "desync", where there are items that one player has but not the other. If this happens, both players should save, close their emulators, connect again, and this time check "Yes" for "Are you reconnecting after a crash?". This will resend all the data that emu-coop is tracking.
+If you halt a game in the middle and have to restart-- maybe your emulator crashed, or your Internet disconnected, or you died in Super Metroid-- you might "desync", where there are items that one player has but not the other. If this happens, both players should save, close their emulators, connect again, and this time check "Yes" for "Are you reconnecting after a crash?". This will resend all the data that emu-coop is tracking.
 
 If you run into any problems, please feel free to [file an issue on the GitHub page](https://github.com/mcclure/emu-coop/issues) for this project.
 
@@ -40,7 +40,7 @@ Sorry, there is no documentation for creating a mode file yet.
 
 Some more about the games currently supported:
 
-* **Link to the Past**: Currently it syncs all collectable items, all pendants, all crystals, and in the Randomizer it tracks whether the old man has been rescued. It does not track "quantities" (rupees, heart pieces, arrows or bombs or expansions of either), or "events" like whether you have beaten Aghanim or paid off Kiki. When it updates your shield or armor, the sprite will not update until the next Save+Quit even though you have it.
+* **Link to the Past**: Currently it syncs all collectable items, all pendants, all crystals, and in the Randomizer it tracks whether the old man has been rescued. It does not track "quantities" (rupees, heart pieces, arrows or bombs or expansions of either), or "events" like whether you have beaten Aghanim or paid off Kiki. When it updates your shield or armor, the sprite will not update until the next Save+Quit even though you have it. The 1.0 Japan version of the game is currently required.
 
 * **Super Metroid**: Currently it tracks all items, beams, expansions, and whether you have beaten the four main bosses. Items you collect might not appear in the top icon bar, and when it updates your beams and armor the sprite won't update even though you have it until you change rooms or pause. This has not been tested as well as LTTP. 
 
