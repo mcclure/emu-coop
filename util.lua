@@ -16,6 +16,7 @@ function message(msg, isError)
 	else
 		currentMessages:put({msg, life=MESSAGE_DURATION})
 	end
+	if msg then print(msg) end -- Double to the Lua log
 end
 
 function statusMessage(msg)

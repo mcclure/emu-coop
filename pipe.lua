@@ -8,7 +8,7 @@ function Pipe:_init()
 end
 
 function Pipe:wake(server)
-	if debug then print("Connected") end
+	if pipeDebug then print("Connected") end
 	statusMessage("Logging in to server...") -- This creates an unfortunate implicit contract where the driver needs to statusMessage(nil)
 	self.server = server
 	self.server:settimeout(0)
@@ -26,7 +26,7 @@ function Pipe:wake(server)
 end
 
 function Pipe:exit()
-	if debug then print("Disconnecting") end
+	if pipeDebug then print("Disconnecting") end
 	self.dead = true
 	self.server:close()
 	self:childExit()
@@ -37,7 +37,7 @@ function Pipe:fail(err)
 end
 
 function Pipe:send(s)
-	if debug then print("SEND: " .. s) end
+	if pipeDebug then print("SEND: " .. s) end
 
 	local res, err = self.server:send(s .. "\r\n")
 	if not res then
@@ -97,7 +97,7 @@ end
 
 function IrcPipe:childWake()
 	self:send("NICK " .. self.data.nick)
-	self:send("USER " .. self.data.nick .."-bot 8 * : " .. self.data.nick .. " (snes bot-- testing)")
+	self:send("USER " .. self.data.nick .."-bot 8 * : " .. self.data.nick .. " (snes bot)")
 end
 
 function IrcPipe:childTick()
@@ -113,13 +113,13 @@ function IrcPipe:abort(msg)
 end
 
 function IrcPipe:handle(s)
-	if debug then print("RECV: " .. s) end
+	if pipeDebug then print("RECV: " .. s) end
 
 	splits = stringx.split(s, nil, 2)
 	local cmd, args = splits[1], splits[2]
 
 	if cmd == "PING" then -- On "PING :msg" respond with "PONG :msg"
-		if debug then print("Handling ping") end
+		if pipeDebug then print("Handling ping") end
 
 		self:send("PONG " .. args)
 
@@ -127,7 +127,7 @@ function IrcPipe:handle(s)
 		local source = cmd:sub(2)
 		if self.state == IrcState.login then
 			if source == self.data.nick then -- This is the initial mode set from the server, we are logged in
-				if debug then print("Logged in to server") end
+				if pipeDebug then print("Logged in to server") end
 
 				self.state = IrcState.searching
 				self:whoisCheck()
@@ -150,7 +150,7 @@ function IrcPipe:handle(s)
 						local confirm = prefix == "@@" 
 						if exclaim or confirm then
 							if not self.sentVersion then
-								if debug then print("Handshake started") end
+								if pipeDebug then print("Handshake started") end
 								self:msg(IrcConfirm)
 								self.sentVersion = true
 							end
@@ -162,7 +162,7 @@ function IrcPipe:handle(s)
 									self:abort("Your partner's emulator version is incompatible")
 									print("Other user is using IRC pipe version " .. tostring(theirIrcVersion) .. ", you have " .. tostring(version.ircPipe))
 								else
-									if debug then print("Handshake finished") end
+									if pipeDebug then print("Handshake finished") end
 									statusMessage(nil)
 									message("Connected to partner")
 
@@ -182,7 +182,7 @@ function IrcPipe:handle(s)
 				local splits2 = stringx.split(args, nil, 2)
 				local msg = tonumber(splits2[1])
 				if msg and msg >= 311 and msg <= 317 then -- This is a whois response
-					if debug then print("Whois response") end
+					if pipeDebug then print("Whois response") end
 
 					statusMessage("Connecting to partner...")
 					self.state = IrcState.handshake
@@ -203,8 +203,6 @@ function IrcPipe:msg(s)
 end
 
 -- Driver base class-- knows how to convert to/from tables
-
-driverDebug = true
 
 class.Driver()
 function Driver:_init() end
