@@ -2,7 +2,7 @@
 
 This is an emulator hack that turns 1-player games into 2-player games by sharing in-game inventory over the internet.
 
-<img align=center src="lantern.png" />
+![(A screenshot.)](lantern.png)
 
 It currently works with Legend of Zelda: A Link to the Past; the [Link to the Past Randomizer](http://vt.alttp.run/randomizer); Super Metroid; and Legend of Zelda for the NES (plus its randomizer). It works well for any game that has locks and keys and backtracking.
 
