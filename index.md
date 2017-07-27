@@ -2,6 +2,8 @@
 
 This is an emulator hack that turns 1-player games into 2-player games by sharing in-game inventory over the internet.
 
+<img align=center src="lantern.png" />
+
 It currently works with Legend of Zelda: A Link to the Past; the [Link to the Past Randomizer](http://vt.alttp.run/randomizer); Super Metroid; and Legend of Zelda for the NES (plus its randomizer). It works well for any game that has locks and keys and backtracking.
 
 ## Downloading
@@ -44,6 +46,14 @@ Some more about the games currently supported:
 
 * **Legend of Zelda NES**: This comes in three modes. One syncs items only, one syncs items plus dungeon completion (maps compasses triforce), and one syncs what seems to be all the memory the author could get her hands on, including things like door status.
 
+## Authors
+
+This was made by [Andi McClure](mailto:andi.m.mcclure@gmail.com). You can find some "normal" video games I made [here](http://runhello.com). The Zelda 1 modes were contributed by [MegMacAttack](https://twitter.com/megmacstreams).
+
+Big thanks to:
+* The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
+* [Alex Zandra](https://twitter.com/zandravandra) and [Maya Shinohara](https://twitter.com/MothBooty) for help testing
+
 ## Future
 
 I think there's a LOT you could do with this basic concept, and there's some changes I'd still like to make. Make sure to watch back here for updates.
@@ -65,14 +75,6 @@ There's also some known bugs/limitations:
 * IRC communication currently uses Penlight Pretty to deserialize. [Is this secure?!](https://github.com/mcclure/emu-coop/blob/stable/pl/pretty.lua#L69)
 
 If you have your own ideas, feel free to modify the code and send back a pull request on GitHub. The github page for emu-coop is [here](https://github.com/mcclure/emu-coop) and the github page for the snes9x build is [here](https://github.com/mcclure/snes9x-coop).
-
-## Authors
-
-This was made by [Andi McClure](mailto:andi.m.mcclure@gmail.com). You can find some "normal" video games I made [here](http://runhello.com). The Zelda 1 modes were contributed by [MegMacAttack](https://twitter.com/megmacstreams).
-
-Big thanks to:
-* The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
-* [Alex Zandra](https://twitter.com/zandravandra) and [Maya Shinohara](https://twitter.com/MothBooty) for help testing
 
 ## IRC?
 
