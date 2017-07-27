@@ -94,7 +94,7 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 
 			if self.forceSend then -- Restoring after a crash send all values regardless of importance
 				if value ~= 0 then -- FIXME: This is adequate for all current specs but maybe it will not be in future?!
-					if driverDebug then print("Sending address " .. tostring(v) .. " at startup") end
+					if driverDebug then print("Sending address " .. tostring(k) .. " at startup") end
 
 					self:sendTable({addr=k, value=value})
 				end

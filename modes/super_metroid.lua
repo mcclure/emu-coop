@@ -29,7 +29,7 @@ local function makeItemTrigger(targetAddr, mask) -- 2 byte size
 end
 
 return {
-	guid = "27836812-c17b-446e-9c54-2d2845780ff0",
+	guid = "fef608f4-7e06-47a1-bf7f-107563198e41",
 	format = "1.0",
 	name = "Super Metroid",
 	match = {"stringtest", addr=0xFFC0, value="Super Metroid"},
@@ -50,8 +50,8 @@ return {
 			kind="bitOr", mask=0x2F, receiveTrigger=makeItemTrigger(0x7E09A2, 0x2F)
 		},
 
-		[0x7E09A5] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster"},
-			kind="bitOr", mask=0x33, receiveTrigger=makeItemTrigger(0x7E09A3, 0x33)
+		[0x7E09A5] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"},
+			kind="bitOr", mask=0xF3, receiveTrigger=makeItemTrigger(0x7E09A3, 0xF3)
 		},
 
 		[0x7E09A8] = {nameBitmap={"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"},
@@ -59,15 +59,18 @@ return {
 
 			-- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
 			receiveTrigger=function(value, previousValue)
+				local targetAddr = 0x7E09A6
+				local mask = 0x0F
 				local current = memory.readbyte(targetAddr)
-				local rising = AND(0x0F, difference(value, previousValue))
+				local rising = AND(mask, difference(value, previousValue))
 				local result = OR(current, rising)
-				if AND(rising, 0x08) then
+
+				if 0 ~= AND(rising, 0x08) then
 					result = AND(result, XOR(0xFF, 0x04))
-				elseif AND(rising, 0x04) then
+				elseif 0 ~= AND(rising, 0x04) then
 					result = AND(result, XOR(0xFF, 0x08))
 				end
-				memory.writebyte(0x7E09A6, result)
+				memory.writebyte(targetAddr, result)
 			end
 		},
 
