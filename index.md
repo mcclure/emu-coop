@@ -14,7 +14,7 @@ In order to run emu-coop, you will need an emulator that can run Lua scripts, su
 
 If you **don't** have one, here is a copy of snes9x-rr with the coop script bundled in:
 
-* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0/snes9x-coop-1.0.1.zip) (Version 1.0.1)
+* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0.1/snes9x-coop-1.0.1.zip) (Version 1.0.1)
 
 The above are for Windows. If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
 
