@@ -1,5 +1,9 @@
 require "iuplua"
 
+-- Bizarre kludge: For reasons I do not understand at all, radio buttons do not work in FCEUX. Switch to menus there only
+local optionLetter = "o"
+if FCEU then optionLetter = "l" end
+
 function ircDialog()
 	local res, server, port, nick, partner, forceSend = iup.GetParam("Connection settings", nil,
 	    "Enter an IRC server: %s\n" ..
@@ -7,7 +11,7 @@ function ircDialog()
 		"Your nick: %s\n" ..
 		"Partner nick: %s\n" ..
 		"%t\n" .. -- <hr>
-		"Are you restarting\rafter a crash? %o|No|Yes|\n"
+		"Are you restarting\rafter a crash? %" .. optionLetter .. "|No|Yes|\n"
 	    ,"irc.speedrunslive.com", 6667, "", "", 0)
 
 	if 0 == res then return nil end
