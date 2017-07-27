@@ -10,11 +10,11 @@ It currently works with Legend of Zelda: A Link to the Past; the [Link to the Pa
 
 In order to run emu-coop, you will need an emulator that can run Lua scripts, such as snes9x-rr or FCEUX. (BizHawk does not work but could in a later version). If you already have an emulator, you can just download:
 
-* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.0.zip) (Version 1.0)
+* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.0.1.zip) (Version 1.0.1)
 
 If you **don't** have one, here is a copy of snes9x-rr with the coop script bundled in:
 
-* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0/snes9x-coop-1.0.zip) (Version 1.0)
+* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0/snes9x-coop-1.0.1.zip) (Version 1.0.1)
 
 The above are for Windows. If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
 
@@ -53,6 +53,8 @@ This was made by [Andi McClure](mailto:andi.m.mcclure@gmail.com). You can find s
 Big thanks to:
 * The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
 * [Alex Zandra](https://twitter.com/zandravandra) and [Maya Shinohara](https://twitter.com/MothBooty) for help testing
+
+The change history for the project is [here](changes.md).
 
 ## Future
 
