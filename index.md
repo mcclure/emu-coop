@@ -16,9 +16,9 @@ If you **don't** have one, here is a copy of snes9x-rr with the coop script bund
 
 * [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0.1/snes9x-coop-1.0.1.zip) (Version 1.0.1)
 
-The above are for Windows. If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
+The above are for Windows. You may need to install the "x86" version of the [VS2015 C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
 
-**Did you get an error like "module could not be found"?** Try installing the [VS2015 C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145) from Microsoft— the "x86" version, not "x64".
+If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
 
 ## Running
 
