@@ -18,6 +18,8 @@ If you **don't** have one, here is a copy of snes9x-rr with the coop script bund
 
 The above are for Windows. If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
 
+**Did you get an error like "module could not be found"?** Try installing the [VS2015 C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145) from Microsoft— the "x86" version, not "x64".
+
 ## Running
 
 Once you have the scripts and emulator, open snes9x-rr and the ROM you wish to play. Then select `File->Lua Scripting->New Lua Script Window`. Click "Browse" and select "coop.lua" inside the emu-coop directory.
