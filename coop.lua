@@ -67,6 +67,9 @@ if emu.emulating() then
 
 				statusMessage("Connecting to server...")
 
+				opts.hpshare = data.hpshare
+				opts.magicshare = data.magicshare
+				opts.deathshare = data.deathshare
 				mainDriver = GameDriver(spec, data.forceSend) -- Notice: This is a global, specs can use it
 				IrcPipe(data, mainDriver):wake(server)
 			end

@@ -125,8 +125,9 @@ function IrcPipe:handle(s)
 
 	elseif cmd:sub(1,1) == ":" then -- A message from a server or user
 		local source = cmd:sub(2)
+		--print(self.state .. " " .. string.sub(source,1,#self.data.nick) .. " " .. self.data.server)
 		if self.state == IrcState.login then
-			if source == self.data.nick then -- This is the initial mode set from the server, we are logged in
+			if string.sub(source,1,#self.data.nick) == self.data.nick then -- This is the initial mode set from the server, we are logged in
 				if pipeDebug then print("Logged in to server") end
 
 				self.state = IrcState.searching

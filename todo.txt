@@ -1,0 +1,10 @@
+- bird not sharing on rare occasion  (i think this happens when partner that is not getting bird is holding flute as Y ready item while the other one swagduck) [still can get bird the vanilla way if bugged, i think this is game-code related]
+- Damage share (death state or no?) [ok but still not happy, needs more work]
+- Magic share (pot fucks it up, needs fixing) [done]
+- Check flag for aga2 [done]
+
+
+-- Reports --
+
+Open pedestal mode triforce room text overflow (workaround is fast-forward and mash buttons)
+
