@@ -23,8 +23,8 @@ end
 local mushroomByte = 0x7EF344
 
 return {
-	guid = "6893748a-e196-4b21-95fc-9cffd971fa95",
-	format = "1.9",
+	guid = "bdd24f52-ccb5-4802-b124-fddbf3ba78be",
+	format = "1.10",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
 	
@@ -70,9 +70,8 @@ return {
 		[0x7EF416] = { -- TODO: Add a 0xC0 mask? Currently mask is not supported with "high"
 			kind="high" -- Sync silently-- this is a backup in case your shield gets eaten
 		},
-		[0x7EF01A] = {name="aga2",verb="killed",kind="bitOr",mask=0x10000}, -- high byte aga2 room
-		[0x7EF040] = {name="aga1",verb="killed",kind="bitOr",mask=0x10000}, -- high byte aga room
-		--[0x7EF2DB] = {name="aga2",verb="killed",kind="bitOr",mask=0x10100}, -- Pyramid hole (aga2), I guess mask it for message
+		[0x7EF01B] = {name="aga2",verb="killed",kind="bitOr",mask=0x8},
+		[0x7EF041] = {name="aga1",verb="killed",kind="bitOr",mask=0x8},
 		[0x7EF2DB] = {kind="custom"},
 		[0x7EF340] = {kind=zeroRising},                     -- Bows, tracked in INVENTORY_SWAP_2 but must be nonzero to appear in inventory
 		[0x7EF341] = {kind=zeroRising},                     -- Boomerangs, tracked in INVENTORY_SWAP
@@ -103,10 +102,10 @@ return {
 		},
 		[0x7EF35A] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="high"},
 		[0x7EF35B] = {nameMap={"Blue Armor", "Red Armor"}, kind="high"},
-		[0x7EF35C] = {nameMap={"None", "Mush","Empty Bottle","Red Potion","Green Potion","Blue Potion","Hostage","Bee","Gold Bee"}, kind="either"},
-		[0x7EF35D] = {nameMap={"None", "Mush","Empty Bottle","Red Potion","Green Potion","Blue Potion","Hostage","Bee","Gold Bee"}, kind="either"},
-		[0x7EF35E] = {nameMap={"None", "Mush","Empty Bottle","Red Potion","Green Potion","Blue Potion","Hostage","Bee","Gold Bee"}, kind="either"},
-		[0x7EF35F] = {nameMap={"None", "Mush","Empty Bottle","Red Potion","Green Potion","Blue Potion","Hostage","Bee","Gold Bee"}, kind="either"},
+		[0x7EF35C] = {nameMap={"Mush", "Empty Bottle", "Red Potion", "Green Potion", "Blue Potion", "Hostage", "Bee", "Gold Bee"}, kind="bottle"},
+		[0x7EF35D] = {nameMap={"Mush", "Empty Bottle", "Red Potion", "Green Potion", "Blue Potion", "Hostage", "Bee", "Gold Bee"}, kind="bottle"},
+		[0x7EF35E] = {nameMap={"Mush", "Empty Bottle", "Red Potion", "Green Potion", "Blue Potion", "Hostage", "Bee", "Gold Bee"}, kind="bottle"},
+		[0x7EF35F] = {nameMap={"Mush", "Empty Bottle", "Red Potion", "Green Potion", "Blue Potion", "Hostage", "Bee", "Gold Bee"}, kind="bottle"},
 		[0x7EF360] = {kind="either"}, -- Rupee byte 1
 		[0x7EF361] = {kind="either"}, -- Rupee byte 2
 		--[0x7EF362] = {kind="high"}, -- Rupee byte 3
@@ -177,7 +176,6 @@ return {
 		[0x7EF018] = {kind="high"},
 		[0x7EF019] = {kind="high"},
 		[0x7EF01A] = {kind="high"},
-		[0x7EF01B] = {kind="high"},
 		[0x7EF01C] = {kind="high"},
 		[0x7EF01D] = {kind="high"},
 		[0x7EF01E] = {kind="high"},
@@ -215,7 +213,6 @@ return {
 		[0x7EF03E] = {kind="high"},
 		[0x7EF03F] = {kind="high"},
 		[0x7EF040] = {kind="high"},
-		[0x7EF041] = {kind="high"},
 		[0x7EF042] = {kind="high"},
 		[0x7EF043] = {kind="high"},
 		[0x7EF044] = {kind="high"},

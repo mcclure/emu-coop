@@ -89,23 +89,38 @@ function recordChanged(record, value, previousValue, receiving,addr)
 		if value == 0x19 and previousValue ~= value then
 			record.name = "game"
 			record.verb = "finished"
+			memoryWrite(0x7EF443,1)
 			memoryWrite(0x7E0011,0)
 			record.cache = value 
 			allow = true
-		else
-			allow = false 
-		end
-		if value == 0x12 and previousValue ~= value then
+		elseif value == 0x12 and previousValue ~= value then
 			if opts.deathshare then
-				record.name = ":("
+				record.name = "- Press F to Pay Respects."
 				record.verb = "died"
 				memoryWrite(0x7E0011,0)
 				record.cache = value 
 				allow = true
 			else
+				record.cache = value 
 				allow = false
-			end
+			end 
+		elseif previousValue ~= value then
+			record.cache = value 
+			allow = false
+		else
+			allow = false
 		end
+	elseif record.kind == "bottle" then
+		if value < previousValue then 
+			record.verb = "used" 
+			record.name = record.nameMap[previousValue]
+			record.cache = value
+		elseif previousValue < value then 
+			record.verb = "got" 
+			record.name = record.nameMap[value]
+			record.cache = value
+		end		
+		allow = value ~= previousValue
 	else
 		allow = value ~= previousValue
 	end
