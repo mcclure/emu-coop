@@ -1000,6 +1000,5 @@ return {
 			end
 		end
 					} -- Keys
-		}
 	}
-			
+}

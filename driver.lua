@@ -184,7 +184,7 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 		for k,v in pairs(self.spec.sync) do -- Enter all current values into cache so we don't send pointless 0 values later
 			local value = memoryRead(k, v.size)
 			if not v.cache then v.cache = value end
-			
+
 			if self.forceSend then -- Restoring after a crash send all values regardless of importance
 				if value ~= 0 then -- FIXME: This is adequate for all current specs but maybe it will not be in future?!
 					if driverDebug then print("Sending address " .. tostring(k) .. " at startup") end
@@ -257,11 +257,11 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 
 		local allow = true
 		local value = memoryRead(addr, size)
-		
+
 		if record.cache then
 			allow = recordChanged(record, value, record.cache, false, addr)
 		end
-		
+
 		if allow then
 			record.cache = value -- FIXME: Should this cache EVER be cleared? What about when a new game starts?
 
@@ -285,7 +285,7 @@ function GameDriver:handleTable(t)
 	local record = self.spec.sync[addr]
 	if self:isRunning() then
 		self:checkFirstRunning()
-		
+
 		if record then
 			local value = t.value
 			local allow = true
