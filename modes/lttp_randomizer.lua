@@ -22,9 +22,26 @@ end
 
 local mushroomByte = 0x7EF344
 
+local currentKeysByte = 0x7EF36F
+local dungeonWord = 0x7E040C
+local sewerValue = 0x00
+local hcValue = 0x02
+local epValue = 0x04
+local dpValue = 0x06
+local atValue = 0x08
+local spValue = 0x0A
+local podValue = 0x0C
+local mmValue = 0x0E
+local swValue = 0x10
+local ipValue = 0x12
+local tohValue = 0x14
+local ttValue = 0x16
+local trValue = 0x18
+local gtValue = 0x1A
+
 return {
-	guid = "bdd24f52-ccb5-4802-b124-fddbf3ba78be",
-	format = "1.10",
+	guid = "8eaa7eaa-ebc2-40df-b1ec-a53c094fbbe7",
+	format = "1.10.key",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
 	
@@ -50,7 +67,6 @@ return {
 				end
 			end
 		},
-
 		[0x7E0010] = {kind="state"},
 		-- INVENTORY_SWAP_2
 		[0x7EF414] = {
@@ -129,7 +145,7 @@ return {
 		[0x7EF377] = {kind="either"}, -- Arrows
 		[0x7EF37A] = {name="a Crystal", kind="bitOr"},
 		[0x7EF37B] = {nameMap={"1/2 Magic", "1/4 Magic"}, kind="high"},
-		[0x7EF37C] = {kind="either"}, -- Keys
+--[[ 		[0x7EF37C] = {kind="either"}, -- Keys
 		[0x7EF37D] = {kind="either"}, -- Keys
 		[0x7EF37E] = {kind="either"}, -- Keys
 		[0x7EF37F] = {kind="either"}, -- Keys
@@ -142,7 +158,7 @@ return {
 		[0x7EF386] = {kind="either"}, -- Keys
 		[0x7EF387] = {kind="either"}, -- Keys
 		[0x7EF388] = {kind="either"}, -- Keys
-		[0x7EF389] = {kind="either"}, -- Keys
+		[0x7EF389] = {kind="either"}, -- Keys ]]
 		[0x7EF3C5] = {kind="high"}, -- Events
 		[0x7EF3C6] = {kind="bitOr"}, -- Events 2
 		[0x7EF3C7] = {kind="high"}, -- Map
@@ -870,6 +886,120 @@ return {
 		[0x7EF2FE] = {kind="high"},
 		[0x7EF2FF] = {kind="high"},
 		
-		[0x7EF460] = {kind="high"} -- Triforce pieces
+		[0x7EF460] = {kind="high"}, -- Triforce pieces
+		
+		[0x7EF37C] = {name="HC Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == sewerValue or memory.readword(dungeonWord) == hcValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF37D] =  {name="HC Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == sewerValue or memory.readword(dungeonWord) == hcValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF37E] =  {name="EP Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == epValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF37F] =  {name="DP Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == dpValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF380] = {name="AT Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == atValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF381] = {name="SP Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == spValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF382] = {name="PoD Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == podValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF383] = {name="MM Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == mmValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF384] = {name="SW Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == swValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF385] = {name="IP Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == ipValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF386] = {name="ToH Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == tohValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF387] = {name="TT Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == ttValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF388] = {name="TR Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == trValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					}, -- Keys
+		[0x7EF389] = {name="GT Key", kind="key",
+		receiveTrigger=function(value, previousValue)
+			if memory.readword(dungeonWord) == gtValue and previousValue < value then
+				local previousCurrentKeys = memory.readbyte(currentKeysByte)
+				memory.writebyte(currentKeysByte, previousCurrentKeys + 1)
+			end
+		end
+					} -- Keys
+		}
 	}
-}
+			
