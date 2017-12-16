@@ -40,8 +40,8 @@ local trValue = 0x18
 local gtValue = 0x1A
 
 return {
-	guid = "8eaa7eaa-ebc2-40df-b1ec-a53c094fbbe7",
-	format = "1.10.key",
+	guid = "ca8d449f-d282-4503-9474-980feae73eb0",
+	format = "1.11",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
 	
