@@ -37,6 +37,16 @@ function recordChanged(record, value, previousValue, receiving,addr)
 			elseif record.stype == "uLowsHigh" then 
 				allow = value > previousValue
 				if previousValue >= value then record.cache = value end
+			elseif record.stype == "uInstantRefill" then
+				local healthRefill = memory.readbyte(0x7EF372)
+				local maxHealth = memory.readbyte(0x7EF36C)
+				if healthRefill > 8 then
+					value = math.min(value + healthRefill - 8, maxHealth)
+					healthRefill = 8
+					memory.writebyte(0x7EF372, healthRefill)
+					memory.writebyte(0x7EF36D, value)
+				end
+				allow = value ~= previousValue
 			end
 		else
 			allow = false 
@@ -54,6 +64,17 @@ function recordChanged(record, value, previousValue, receiving,addr)
 					allow = value > previousValue
 					if previousValue >= value then record.cache = value end
 				end
+			elseif record.stype == "uInstantRefill" then
+				allow = true
+				local magicRefill = memory.readbyte(0x7EF373)
+				local maxMagic = 0x80
+				if magicRefill > 1 then
+					value = math.min(value + magicRefill - 1, maxMagic)
+					magicRefill = 1
+					memory.writebyte(0x7EF372, magicRefill)
+					memory.writebyte(0x7EF36E, value)
+				end
+				allow = value ~= previousValue
 			end 
 		else
 			allow = false 

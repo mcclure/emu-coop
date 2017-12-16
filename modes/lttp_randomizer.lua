@@ -53,7 +53,7 @@ return {
 			kind=function(value, previousValue)
 				local result = OR(value, previousValue)
 				if 0 ~= AND(result, BIT(0)) then result = UNSET(result, 1) end -- If acquired bird, clear flute
-				-- FIXME: Do not re-set mushroom bit if mushroom is already given to witch
+				if 0 == AND(value, BIT(5)) then result = UNSET(result, 5) end -- If Mushroom is lost, keep it that way
 				return (result ~= previousValue), (result) 
 			end,
 			receiveTrigger=function(value, previousValue) -- Mushroom/powder byte is a disaster so set it indirectly when this mask changes
@@ -76,10 +76,25 @@ return {
 
 		-- NPC_FLAGS
 		[0x7EF410] = {
-			name="the old man home",
-			verb="escorted",
-			mask=0x1, -- Only sync old man
+			nameBitmap={"the old man", "king zora's stomach contents", "the sick kid", "stumpy - NOT", "unknown npc", "catfish's present", "unknown npc", "unknown npc"},
+			verb="rescued",
+			mask=0x2F, -- Only sync old man [1], king zora [2], sick kid [4], stunpy [8], catfish [32] and magic bat [128]
 			kind="bitOr"
+		}, 
+
+		[0x7EF411] = {
+			mask=0xB3, -- Only sync ether tablet [1], bombos tablet [2], mushroom spot [16], witch's hut [32] and magic bat [128]
+			kind="bitOr",
+			receiveTrigger=function(value, previousValue) -- Delete mushroom after receiving witch's item. Better be safe
+				local witchValue = AND(value, BIT(5))
+				local witchpreviousValue = AND(previousValue, BIT(5))
+				local inventorySwitch = memory.readbyte(0x7EF412)
+				if witchValue > witchpreviousValue then
+					if 0 ~= AND(inventorySwitch, BIT(5)) then 
+						memory.writebyte(0x7EF412, UNSET(inventorySwitch, 5))
+					end
+				end
+			end
 		},
 
 		-- PROGRESSIVE_SHIELD 
@@ -134,31 +149,19 @@ return {
 		[0x7EF369] = {kind="bitOr"},
 		[0x7EF36B] = {kind="either"}, -- Heart pieces
 		[0x7EF36C] = {kind="high"}, -- Health 1 
-		[0x7EF36D] = {kind="HealthShare", stype="uHighsLow", diff="sub"}, -- Health 2
-		[0x7EF36E] = {kind="MagicShare", stype="uHighsLow", diff="sub"}, -- Magic 1 
+		--[0x7EF36D] = {kind="HealthShare", stype="uHighsLow", diff="sub"}, -- Health 2
+		--[0x7EF36E] = {kind="MagicShare", stype="uHighsLow", diff="sub"}, -- Magic 1
+		[0x7EF36D] = {kind="HealthShare", stype="uInstantRefill"}, -- Health 2
+		[0x7EF36E] = {kind="MagicShare", stype="uInstantRefill"}, -- Magic 1 
 		[0x7EF370] = {kind="high"}, -- Bomb upgrades
 		[0x7EF371] = {kind="high"}, -- Arrow upgrades
-		[0x7EF372] = {kind="HealthShare", stype="uLowsHigh", diff="add"}, -- Hearts filler
-		[0x7EF373] = {kind="MagicShare", stype="uLowsHigh", diff="add"}, -- Magic filler
+		--[0x7EF372] = {kind="HealthShare", stype="uLowsHigh", diff="add"}, -- Hearts filler
+		--[0x7EF373] = {kind="MagicShare", stype="uLowsHigh", diff="add"}, -- Magic filler
 		[0x7EF379] = {kind="bitOr"}, -- Abilities
 		[0x7EF374] = {name="a Pendant", kind="bitOr"},
 		[0x7EF377] = {kind="either"}, -- Arrows
 		[0x7EF37A] = {name="a Crystal", kind="bitOr"},
 		[0x7EF37B] = {nameMap={"1/2 Magic", "1/4 Magic"}, kind="high"},
---[[ 		[0x7EF37C] = {kind="either"}, -- Keys
-		[0x7EF37D] = {kind="either"}, -- Keys
-		[0x7EF37E] = {kind="either"}, -- Keys
-		[0x7EF37F] = {kind="either"}, -- Keys
-		[0x7EF380] = {kind="either"}, -- Keys
-		[0x7EF381] = {kind="either"}, -- Keys
-		[0x7EF382] = {kind="either"}, -- Keys
-		[0x7EF383] = {kind="either"}, -- Keys
-		[0x7EF384] = {kind="either"}, -- Keys
-		[0x7EF385] = {kind="either"}, -- Keys
-		[0x7EF386] = {kind="either"}, -- Keys
-		[0x7EF387] = {kind="either"}, -- Keys
-		[0x7EF388] = {kind="either"}, -- Keys
-		[0x7EF389] = {kind="either"}, -- Keys ]]
 		[0x7EF3C5] = {kind="high"}, -- Events
 		[0x7EF3C6] = {kind="bitOr"}, -- Events 2
 		[0x7EF3C7] = {kind="high"}, -- Map
