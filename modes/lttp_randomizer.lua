@@ -40,8 +40,8 @@ local trValue = 0x18
 local gtValue = 0x1A
 
 return {
-	guid = "ca8d449f-d282-4503-9474-980feae73eb0",
-	format = "1.11",
+	guid = "b77403b3-97bd-4c23-8771-1272d48df378",
+	format = "1.11.b",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
 	
@@ -64,6 +64,14 @@ return {
 				-- If mushroom bit went high and no mushroom type item is being held, place mushroom in inventory
 				if 0 ~= AND(value, BIT(5)) and 0 == AND(previousValue, BIT(5)) and 0 == memory.readbyte(mushroomByte) then
 					memory.writebyte(mushroomByte, 1)
+				end
+				-- If mushroom bit went low and mushroom was held, change to empty or powder
+				if 0 == AND(value, BIT(5)) and 0 ~= AND(previousValue, BIT(5)) and 1 == memory.readbyte(mushroomByte) then
+					if 0 == AND(previousValue, BIT(4)) then
+						memory.writebyte(mushroomByte, 0)
+					else
+						memory.writebyte(mushroomByte, 2)
+					end	
 				end
 			end
 		},

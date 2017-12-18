@@ -71,7 +71,7 @@ function recordChanged(record, value, previousValue, receiving,addr)
 				if magicRefill > 1 then
 					value = math.min(value + magicRefill - 1, maxMagic)
 					magicRefill = 1
-					memory.writebyte(0x7EF372, magicRefill)
+					memory.writebyte(0x7EF373, magicRefill)
 					memory.writebyte(0x7EF36E, value)
 				end
 				allow = value ~= previousValue
