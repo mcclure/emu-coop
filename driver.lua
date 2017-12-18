@@ -321,6 +321,7 @@ function GameDriver:handleTable(t)
 
 				local name = record.name
 				local names = nil
+				local msgMask = record.msgMask
 
 				if not name and record.nameMap then
 					name = record.nameMap[value]
@@ -332,7 +333,13 @@ function GameDriver:handleTable(t)
 					names = {}
 					for b=0,7 do
 						if 0 ~= AND(BIT(b), value) and 0 == AND(BIT(b), previousValue) then
-							table.insert(names, record.nameBitmap[b + 1])
+							if msgMask then
+								if 0 ~= AND(Bit(b), msgMask) then
+									table.insert(names, record.nameBitmap[b + 1])
+								end
+							else
+								table.insert(names, record.nameBitmap[b + 1])
+							end
 						end
 					end
 				end
