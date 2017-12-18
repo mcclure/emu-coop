@@ -41,7 +41,7 @@ local gtValue = 0x1A
 
 return {
 	guid = "b77403b3-97bd-4c23-8771-1272d48df378",
-	format = "1.11.b",
+	format = "1.11b",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
 	
