@@ -29,12 +29,12 @@ function recordChanged(record, value, previousValue, receiving,addr)
 
 	if type(record.kind) == "function" then
 		allow, value = record.kind(value, previousValue, receiving)
-	elseif record.kind == "HealthShare" then 
+	elseif record.kind == "HealthShare" then
 		if opts.hpshare then
 			if record.stype == "uHighsLow" then
 				allow = previousValue > value
 				if value >= previousValue then record.cache = value end
-			elseif record.stype == "uLowsHigh" then 
+			elseif record.stype == "uLowsHigh" then
 				allow = value > previousValue
 				if previousValue >= value then record.cache = value end
 			elseif record.stype == "uInstantRefill" then
@@ -49,10 +49,10 @@ function recordChanged(record, value, previousValue, receiving,addr)
 				allow = value ~= previousValue
 			end
 		else
-			allow = false 
+			allow = false
 		end
-	elseif record.kind == "MagicShare" then 
-		if opts.magicshare then 
+	elseif record.kind == "MagicShare" then
+		if opts.magicshare then
 			if record.stype == "uHighsLow" then
 				allow = previousValue > value
 				if value >= previousValue then record.cache = value end
@@ -75,9 +75,9 @@ function recordChanged(record, value, previousValue, receiving,addr)
 					memory.writebyte(0x7EF36E, value)
 				end
 				allow = value ~= previousValue
-			end 
+			end
 		else
-			allow = false 
+			allow = false
 		end
 	elseif record.kind == "high" then
 		allow = value > previousValue
@@ -100,54 +100,54 @@ function recordChanged(record, value, previousValue, receiving,addr)
 		value = OR(previousValue, maskedValue)                   -- Copy operated-on bits back into value
 	elseif record.kind == "custom" then
 		--print("got custom v="..value.." pv="..previousValue)
-	elseif record.kind == "clock" then 
-		if previousValue == 0x58 and value == 0x27 then 
+	elseif record.kind == "clock" then
+		if previousValue == 0x58 and value == 0x27 then
 			allow = true
 		else
-			allow = false 
-		end 
+			allow = false
+		end
 	elseif record.kind == "state" then
 		if value == 0x19 and previousValue ~= value then
 			record.name = "game"
 			record.verb = "finished"
 			memoryWrite(0x7EF443,1)
 			memoryWrite(0x7E0011,0)
-			record.cache = value 
+			record.cache = value
 			allow = true
 		elseif value == 0x12 and previousValue ~= value then
 			if opts.deathshare then
 				record.name = "- Press F to Pay Respects."
 				record.verb = "died"
 				memoryWrite(0x7E0011,0)
-				record.cache = value 
+				record.cache = value
 				allow = true
 			else
-				record.cache = value 
+				record.cache = value
 				allow = false
-			end 
+			end
 		elseif previousValue ~= value then
-			record.cache = value 
+			record.cache = value
 			allow = false
 		else
 			allow = false
 		end
 	elseif record.kind == "bottle" then
-		if value < previousValue then 
-			record.verb = "used" 
+		if value < previousValue then
+			record.verb = "used"
 			record.name = record.nameMap[previousValue]
 			record.cache = value
-		elseif previousValue < value then 
-			record.verb = "got" 
+		elseif previousValue < value then
+			record.verb = "got"
 			record.name = record.nameMap[value]
 			record.cache = value
-		end		
+		end
 		allow = value ~= previousValue
 	elseif record.kind == "key" then
-		if value < previousValue then 
-			record.verb = "used" 
-		elseif previousValue < value then 
-			record.verb = "got" 
-		end		
+		if value < previousValue then
+			record.verb = "used"
+		elseif previousValue < value then
+			record.verb = "got"
+		end
 		allow = value ~= previousValue
 	else
 		allow = value ~= previousValue
@@ -214,12 +214,12 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 				end
 			end
 		end
-		
-		if self.forceSend then 
+
+		if self.forceSend then
 			self.forceSend = false
 			message("Syncing...done!")
 		end
-		
+
 
 		if self.spec.startup then
 			self.spec.startup(self.forceSend)
@@ -342,6 +342,8 @@ function GameDriver:handleTable(t)
 							end
 						end
 					end
+					if next(names) == nil then
+						names = nil
 				end
 
 				if names then
