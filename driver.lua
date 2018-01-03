@@ -344,6 +344,7 @@ function GameDriver:handleTable(t)
 					end
 					if next(names) == nil then
 						names = nil
+					end
 				end
 
 				if names then
