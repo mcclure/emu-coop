@@ -334,7 +334,7 @@ function GameDriver:handleTable(t)
 					for b=0,7 do
 						if 0 ~= AND(BIT(b), value) and 0 == AND(BIT(b), previousValue) then
 							if msgMask then
-								if 0 ~= AND(Bit(b), msgMask) then
+								if 0 ~= AND(BIT(b), msgMask) then
 									table.insert(names, record.nameBitmap[b + 1])
 								end
 							else
