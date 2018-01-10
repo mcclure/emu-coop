@@ -6,7 +6,7 @@
 -- Author: Andi McClure
 -- Data source: http://alttp.run/hacking/index.php?title=SRAM_Map , https://github.com/mmxbass/z3randomizer/blob/master
 -- Thanks to the Zelda randomizer team, especially Mike Trethewey, Zarby89 and Karkat
--- This file is available under Creative Commons CC0 
+-- This file is available under Creative Commons CC0
 
 local function UNSET(x, bit) -- 0 index
 	return AND(x, XOR(0xFF, BIT(bit)))
@@ -40,12 +40,12 @@ local trValue = 0x18
 local gtValue = 0x1A
 
 return {
-	guid = "00f39da4-0c67-4898-bb98-140c1d6c0512",
+	guid = "ff205aaa-35b3-421e-981f-4b78c4cbe859",
 	format = "1.12",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
-	
-	running = {"test", addr = 0x7E0010, gte = 0x6, lte = 0x19}, -- 18 required for aga2, used during transition from gt to pyramid, 19 so we can sync endgame 
+
+	running = {"test", addr = 0x7E0010, gte = 0x6, lte = 0x19}, -- 18 required for aga2, used during transition from gt to pyramid, 19 so we can sync endgame
 	sync = {
 		-- INVENTORY_SWAP
 		[0x7EF412] = {
@@ -54,7 +54,7 @@ return {
 				local result = OR(value, previousValue)
 				if 0 ~= AND(result, BIT(0)) then result = UNSET(result, 1) end -- If acquired bird, clear flute
 				if 0 == AND(value, BIT(5)) then result = UNSET(result, 5) end -- If Mushroom is lost, keep it that way
-				return (result ~= previousValue), (result) 
+				return (result ~= previousValue), (result)
 			end,
 			receiveTrigger=function(value, previousValue) -- Mushroom/powder byte is a disaster so set it indirectly when this mask changes
 				-- If powder bit went high and no mushroom type item is being held, place powder in inventory
@@ -71,7 +71,7 @@ return {
 						memory.writebyte(mushroomByte, 0)
 					else
 						memory.writebyte(mushroomByte, 2)
-					end	
+					end
 				end
 			end
 		},
@@ -89,14 +89,14 @@ return {
 			msgMask=0x1,
 			mask=0xBF, -- Only sync old man [1], king zora [2], sick kid [4], stunpy [8], sahrashala [16], catfish [32] and library [128]
 			kind="bitOr"
-		}, 
+		},
 
 		[0x7EF411] = {
 			mask=0xBF, -- Only sync ether tablet [1], bombos tablet [2], smithies [4], fairy sword [8], mushroom spot [16], witch's hut [32] and magic bat [128]
 			kind="bitOr"
 		},
 
-		-- PROGRESSIVE_SHIELD 
+		-- PROGRESSIVE_SHIELD
 		[0x7EF416] = { -- TODO: Add a 0xC0 mask? Currently mask is not supported with "high"
 			kind="high" -- Sync silently-- this is a backup in case your shield gets eaten
 		},
@@ -147,11 +147,11 @@ return {
 		[0x7EF368] = {kind="bitOr"},
 		[0x7EF369] = {kind="bitOr"},
 		[0x7EF36B] = {kind="either"}, -- Heart pieces
-		[0x7EF36C] = {kind="high"}, -- Health 1 
+		[0x7EF36C] = {kind="high"}, -- Health 1
 		--[0x7EF36D] = {kind="HealthShare", stype="uHighsLow", diff="sub"}, -- Health 2
 		--[0x7EF36E] = {kind="MagicShare", stype="uHighsLow", diff="sub"}, -- Magic 1
 		[0x7EF36D] = {kind="HealthShare", stype="uInstantRefill"}, -- Health 2
-		[0x7EF36E] = {kind="MagicShare", stype="uInstantRefill"}, -- Magic 1 
+		[0x7EF36E] = {kind="MagicShare", stype="uInstantRefill"}, -- Magic 1
 		[0x7EF370] = {kind="high"}, -- Bomb upgrades
 		[0x7EF371] = {kind="high"}, -- Arrow upgrades
 		--[0x7EF372] = {kind="HealthShare", stype="uLowsHigh", diff="add"}, -- Hearts filler
@@ -165,7 +165,7 @@ return {
 		[0x7EF3C6] = {kind="bitOr"}, -- Events 2
 		[0x7EF3C7] = {kind="high"}, -- Map
 		[0x7EF3C9] = {kind="bitOr"}, -- Events 3
-		
+
 		-- INDOORS
 		[0x7EF000] = {kind="high"},
 		[0x7EF001] = {kind="high"},
@@ -757,9 +757,9 @@ return {
 		[0x7EF24D] = {kind="high"},
 		[0x7EF24E] = {kind="high"},
 		[0x7EF24F] = {kind="high"},
-		
+
 		-- OVERWORLD
-		
+
 		[0x7EF280] = {kind="high"},
 		[0x7EF281] = {kind="high"},
 		[0x7EF282] = {kind="high"},
@@ -887,9 +887,9 @@ return {
 		[0x7EF2FD] = {kind="high"},
 		[0x7EF2FE] = {kind="high"},
 		[0x7EF2FF] = {kind="high"},
-		
+
 		[0x7EF460] = {kind="high"}, -- Triforce pieces
-		
+
 		-- Small Keys
 
 		[0x7EF37C] = {name="HC Key", kind="key",
@@ -1004,7 +1004,7 @@ return {
 			end
 		end
 					},
-		
+
 		-- Dungeon Item Counts
 
 		[0x7EF434] = {kind="high"},
@@ -1012,6 +1012,6 @@ return {
 		[0x7EF436] = {kind="high"},
 		[0x7EF437] = {kind="high"},
 		[0x7EF438] = {kind="high"},
-		[0x7EF439] = {kind="high"}		
+		[0x7EF439] = {kind="high"}
 	}
 }
