@@ -40,15 +40,15 @@ local trValue = 0x18
 local gtValue = 0x1A
 
 return {
-	guid = "ff205aaa-35b3-421e-981f-4b78c4cbe859",
-	format = "1.12",
+	guid = "88d7b351-1ca9-44c7-8161-fa22147ca8de",
+	format = "1.13",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
 
 	running = {"test", addr = 0x7E0010, gte = 0x6, lte = 0x19}, -- 18 required for aga2, used during transition from gt to pyramid, 19 so we can sync endgame
 	sync = {
 		-- INVENTORY_SWAP
-		[0x7EF412] = {
+		[0x7EF38C] = {
 			nameBitmap={"Bird", "Flute", "Shovel", "unknown item", "Magic Powder", "Mushroom", "Magic Boomerang", "Boomerang"},
 			kind=function(value, previousValue)
 				local result = OR(value, previousValue)
@@ -77,7 +77,7 @@ return {
 		},
 		[0x7E0010] = {kind="state"},
 		-- INVENTORY_SWAP_2
-		[0x7EF414] = {
+		[0x7EF38E] = {
 			nameBitmap={"unknown item", "unknown item", "unknown item", "unknown item", "unknown item", "unknown item", "Silver Arrows", "Bow"},
 			kind="bitOr"
 		},

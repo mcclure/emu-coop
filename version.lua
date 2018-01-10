@@ -9,10 +9,10 @@
 -- If you are making an INCOMPATIBLE unofficial variant, I recommend replacing the major or minor version with a string, like "1.SPECIAL"
 
 version = {
-	
+
 	-- Which released version number does this have (used for basically nothing)
 	-- Put your name in here as a variant or something I guess
-	release = "1.key.12",
+	release = "1.key.13",
 
 	-- Which version of the way of shuttling data over IRC is this?
 	-- Increment this number if you change the handshake or the way tables are encoded into text in pipe.lua
@@ -20,6 +20,6 @@ version = {
 
 	-- Format/capabilities used for modes in the modes/ directory
 	-- Increment this number if you change driver.lua in a way that means things are possible in a modes/ file that weren't before
-	modeFormat = "1.12"
+	modeFormat = "1.13"
 
 }
