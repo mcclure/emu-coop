@@ -4,7 +4,7 @@ This directory contains some Lua scripts that, when loaded by a compliant emulat
 
 Each game you want to use this with requires a "mode" file in the modes/ directory. Currently included are modes for Link to the Past and the Link to the Past "Randomizer".
 
-You can find a guide on how to use these scripts at <<https://goo.gl/CSkF4x>>.
+You can find a guide on how to use these scripts at <https://goo.gl/CSkF4x>.
 
 You can reach me, FirenX, here at GitHub or at Discord as Feed4Fame#7342.
 
