@@ -58,6 +58,10 @@ if emu.emulating() then
 			elseif not nonempty(data.partner) then scrub("Partner nick")
 			end
 
+			--  Remove illegal whitespace characters from NICKs (fixes FCEUX dialog UI tabbing bug)
+			data.nick = data.nick:gsub("%s+", "")
+			data.partner = data.partner:gsub("%s+", "")
+			
 			function connect()
 				local socket = require "socket"
 				local server = socket.tcp()
