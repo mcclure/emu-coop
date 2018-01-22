@@ -71,6 +71,8 @@ function performTest(record, valueOverride, sizeOverride)
 			end
 		end
 		return true
+	elseif record[1] == "modulo" then
+		return valueOverride % record.mod == 0
 	else
 		return false
 	end
@@ -82,6 +84,9 @@ function GameDriver:_init(spec, forceSend)
 	self.sleepQueue = {}
 	self.forceSend = forceSend
 	self.didCache = false
+	
+	-- Tracks memory locations until a settling period has elapsed, then allows further updates
+	self.settlingAddresses = {}
 end
 
 function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if isRunning()
@@ -159,8 +164,26 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 		local allow = true
 		local value = memoryRead(addr, size)
 
+		if record.timer then
+			if value % record.cond.mod == 0 then
+				self.settlingAddresses = {}
+			end
+			
+			return
+		end
+		
 		if record.cache then
 			allow = recordChanged(record, value, record.cache, false)
+		end
+
+		
+		if allow and record.settle then -- ensure memory location has settled before allowing
+			allow = self.settlingAddresses[addr] == nil
+			
+			if allow then
+				self.settlingAddresses[addr] = value
+				if driverDebug then print("Added settle to table: " .. tostring(addr)) end
+			end
 		end
 
 		if allow then
