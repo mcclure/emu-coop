@@ -9,7 +9,7 @@
 -- This file is available under Creative Commons CC0 
 
 return {
-	guid = "174e4546-69a8-4b14-9128-1bf4d3f22ac5",
+	guid = "f003df87-0c3b-4b3b-86c8-d0deef93e6ec",
 	format = "1.0",
 	name = "Link to the Past JPv1.0",
 	match = {"stringtest", addr=0xFFC0, value="ZELDANODENSETSU"},
@@ -53,6 +53,7 @@ return {
 		[0x7EF379] = {kind="bitOr"}, -- Abilities
 		[0x7EF374] = {name="a Pendant", kind="bitOr"},
 		[0x7EF37A] = {name="a Crystal", kind="bitOr"},
-		[0x7EF37B] = {name="Half Magic", kind="high"}
+		[0x7EF37B] = {name="Half Magic", kind="high"},
+		[0x7EF3C9] = {kind="bitOr", mask=0x20} -- Dwarf rescue bit (required for bomb shop)
 	}
 }

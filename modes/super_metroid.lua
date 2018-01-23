@@ -29,7 +29,7 @@ local function makeItemTrigger(targetAddr, mask) -- 2 byte size
 end
 
 return {
-	guid = "fef608f4-7e06-47a1-bf7f-107563198e41",
+	guid = "41c22c5f-7d2b-4e43-9610-e967033e492f",
 	format = "1.0",
 	name = "Super Metroid",
 	match = {"stringtest", addr=0xFFC0, value="Super Metroid"},
@@ -82,5 +82,6 @@ return {
 		[0x7ED82A] = {nameBitmap={"Ridley"},   verb="defeated", kind="bitOr", mask=0x1},
 		[0x7ED82B] = {nameBitmap={"Phantoon"}, verb="defeated", kind="bitOr", mask=0x1},
 		[0x7ED82C] = {nameBitmap={"Draygon"},  verb="defeated", kind="bitOr", mask=0x1},
+		[0x7ED820] = {kind="bitOr", mask=0x01, nameBitmap={"the planet angry"}} -- "Zebes is awake"
 	}
 }
