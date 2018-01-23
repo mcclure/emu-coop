@@ -87,6 +87,7 @@ end
 function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if isRunning()
 	if not self.didCache then
 		if driverDebug then print("First moment running") end
+		message("Coop mode: " .. self.spec.guid)
 
 		for k,v in pairs(self.spec.sync) do -- Enter all current values into cache so we don't send pointless 0 values later
 			local value = memoryRead(k, v.size)
