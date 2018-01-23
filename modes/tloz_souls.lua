@@ -35,7 +35,7 @@ spec.sync[0x067C] = {name="Bomb upgrade", kind="high"}
 --  Hearts
 spec.sync[0x0670] = {settle=1}  --  Fractional health
 spec.sync[0x066F] = {}  --  Int health and heart containers
-spec.sync[0x0012] = {cond={"test", gte = 0x11, lte = 0x11}}  --  death
+spec.sync[0x0012] = {cond={"test", gte = 0x11, lte = 0x11}, kind="passthrough"}  --  death
 
 spec.sync[0x6804] = {}  -- tunic color (partner can immediately tell ring has been acquired)
 

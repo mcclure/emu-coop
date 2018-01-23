@@ -44,12 +44,16 @@ function recordChanged(record, value, previousValue, receiving)
 
 		allow = maskedValue ~= maskedPreviousValue               -- Did operated-on bits change?
 		value = OR(previousValue, maskedValue)                   -- Copy operated-on bits back into value
+	elseif record.kind == "passthrough" then
+		allow = true
 	else
 		allow = value ~= previousValue
 	end
+
 	if allow and record.cond then
 		allow = performTest(record.cond, value, record.size)
 	end
+
 	return allow, value
 end
 
@@ -84,7 +88,7 @@ function GameDriver:_init(spec, forceSend)
 	self.sleepQueue = {}
 	self.forceSend = forceSend
 	self.didCache = false
-	
+
 	-- Tracks memory locations until a settling period has elapsed, then allows further updates
 	self.settlingAddresses = {}
 end
@@ -168,18 +172,18 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 			if value % record.cond.mod == 0 then
 				self.settlingAddresses = {}
 			end
-			
+
 			return
 		end
-		
+
 		if record.cache then
 			allow = recordChanged(record, value, record.cache, false)
 		end
 
-		
+
 		if allow and record.settle then -- ensure memory location has settled before allowing
 			allow = self.settlingAddresses[addr] == nil
-			
+
 			if allow then
 				self.settlingAddresses[addr] = value
 				if driverDebug then print("Added settle to table: " .. tostring(addr)) end
