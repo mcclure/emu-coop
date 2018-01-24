@@ -51,8 +51,13 @@ if emu.emulating() then
 
 			function scrub(invalid) errorMessage(invalid .. " not valid") failed = true end
 
-			if failed then -- NOTHING
-			elseif not nonempty(data.server) then scrub("Server")
+			-- Strip out stray whitespace (this can be a problem on FCEUX)
+			for _,v in ipairs{"server", "nick", "partner"} do
+				if data[v] then data[v] = data[v]:gsub("%s+", "") end
+			end
+
+			-- Check input valid
+			if not nonempty(data.server) then scrub("Server")
 			elseif not nonzero(data.port) then scrub("Port")
 			elseif not nonempty(data.nick) then scrub("Nick")
 			elseif not nonempty(data.partner) then scrub("Partner nick")
