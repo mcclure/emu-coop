@@ -12,7 +12,7 @@ version = {
 	
 	-- Which released version number does this have (used for basically nothing)
 	-- Put your name in here as a variant or something I guess
-	release = "1.0.1",
+	release = "1.0.2",
 
 	-- Which version of the way of shuttling data over IRC is this?
 	-- Increment this number if you change the handshake or the way tables are encoded into text in pipe.lua
