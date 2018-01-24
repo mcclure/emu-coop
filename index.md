@@ -10,11 +10,11 @@ It currently works with Legend of Zelda: A Link to the Past; the [Link to the Pa
 
 In order to run emu-coop, you will need an emulator that can run Lua scripts, such as snes9x-rr or FCEUX. (BizHawk does not work but could in a later version). If you already have an emulator, you can just download:
 
-* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.0.1.zip) (Version 1.0.1)
+* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.0.2.zip) (Version 1.0.2)
 
 If you **don't** have one, here is a copy of snes9x-rr with the coop script bundled in:
 
-* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0.1/snes9x-coop-1.0.1.zip) (Version 1.0.1)
+* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0.2/snes9x-coop-1.0.2.zip) (Version 1.0.2)
 
 The above are for Windows. You may need to install the "x86" version of the [VS2015 C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
 
@@ -42,11 +42,11 @@ Sorry, there is no documentation for creating a mode file yet.
 
 Some more about the games currently supported:
 
-* **Link to the Past**: Currently it syncs all collectable items, all pendants, all crystals, and in the Randomizer it tracks whether the old man has been rescued. It does not track "quantities" (rupees, heart pieces, arrows or bombs or expansions of either), or "events" like whether you have beaten Aghanim or paid off Kiki. When it updates your shield or armor, the sprite will not update until the next Save+Quit even though you have it. The 1.0 Japan version of the game is currently required.
-
-* **Super Metroid**: Currently it tracks all items, beams, expansions, and whether you have beaten the four main bosses. Items you collect might not appear in the top icon bar, and when it updates your beams and armor the sprite won't update even though you have it until you change rooms or pause. This has not been tested as well as LTTP. 
+* **Link to the Past**: Currently it syncs all collectable items, all pendants, all crystals, and whether the Dwarf has been rescued; and in the Randomizer it tracks whether the old man has been rescued. It does not track "quantities" (rupees, heart pieces, arrows or bombs or expansions of either), or "events" like whether you have beaten Aghanim or paid off Kiki. When it updates your shield or armor, the sprite will not update until the next Save+Quit even though you have it. The 1.0 Japan version of the game is currently required.
 
 * **Legend of Zelda NES**: This comes in three modes. One syncs items only, one syncs items plus dungeon completion (maps compasses triforce), and one syncs what seems to be all the memory the author could get her hands on, including things like door status.
+
+* **Super Metroid**: Currently it tracks all items, beams, expansions, whether Zebes is awake, and whether you have beaten the four main bosses. Items you collect might not appear in the top icon bar, and when it updates your beams and armor the sprite won't update even though you have it until you change rooms or pause. The Super Metroid mode is fairly primitive, so if this interests you, you should instead use [Multitroid](http://multitroid.com/), an emulator mod just for running Super Metroid coop.
 
 ## Authors
 
@@ -54,7 +54,7 @@ This was made by [Andi McClure](mailto:andi.m.mcclure@gmail.com). You can find s
 
 Big thanks to:
 * The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
-* [Alex Zandra](https://twitter.com/zandravandra) and [Maya Shinohara](https://twitter.com/MothBooty) for help testing
+* [Alex Zandra](https://twitter.com/zandravandra), [Maya Shinohara](https://twitter.com/MothBooty), and Andypro1 from github for help testing
 
 The change history for the project is [here](changes.md).
 
@@ -68,6 +68,7 @@ Some ideas I think are cool:
 * Deltas: Right now, emu-coop syncs only numbers that only go up. Something that can go up and down, like rupee or arrow count, is hard to sync because there could be a "race" where one player sends a lower number at the same time the other sends a higher one. A good (and easy, I just didn't get to it) fix for this would be to send deltas where it sends just "I got 50 more rupees". This would mean an actual shared wallet in LTTP, and would fix a problem in Super Metroid where if both players collect a missile expansion at once it just gets lost.
 * Forced coop: The LTTP randomizer discord was excited about the idea of generating two matched randomizer ROMs where each player has half the items and you have to cooperate to win.
 * Cross-game coop?: Another suggestion I've heard, although this would require modding the coop scripts and possibly the games a *lot*, is coop between two different games. For example you could play LTTP and Super Metroid and have some of the items Link needs be located on Zebes, or run Zero Mission and Metroid Fusion at the same time and sync "analogous" items.
+* More than two players at a time!
 
 There's also some known bugs/limitations:
 
