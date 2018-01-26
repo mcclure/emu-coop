@@ -145,11 +145,11 @@ return {
 		--[0x7EF362] = {kind="high"}, -- Rupee byte 3
 		--[0x7EF363] = {kind="high"}, -- Rupee byte 4
 		[0x7EF366] = {
-			nameBitmap={"unknown BIG key", "unknown BIG key", "GT BIG key", "TR BIG key", "TT BIG key", "ToH BIG key", "IP BIG key", "SW BIG key"},
+			nameBitmap={"unknown BIG Key", "unknown BIG Key", "GT BIG Key", "TR BIG Key", "TT BIG Key", "ToH BIG Key", "IP BIG Key", "SW BIG Key"},
 			kind="bitOr"
 		},
 		[0x7EF367] = {
-			nameBitmap={"MM BIG key", "PoD BIG key", "SP BIG key", "HC BIG key", "DP BIG key", "EP BIG key", "HC BIG key", "HC BIG key"},
+			nameBitmap={"MM BIG Key", "PoD BIG Key", "SP BIG Key", "HC BIG Key", "DP BIG Key", "EP BIG Key", "HC BIG Key", "HC BIG Key"},
 			kind="bitOr"
 		},
 		[0x7EF364] = {kind="bitOr"},
