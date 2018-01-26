@@ -40,7 +40,7 @@ local trValue = 0x18
 local gtValue = 0x1A
 
 return {
-	guid = "88d7b351-1ca9-44c7-8161-fa22147ca8de",
+	guid = "6ef13329-586a-4db3-a7c6-7bfe891b1309",
 	format = "1.13",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT TOURNEY,VTC,ER_"},
@@ -100,6 +100,10 @@ return {
 		[0x7EF416] = { -- TODO: Add a 0xC0 mask? Currently mask is not supported with "high"
 			kind="high" -- Sync silently-- this is a backup in case your shield gets eaten
 		},
+		-- PROGRESSIVE_SWORD
+		[0x7EF417] = { -- TODO: Add a 0xC0 mask? Currently mask is not supported with "high"
+			kind="high" -- Sync silently-- this is a backup in case your sword gets eaten
+		},
 		[0x7EF01B] = {name="aga2",verb="killed",kind="bitOr",mask=0x8},
 		[0x7EF041] = {name="aga1",verb="killed",kind="bitOr",mask=0x8},
 		[0x7EF2DB] = {kind="custom"},
@@ -140,8 +144,14 @@ return {
 		[0x7EF361] = {kind="either"}, -- Rupee byte 2
 		--[0x7EF362] = {kind="high"}, -- Rupee byte 3
 		--[0x7EF363] = {kind="high"}, -- Rupee byte 4
-		[0x7EF366] = {kind="bitOr"}, -- FIXME: Hyrule Castle big key does not seem to be in either of these masks, which could affect open seeds?
-		[0x7EF367] = {kind="bitOr"},
+		[0x7EF366] = {
+			nameBitmap={"unknown BIG key", "unknown BIG key", "GT BIG key", "TR BIG key", "TT BIG key", "ToH BIG key", "IP BIG key", "SW BIG key"},
+			kind="bitOr"
+		},
+		[0x7EF367] = {
+			nameBitmap={"MM BIG key", "PoD BIG key", "SP BIG key", "HC BIG key", "DP BIG key", "EP BIG key", "HC BIG key", "HC BIG key"},
+			kind="bitOr"
+		},
 		[0x7EF364] = {kind="bitOr"},
 		[0x7EF365] = {kind="bitOr"},
 		[0x7EF368] = {kind="bitOr"},
