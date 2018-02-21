@@ -1,5 +1,8 @@
 -- ACTUAL WORK HAPPENS HERE
 
+local bit = require("bit") -- for binary not
+local BNOT = bit.bnot
+
 function memoryRead(addr, size)
 	if not size or size == 1 then
 		return memory.readbyte(addr)
@@ -26,24 +29,22 @@ end
 
 function recordChanged(record, value, previousValue, receiving)
 	local allow = true
+	local mask = 0xffffffff
+	local inverseMask = 0
+	if record.mask then
+		-- if it's masked, rework value and previousValue to reflect that we're only
+		-- interested in the masked bits.
+		mask = record.mask
+		inverseMask = BNOT(record.mask)
+		value = OR(AND(mask, value), AND(inverseMask, previousValue))
+	end
 
 	if type(record.kind) == "function" then
 		allow, value = record.kind(value, previousValue, receiving)
 	elseif record.kind == "high" then
-		allow = value > previousValue
+		allow = AND(mask, value) > AND(mask, previousValue)
 	elseif record.kind == "bitOr" then
-		local maskedValue         = value                        -- Backup value and previousValue
-		local maskedPreviousValue = previousValue
-
-		if record.mask then                                      -- If necessary, mask both before checking
-			maskedValue = AND(maskedValue, record.mask)
-			maskedPreviousValue = AND(maskedPreviousValue, record.mask)
-		end
-
-		maskedValue = OR(maskedValue, maskedPreviousValue)
-
-		allow = maskedValue ~= maskedPreviousValue               -- Did operated-on bits change?
-		value = OR(previousValue, maskedValue)                   -- Copy operated-on bits back into value
+		allow = value ~= previousValue               -- Did operated-on bits change?
 	else
 		allow = value ~= previousValue
 	end
