@@ -32,8 +32,9 @@ function recordChanged(record, value, previousValue, receiving)
 	local mask = 0xffffffff
 	local inverseMask = 0
 	if record.mask then
-		-- if it's masked, rework value and previousValue to reflect that we're only
-		-- interested in the masked bits.
+		-- If it's masked, rework value so that all non-masked bits in value are replaced
+		-- with the corresponding bits from previousValue. This will affect both whether
+		-- a change is recognized and what (when receiving is true) is written to memory
 		mask = record.mask
 		inverseMask = BNOT(record.mask)
 		value = OR(AND(mask, value), AND(inverseMask, previousValue))
@@ -45,6 +46,7 @@ function recordChanged(record, value, previousValue, receiving)
 		allow = AND(mask, value) > AND(mask, previousValue)
 	elseif record.kind == "bitOr" then
 		allow = value ~= previousValue               -- Did operated-on bits change?
+		value = OR(value, previousValue)
 	else
 		allow = value ~= previousValue
 	end
@@ -166,7 +168,11 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 		end
 
 		if allow then
-			record.cache = value -- FIXME: Should this cache EVER be cleared? What about when a new game starts?
+			-- Notice this is NOT set unless allow is true. Why? Imagine kind is "high" and
+			-- value gets set to 3, then 255, then 4, and "cond" requires value to be < 6.
+			-- If we wrote record.cache on allow false, it would get "stuck" at 255 and 4 would never send
+			-- FIXME: Should this cache EVER be cleared? What about when a new game starts?
+			record.cache = value
 
 			self:sendTable({addr=addr, value=value})
 		end
