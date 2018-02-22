@@ -28,30 +28,40 @@ function memoryWrite(addr, value, size)
 end
 
 function recordChanged(record, value, previousValue, receiving)
+	local unalteredValue = value -- "value" might change below; here's its initial value
 	local allow = true
+
+	-- Value 
+	local maskedValue = value
 	local mask = 0xffffffff
 	local inverseMask = 0
+
 	if record.mask then
 		-- If it's masked, rework value so that all non-masked bits in value are replaced
 		-- with the corresponding bits from previousValue. This will affect both whether
 		-- a change is recognized and what (when receiving is true) is written to memory
 		mask = record.mask
 		inverseMask = BNOT(record.mask)
-		value = OR(AND(mask, value), AND(inverseMask, previousValue))
+		maskedValue = OR(AND(mask, value), AND(inverseMask, previousValue))
 	end
 
-	if type(record.kind) == "function" then
+	if type(record.kind) == "function" then -- Note: function ignores masks
 		allow, value = record.kind(value, previousValue, receiving)
+		if not value then value = unalteredValue end -- support nil value
 	elseif record.kind == "high" then
-		allow = AND(mask, value) > AND(mask, previousValue)
+		allow = AND(maskedValue, value) > AND(maskedValue, previousValue)
+		value = maskedValue
 	elseif record.kind == "bitOr" then
-		allow = value ~= previousValue               -- Did operated-on bits change?
-		value = OR(value, previousValue)
+		allow = maskedValue ~= previousValue               -- Did operated-on bits change?
+		if receiving then
+			value = OR(maskedValue, previousValue)
+		end
 	else
-		allow = value ~= previousValue
+		allow = maskedValue ~= previousValue
+		value = maskedValue
 	end
 	if allow and record.cond then
-		allow = performTest(record.cond, value, record.size)
+		allow = performTest(record.cond, maskedValue, record.size) -- Note: Value tested is masked, but not ORed
 	end
 	return allow, value
 end
@@ -164,7 +174,7 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 		local value = memoryRead(addr, size)
 
 		if record.cache then
-			allow = recordChanged(record, value, record.cache, false)
+			allow, value = recordChanged(record, value, record.cache, false)
 		end
 
 		if allow then
