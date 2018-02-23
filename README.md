@@ -4,15 +4,18 @@ This directory contains some Lua scripts that, when loaded by a compliant emulat
 
 Each game you want to use this with requires a "mode" file in the modes/ directory. Currently included are modes for Link to the Past, the Link to the Past "Randomizer", Zelda 1 and Super Metroid. **WARNING: Modes are PROGRAMS, like a .exe file. Do not install a mode file unless it came from someone you know and trust.** 
 
-To run, run coop.lua. To run with additional debug messages (more verbose errors, and visibility for every message sent) run debug.lua instead.
+You can find a guide on how to use these scripts at <https://goo.gl/CSkF4x>.
+
+You can reach me, FirenX, here at GitHub or at Discord as Feed4Fame#7342.
 
 ## Author / License
 
-These files were written by <<andi.m.mcclure@gmail.com>>.
+These files were originally written by Andi McClure and later edited by Alvytv; and are now edited and maintained by FirenX.
 
 Big thanks to:
 * The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
-* Alex Zandra, Maya Shinohara, and Andypro1 from github for help testing
+* Alex Zandra and Maya Shinohara, and Andypro1 from github for help testing
+* Andi McClure and Alvytv for creating/updating these scripts
 
 Unless otherwise noted, the license is:
 
