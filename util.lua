@@ -41,6 +41,9 @@ function parseVersion(s)
 	return {major=split2[1], minor=split2[2], patch=split2[3], variant=variant}
 end
 
+-- The idea is supposed to be: Same major version and equal or greater minor version are "compatible".
+-- Patch versions are ignored.
+-- "beta" versions are only compatible with other beta versions.  
 function parsedVersionMatches(mine, theirs, exact)
 	if not (mine and theirs) then -- Blank == wildcard
 		return false
@@ -50,7 +53,7 @@ function parsedVersionMatches(mine, theirs, exact)
 	local theirsMajor = tonumber(theirs.major)
 	local theirsMinor = tonumber(theirs.minor)
 	if not theirsMajor or not theirsMinor or
-	   (theirsMajor > mineMajor) or -- FIXME: This is not how semver works but all versions are currently 1.0 so whatever
+	   (theirsMajor > mineMajor) or -- FIXME: This is not how semver works but all versions are currently 1.x so whatever
 	   (exact and theirsMajor < mineMajor) or
 	   (theirsMajor == mineMajor and theirsMinor > mineMinor) or
 	   (exact and theirsMinor < mineMinor) then

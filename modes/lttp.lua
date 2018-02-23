@@ -10,7 +10,7 @@
 
 return {
 	guid = "f003df87-0c3b-4b3b-86c8-d0deef93e6ec",
-	format = "1.0.3",
+	format = "1.1",
 	name = "Link to the Past JPv1.0",
 	match = {"stringtest", addr=0xFFC0, value="ZELDANODENSETSU"},
 
