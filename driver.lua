@@ -187,9 +187,10 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 
 		local allow = true
 		local value = memoryRead(addr, size)
+		local sendValue = value
 
 		if record.cache then
-			allow, value = recordChanged(record, value, record.cache, false)
+			allow, sendValue = recordChanged(record, value, record.cache, false)
 		end
 
 		if allow then
@@ -199,7 +200,7 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 			-- FIXME: Should this cache EVER be cleared? What about when a new game starts?
 			record.cache = value
 
-			self:sendTable({addr=addr, value=value})
+			self:sendTable({addr=addr, value=sendValue})
 		end
 	else
 		if driverDebug then print("Ignored memory write because the game is not running") end
