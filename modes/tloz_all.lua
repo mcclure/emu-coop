@@ -24,6 +24,7 @@ for base_key, base_val in pairs(base_spec.sync) do
 	spec.sync[base_key] = base_val
 end
 
+spec.sync[0x066E] = {kind="delta", deltaMin=0} --keys
 spec.sync[0x066F] = {kind="high", mask=0xf0} -- hearts: high nibble is heart containers-1, low nibble is number of filled hearts-1
 
 -- ow map open/get data is between 0x067f and 0x6fe (top left to bottom right)
@@ -40,16 +41,21 @@ end
 -- dungeon map data is between 0x6ff and 0x7fe (top left to bottom right, all
 -- the dungeons are in a single 2d array with each other)
 -- each tile has the following attributes that could be synced:
--- 0x80 some enemies killed in room
--- 0x40 all enemies killed in room
--- 0x20 room visited (shows up on map)
--- 0x10 item collected
--- 0x08 top key door unlocked
--- 0x04 bottom key door unlocked
--- 0x02 left key door unlocked
--- 0x01 right key door unlocked
+--  0x80 some enemies killed in room
+--  0x40 all enemies killed in room
+--  0x20 room visited (shows up on map)
+--  0x10 item collected
+--  0x08 top key door unlocked
+--  0x04 bottom key door unlocked
+--  0x02 left key door unlocked
+--  0x01 right key door unlocked
+-- Note that for the enemy kill info, this seems to be used as a cache for the
+-- 6 room memory, as well as boss kill information. If you kill everything in
+-- a room, the next time you visit that room without it being in the memory, it
+-- will erase the bits unless the room has a boss in it, in which case it will
+-- leave them alone and keep the boss killed.
 for i = 0x06ff, 0x07fe do
-	spec.sync[i] = {kind="bitOr", mask=0x3f} -- all but enemy kills? Play around with different masks maybe.
+	spec.sync[i] = {kind="bitOr"} -- including enemy kill data allows boss kills. Doesn't affect normal rooms.
 end
 
 return spec
