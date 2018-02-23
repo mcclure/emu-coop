@@ -33,7 +33,9 @@ function recordChanged(record, value, previousValue, receiving)
 
 	-- Value 
 	local maskedValue = value
-	local mask = 0xffffffff
+	local mask = 0xff
+	if record.size == 2 then mask = 0xffff
+	elseif record.size == 4 then mask = 0xffffffff
 	local inverseMask = 0
 
 	if record.mask then
@@ -55,6 +57,18 @@ function recordChanged(record, value, previousValue, receiving)
 		allow = maskedValue ~= previousValue               -- Did operated-on bits change?
 		if receiving then
 			value = OR(maskedValue, previousValue)
+		end
+	elseif record.kind == "delta" then
+		if not receiving then
+			allow = maskedValue ~= previousValue
+			value = AND(mask, value) - AND(mask, previousValue)
+		else
+			allow = value ~= 0
+			-- Notice: This assumes the emulator AND implementation converts negative values to 2s compliment elegantly
+			local maskedSum = previousValue + value
+			if record.deltaMin and maskedSum < record.deltaMin then maskedSum = record.deltaMin end
+			if record.deltaMax and maskedSum > record.deltaMax then maskedSum = record.deltaMax end
+			value = OR( AND(inverseMask, previousValue), AND(mask, maskedSum) )
 		end
 	else
 		allow = maskedValue ~= previousValue
