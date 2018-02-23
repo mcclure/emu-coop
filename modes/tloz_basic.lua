@@ -9,7 +9,7 @@
 
 return {
 	guid = "e7cc9d84-959f-4d72-84bb-99212a30f1bb",
-	format = "1.0",
+	format = "1.0.3",
 	name = "The Legend of Zelda (sync items only)",
 	match = {"stringtest", addr=0xffeb, value="ZELDA"},
 

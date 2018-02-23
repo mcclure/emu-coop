@@ -30,7 +30,7 @@ end
 
 return {
 	guid = "41c22c5f-7d2b-4e43-9610-e967033e492f",
-	format = "1.0",
+	format = "1.0.3",
 	name = "Super Metroid",
 	match = {"stringtest", addr=0xFFC0, value="Super Metroid"},
 
