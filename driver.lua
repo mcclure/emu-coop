@@ -36,6 +36,7 @@ function recordChanged(record, value, previousValue, receiving)
 	local mask = 0xff
 	if record.size == 2 then mask = 0xffff
 	elseif record.size == 4 then mask = 0xffffffff
+	end
 	local inverseMask = 0
 
 	if record.mask then
