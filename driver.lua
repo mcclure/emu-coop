@@ -125,7 +125,7 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 				if value ~= 0 then -- FIXME: This is adequate for all current specs but maybe it will not be in future?!
 					if driverDebug then print("Sending address " .. tostring(k) .. " at startup") end
 
-					self:sendTable({addr=k, value=value})
+					self:sendTable {addr=k, value=value}
 				end
 			end
 		end
@@ -153,7 +153,7 @@ function GameDriver:childTick()
 end
 
 function GameDriver:childWake()
-	self:sendTable({"hello", version=version.release, guid=self.spec.guid})
+	self:sendTable {"hello", version=version.release, guid=self.spec.guid}
 
 	for k,v in pairs(self.spec.sync) do
 		local syncTable = self.spec.sync -- Assume sync table is not replaced at runtime
@@ -200,7 +200,7 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 			-- FIXME: Should this cache EVER be cleared? What about when a new game starts?
 			record.cache = value
 
-			self:sendTable({addr=addr, value=sendValue})
+			self:sendTable {addr=addr, value=sendValue}
 		end
 	else
 		if driverDebug then print("Ignored memory write because the game is not running") end
@@ -208,10 +208,17 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 end
 
 function GameDriver:handleTable(t)
-	if t[1] == "hello" then
-		if t.guid ~= self.spec.guid then
-			self.pipe:abort("Partner has an incompatible .lua file for this game.")
-			print("Partner's game mode file has guid:\n" .. tostring(t.guid) .. "\nbut yours has:\n" .. tostring(self.spec.guid))
+	if t[1] then
+		if t[1] == "hello" then
+			if t.guid ~= self.spec.guid then
+				self.pipe:abort("Partner has an incompatible .lua file for this game.")
+				print("Partner's game mode file has guid:\n" .. tostring(t.guid) .. "\nbut yours has:\n" .. tostring(self.spec.guid))
+			end
+		elseif t[1] == "msg" then
+			if t[2] and t.message then
+				local f = t.message[t[2]]
+				f(t[3])
+			end
 		end
 		return
 	end
@@ -274,4 +281,8 @@ end
 
 function GameDriver:handleError(s, err)
 	print("FAILED TABLE LOAD " .. err)
+end
+
+function send(tag, payload) -- Global for mode files
+	mainDriver:sendTable {"msg", tag, payload}
 end
