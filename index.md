@@ -44,9 +44,15 @@ Some more about the games currently supported:
 
 * **Link to the Past**: Currently it syncs all collectable items, all pendants, all crystals, and whether the Dwarf has been rescued; and in the Randomizer it tracks whether the old man has been rescued. It does not track "quantities" (rupees, heart pieces, arrows or bombs or expansions of either), or "events" like whether you have beaten Aghanim or paid off Kiki. When it updates your shield or armor, the sprite will not update until the next Save+Quit even though you have it. The 1.0 Japan version of the game is currently required.
 
+	Co-op speedrun leaderboards are [here](https://www.speedrun.com/alttpce#Co-op).
+
 * **Legend of Zelda NES**: This comes in three modes. One syncs items only, one syncs items plus dungeon completion (maps compasses triforce), and one syncs what seems to be all the memory the author could get her hands on, including things like door status.
 
+	Co-op speedrun leaderboards are [here](https://www.speedrun.com/zelda1ce#Co-op).
+
 * **Super Metroid**: Currently it tracks all items, beams, expansions, whether Zebes is awake, and whether you have beaten the four main bosses. Items you collect might not appear in the top icon bar, and when it updates your beams and armor the sprite won't update even though you have it until you change rooms or pause. The Super Metroid mode is fairly primitive, so if this interests you, you should instead use [Multitroid](http://multitroid.com/), an emulator mod just for running Super Metroid coop.
+
+	Co-op speedrun leaderboards (using Multitroid) are [here](https://www.speedrun.com/super_metroid_category_extensions#Co-op).
 
 You can add your own game support to emu-coop. Instructions are in the MODDING file included with the software, or [here](MODDING.md).
 
