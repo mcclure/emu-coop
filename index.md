@@ -10,11 +10,11 @@ It currently works with Legend of Zelda: A Link to the Past; the [Link to the Pa
 
 In order to run emu-coop, you will need an emulator that can run Lua scripts, such as snes9x-rr or FCEUX. (BizHawk does not work but could in a later version). If you already have an emulator, you can just download:
 
-* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.0.2.zip) (Version 1.0.2)
+* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.1.zip) (Version 1.1)
 
 If you **don't** have one, here is a copy of snes9x-rr with the coop script bundled in:
 
-* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.0.2/snes9x-coop-1.0.2.zip) (Version 1.0.2)
+* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.1/snes9x-coop-1.1.zip) (Version 1.1)
 
 The above are for Windows. You may need to install the "x86" version of the [VS2015 C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
 
@@ -47,6 +47,8 @@ Some more about the games currently supported:
 * **Legend of Zelda NES**: This comes in three modes. One syncs items only, one syncs items plus dungeon completion (maps compasses triforce), and one syncs what seems to be all the memory the author could get her hands on, including things like door status.
 
 * **Super Metroid**: Currently it tracks all items, beams, expansions, whether Zebes is awake, and whether you have beaten the four main bosses. Items you collect might not appear in the top icon bar, and when it updates your beams and armor the sprite won't update even though you have it until you change rooms or pause. The Super Metroid mode is fairly primitive, so if this interests you, you should instead use [Multitroid](http://multitroid.com/), an emulator mod just for running Super Metroid coop.
+
+You can add your own game support to emu-coop. Instructions are in the MODDING file included with the software, or [here](MODDING.md).
 
 ## Authors
 
