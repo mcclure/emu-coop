@@ -56,7 +56,7 @@ There's one more thing, which is that you probably don't **always** want to sync
 
     [0x7EF34A] = {name="Lantern", kind="high"},
 
-The "high" kind will always take the higher value and ignore the lower one. Other "kinds" include "bitOp", which always takes the bitwise-OR of values (this is good for bit flags), or "delta", which is what you should use if changes should be "added" or "subtracted" (for example, if player A goes from 0 to 3 and player B goes from 0 to 4, the final value will be 7; if player A goes from 8 to 6 and player B goes from 8 to 12, the final value will be 10).
+The "high" kind will always take the higher value and ignore the lower one. Other "kinds" include "bitOr", which always takes the bitwise-OR of values (this is good for bit flags), or "delta", which is what you should use if changes should be "added" or "subtracted" (for example, if player A goes from 0 to 3 and player B goes from 0 to 4, the final value will be 7; if player A goes from 8 to 6 and player B goes from 8 to 12, the final value will be 10).
 
 Just setting these basic keys will let you do a lot of things. If you need to do something more complicated, see the full list of keys and values below.
 
