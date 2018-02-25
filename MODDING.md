@@ -96,6 +96,10 @@ And the following **optional** keys:
 
     This is a function that gets called once, on the first frame that the **running** condition is true. The function takes one argument, `forceSend`. This is `true` if the user checked the "restarting after a crash" box.
 
+* **tick** *type: function*
+
+    This is a function that gets called once per vertical blank.
+
 ## Sync table
 
 The sync table is a mapping of memory addresses to sync rules. Each sync rule is a table, and that table has the following keys (all optional):

@@ -166,6 +166,10 @@ function GameDriver:childTick()
 				self:handleTable(v)
 			end
 		end
+
+		if self.spec.tick then
+			self.spec.tick()
+		end
 	end
 end
 
