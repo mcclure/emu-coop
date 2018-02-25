@@ -1,7 +1,12 @@
 -- ACTUAL WORK HAPPENS HERE
 
-local bit = require("bit") -- for binary not
-local BNOT = bit.bnot
+if not BNOT then
+	local bit = require("bit") -- for binary not
+	local BNOT = bit.bnot
+end
+
+local cache = {}
+local cacheSize = {}
 
 function memoryRead(addr, size)
 	if not size or size == 1 then
@@ -16,6 +21,14 @@ function memoryRead(addr, size)
 end
 
 function memoryWrite(addr, value, size)
+	if cache[addr] then
+		cache[addr] = value
+		if not cacheSize[addr] then
+			cacheSize[addr] = size
+		elseif (size or 1) != (cacheSize[addr] or 1) then
+			error(string.format("Size argument to memoryWrite [%s] doesn't match previous size [%s] for address %x", size, cacheSize[addr], addr))
+		end
+	end
 	if not size or size == 1 then
 		memory.writebyte(addr, value)
 	elseif size == 2 then
@@ -28,6 +41,10 @@ function memoryWrite(addr, value, size)
 end
 
 function recordChanged(record, value, previousValue, receiving)
+	if record.kind == "trigger" then
+		return false -- Don't mess with masking or conds
+	end
+
 	local unalteredValue = value -- "value" might change below; here's its initial value
 	local allow = true
 
@@ -119,7 +136,7 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 
 		for k,v in pairs(self.spec.sync) do -- Enter all current values into cache so we don't send pointless 0 values later
 			local value = memoryRead(k, v.size)
-			if not v.cache then v.cache = value end
+			if not cache[k] then cache[k] = value end
 
 			if self.forceSend then -- Restoring after a crash send all values regardless of importance
 				if value ~= 0 then -- FIXME: This is adequate for all current specs but maybe it will not be in future?!
@@ -189,8 +206,12 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 		local value = memoryRead(addr, size)
 		local sendValue = value
 
-		if record.cache then
-			allow, sendValue = recordChanged(record, value, record.cache, false)
+		if record.writeTrigger then
+			record.writeTrigger(value, previousValue, false)
+		end
+
+		if cache[addr] then -- It should be impossible for this to be false
+			allow, sendValue = recordChanged(record, value, cache[addr], false)
 		end
 
 		if allow then
@@ -198,7 +219,7 @@ function GameDriver:caughtWrite(addr, arg2, record, size)
 			-- value gets set to 3, then 255, then 4, and "cond" requires value to be < 6.
 			-- If we wrote record.cache on allow false, it would get "stuck" at 255 and 4 would never send
 			-- FIXME: Should this cache EVER be cleared? What about when a new game starts?
-			record.cache = value
+			cache[addr] = value
 
 			self:sendTable {addr=addr, value=sendValue}
 		end
@@ -214,9 +235,9 @@ function GameDriver:handleTable(t)
 				self.pipe:abort("Partner has an incompatible .lua file for this game.")
 				print("Partner's game mode file has guid:\n" .. tostring(t.guid) .. "\nbut yours has:\n" .. tostring(self.spec.guid))
 			end
-		elseif t[1] == "msg" then
-			if t[2] and t.message then
-				local f = t.message[t[2]]
+		elseif t[1] == "custom" then
+			if t[2] and t.custom then
+				local f = t.custom[t[2]]
 				f(t[3])
 			end
 		end
@@ -235,11 +256,12 @@ function GameDriver:handleTable(t)
 
 			allow, value = recordChanged(record, value, previousValue, true)
 
-			if allow then
-				if record.receiveTrigger then -- Extra setup/cleanup on receive
-					record.receiveTrigger(value, previousValue)
-				end
+			-- Extra setup/cleanup on receive
+			if record.receiveTrigger and (allow or record.kind == "trigger") then
+				record.receiveTrigger(value, previousValue)
+			end
 
+			if allow then
 				local name = record.name
 				local names = nil
 
@@ -283,6 +305,9 @@ function GameDriver:handleError(s, err)
 	print("FAILED TABLE LOAD " .. err)
 end
 
-function send(tag, payload) -- Global for mode files
-	mainDriver:sendTable {"msg", tag, payload}
+function send(name, payload) -- Global for mode files
+	if not name then
+		error("Missing message name on send() call")
+	end
+	mainDriver:sendTable {"custom", name, payload}
 end
