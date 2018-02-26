@@ -72,6 +72,25 @@ spec.sync[0x066F] = {
 	end
 }
 
+ -- bomb count, but we need to adjust how many bombs you actually have after
+ -- syncing (max out bombs on increase, reduce bombs on decrease)
+spec.sync[0x067C] = {kind="delta", deltaMin=1, deltaMax=255,
+	receiveTrigger=function(value, previousValue)
+		if value > previousValue then
+			-- we got an increase in bombs, set bomb count to the same thing and print out the bomb upgrade count
+			memory.writebyte(0x0658, value)
+			message("Partner got a bomb upgrade of " .. pluralMessage(value - previousValue, "bomb"))
+		else
+			-- we got a decrease in bombs so clamp our count and print out that we lost a bomb
+			local oldBombCount = memory.readbyte(0x0658)
+			if oldBombCount > value then
+				memory.writebyte(0x0658, value)
+			end
+			message("Partner chose to get rid of " .. pluralMessage(previousValue - value, "bomb"))
+		end
+	end
+}
+
 -- ow map open/get data is between 0x067f and 0x6fe (top left to bottom right)
 -- each tile has 0x80 set if it requires an item to open and is opened,
 -- 0x10 if the thing inside is obtainable and obtained. Tiles can be either or both of
