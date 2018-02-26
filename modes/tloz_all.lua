@@ -9,6 +9,9 @@
 
 -- WARNING: May only work on first quest???
 
+local bit = require("bit")
+local math = require("math")
+
 local base_spec = require('modes.tloz_progress')
 
 local spec = {
@@ -25,7 +28,49 @@ for base_key, base_val in pairs(base_spec.sync) do
 end
 
 spec.sync[0x066E] = {kind="delta", deltaMin=0} --keys
-spec.sync[0x066F] = {kind="high", mask=0xf0} -- hearts: high nibble is heart containers-1, low nibble is number of filled hearts-1
+
+function pluralMessage(count, name)
+	if count == 1 then
+		return tostring(count) .. " " .. name
+	else
+		return tostring(count) .. " " .. name .. "s"
+	end
+end
+
+-- hearts: high nibble is heart containers-1, low nibble is number of filled hearts-1
+-- When we get a new container we need to add one to the number of hearts the other player gets
+-- When we lose a container we need to make sure the filled heart count isn't > containers count.
+spec.sync[0x066F] = {
+	kind=function(value, previousValue, receiving)
+		if receiving then
+			-- if we're receiving we care which way the value changed, and want to
+			-- act accordingly.
+			local previousContainer = bit.rshift(AND(previousValue, 0xf0), 4)
+			local newContainer = bit.rshift(AND(value, 0xf0), 4)
+			if newContainer > previousContainer then
+				-- bump up filled hearts by number of new containers
+				value = OR(
+					AND(value, 0xf0),
+					AND(previousValue, 0x0f) + newContainer - previousContainer
+				)
+				message("Partner gained " .. pluralMessage(newContainer - previousContainer, "Heart Container"))
+			else
+				-- clamp the number of filled containers to the number of
+				-- containers available
+				local currentlyFilled = AND(previousValue, 0x0f)
+				value = OR(
+					AND(value, 0xf0),
+					AND(math.min(currentlyFilled, newContainer), 0xf)
+				)
+				message("Partner lost " .. pluralMessage(previousContainer - newContainer, "Heart Container"))
+			end
+			return true, value
+		else
+			-- if we're sending, we just care if the container count changed.
+			return AND(value, 0xf0) ~= AND(previousValue, 0xf0), value
+		end
+	end
+}
 
 -- ow map open/get data is between 0x067f and 0x6fe (top left to bottom right)
 -- each tile has 0x80 set if it requires an item to open and is opened,
