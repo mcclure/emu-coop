@@ -17,7 +17,7 @@ local base_spec = require('modes.tloz_progress')
 local spec = {
 	guid = "af791fc5-eeb2-49dc-985c-2ecba72157d9",
 	format = "1.1",
-	name = "The Legend of Zelda (sync everything)",
+	name = "The Legend of Zelda (sync most of the things)",
 	match = {"stringtest", addr=0xffeb, value="ZELDA"},
 
 	sync = {},
