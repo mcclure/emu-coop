@@ -25,7 +25,7 @@ function memoryWrite(addr, value, size)
 		cache[addr] = value
 		if not cacheSize[addr] then
 			cacheSize[addr] = size
-		elseif (size or 1) != (cacheSize[addr] or 1) then
+		elseif (size or 1) ~= (cacheSize[addr] or 1) then
 			error(string.format("Size argument to memoryWrite [%s] doesn't match previous size [%s] for address %x", size, cacheSize[addr], addr))
 		end
 	end
@@ -240,8 +240,8 @@ function GameDriver:handleTable(t)
 				print("Partner's game mode file has guid:\n" .. tostring(t.guid) .. "\nbut yours has:\n" .. tostring(self.spec.guid))
 			end
 		elseif t[1] == "custom" then
-			if t[2] and t.custom then
-				local f = t.custom[t[2]]
+			if t[2] and self.spec.custom then
+				local f = self.spec.custom[t[2]]
 				f(t[3])
 			end
 		end
