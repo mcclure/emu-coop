@@ -4,7 +4,8 @@
 -- and put in a new GUID in the "guid" field.
 
 -- Author: Andi McClure
--- Data source: http://alttp.run/hacking/index.php?title=SRAM_Map , https://github.com/mmxbass/z3randomizer/blob/master
+-- Data source for basic Zelda 3 memory: http://alttp.run/hacking/index.php?title=SRAM_Map
+-- Data source for special randomizer memory: https://github.com/mmxbass/z3randomizer/blob/master
 -- Thanks to the Zelda randomizer team, especially Mike Trethewey, Zarby89 and Karkat
 -- This file is available under Creative Commons CC0 
 
@@ -23,7 +24,7 @@ end
 local mushroomByte = 0x7EF344
 
 return {
-	guid = "36525567-3df9-4aeb-b8ae-dd90e739c66d",
+	guid = "ca0e995e-8a1d-466b-8399-1fbe5f2d2a2a",
 	format = "1.1",
 	name = "Link to the Past Randomizer",
 	match = {"stringtest", addr=0xFFC0, value="VT"},
@@ -31,7 +32,7 @@ return {
 	running = {"test", addr = 0x7E0010, gte = 0x6, lte = 0x13},
 	sync = {
 		-- INVENTORY_SWAP
-		[0x7EF412] = {
+		[0x7EF38C] = {
 			nameBitmap={"Bird", "Flute", "Shovel", "unknown item", "Magic Powder", "Mushroom", "Magic Boomerang", "Boomerang"},
 			kind=function(value, previousValue)
 				local result = OR(value, previousValue)
@@ -52,7 +53,7 @@ return {
 		},
 
 		-- INVENTORY_SWAP_2
-		[0x7EF414] = {
+		[0x7EF38E] = {
 			nameBitmap={"unknown item", "unknown item", "unknown item", "unknown item", "unknown item", "unknown item", "Silver Arrows", "Bow"},
 			kind="bitOr"
 		},
