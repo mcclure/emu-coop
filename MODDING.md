@@ -179,7 +179,7 @@ The sync table is a mapping of memory addresses to sync rules. Each sync rule is
 
 * **writeTrigger** *type: function*
 
-    When a value is written to the address, this function is called. It has three arguments, **value**, **previousValue** and **forceSend**, which are the new value about to be written to memory; the value the memory had beforehand; and `true` if the trigger is being called because the user checked the "restarting after a crash" box.
+    When a value is written to the address, this function is called. It has three arguments, **value**, **previousValue** and **forceSend**, which are the new value about to be written to memory; the value the memory had beforehand; and `true` if the trigger is being called because the user checked the "restarting after a crash" box. Note this function gets called even if the value did not change.
 
 * **receiveTrigger** *type: function*
 
@@ -227,7 +227,7 @@ Anywhere a cond table can be passed in, a function can be passed instead. The fu
 This is an advanced feature for if you need to send information between partners outside of the basic memory syncing. It's a table of custom message "name"s to functions; when a custom message with name "name" is received the corresponding function gets called. So if player A has this in their mode file:
 
     custom = {
-        "hello" = function (payload)
+        hello = function (payload)
             message("Hello from " .. payload)
         end
     }

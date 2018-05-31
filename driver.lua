@@ -168,7 +168,6 @@ function GameDriver:childTick()
 				self:handleTable(v)
 			end
 		end
-
 		if self.spec.tick then
 			self.spec.tick()
 		end
@@ -242,9 +241,13 @@ function GameDriver:handleTable(t)
 				print("Partner's game mode file has guid:\n" .. tostring(t.guid) .. "\nbut yours has:\n" .. tostring(self.spec.guid))
 			end
 		elseif t[1] == "custom" then
-			if t[2] and t.custom then
-				local f = t.custom[t[2]]
-				f(t[3])
+			if t[2] then
+				local f = self.spec.custom and self.spec.custom[t[2]]
+				if f then
+					f(t[3])
+				else
+					print("Unrecognized custom message from partner: " .. t[2])
+				end
 			end
 		end
 		return
