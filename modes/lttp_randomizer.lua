@@ -94,7 +94,13 @@ return {
 		[0x7EF356] = {name="Flippers", kind="high"},
 		[0x7EF357] = {name="Pearl", kind="high"},
 		[0x7EF359] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="high",
-			cond={"test", gte = 0x1, lte = 0x4} -- Avoid 0xFF trap during dwarf quest
+			cond=function(value)
+				if value > 0x4 then return false end -- Don't sync swords above 4 because during dwarf quest the sword becomes 255
+				local openSeed = memoryRead(0x308032) > 0
+				if openSeed and value < 1 then return false end     -- It's only okay to sync the fighter sword on open seeds 
+				if not openSeed and value < 2 then return false end -- FIXME: It would probably be good to also sync the fighter sword on non-open seeds without "uncle assured" swords
+				return true
+			end
 		},
 		[0x7EF35A] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="high"},
 		[0x7EF35B] = {nameMap={"Blue Armor", "Red Armor"}, kind="high"},

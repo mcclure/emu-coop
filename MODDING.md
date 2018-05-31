@@ -206,7 +206,7 @@ The sync table is a mapping of memory addresses to sync rules. Each sync rule is
 
 ## Cond table
 
-This is used in a few places above when you need to describe a "condition". It can take one of two forms:
+This is used in a few places above when you need to describe a "condition". It can take one of three forms:
 
     {"stringtest", addr=0xFFC0, value="ZELDANODENSETSU"}
 
@@ -216,7 +216,11 @@ This will test true if the string given by "value" is found at the address "addr
 
 This will test true if the value at address "addr" is greater than or equal to "gte" AND less than or equal to "lte".
 
-Optionally for this version you can add a "size" key, which can be 1, 2 or 4. This is the byte size of the value at address "addr" (if you don't use a "size" key it will assume 1). The size key is ignored for sync rules.
+Optionally for this version you can add a "size" key, which can be 1, 2 or 4. This is the byte size of the value at address "addr" (if you don't use a "size" key it will assume 1). The addr and size keys are both ignored for sync rules.
+
+    (A function)
+
+Anywhere a cond table can be passed in, a function can be passed instead. The function will take two arguments, **value** (the tested value for sync rules, or nil otherwise) and **size** (the byte size of the tested value for sync rules, or nil otherwise).
 
 ## Custom message table
 

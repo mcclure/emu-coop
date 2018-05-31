@@ -101,7 +101,9 @@ end
 function performTest(record, valueOverride, sizeOverride)
 	if not record then return true end
 
-	if record[1] == "test" then
+	if type(record) == "function" then
+		return record(valueOverride, sizeOverride)
+	elseif record[1] == "test" then
 		local value = valueOverride or memoryRead(record.addr, sizeOverride or record.size)
 		return (not record.gte or value >= record.gte) and
 			   (not record.lte or value <= record.lte)
@@ -116,9 +118,9 @@ function performTest(record, valueOverride, sizeOverride)
 			end
 		end
 		return true
-	else
-		return false
 	end
+	
+	return false
 end
 
 class.GameDriver(Driver)
