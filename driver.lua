@@ -25,7 +25,7 @@ function memoryWrite(addr, value, size)
 		cache[addr] = value
 		if not cacheSize[addr] then
 			cacheSize[addr] = size
-		elseif (size or 1) != (cacheSize[addr] or 1) then
+		elseif (size or 1) ~= (cacheSize[addr] or 1) then
 			error(string.format("Size argument to memoryWrite [%s] doesn't match previous size [%s] for address %x", size, cacheSize[addr], addr))
 		end
 	end
