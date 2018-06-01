@@ -2,7 +2,7 @@
 
 if not BNOT then
 	local bit = require("bit") -- for binary not
-	local BNOT = bit.bnot
+	BNOT = bit.bnot
 end
 
 local cache = {}

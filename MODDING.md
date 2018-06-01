@@ -98,7 +98,7 @@ And the following **optional** keys:
 
 * **tick** *type: function*
 
-    This is a function that gets called once per vertical blank.
+    This is a function that gets called once per vertical blank (but only if **running** condition is true).
 
 ## Sync table
 
