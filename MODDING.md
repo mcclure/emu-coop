@@ -38,7 +38,7 @@ Yes, this part is really inconvenient. Sorry.
 
 The quick way to make a mode is to just make a copy of `lttp.lua` and change a few things.
 
-Set the "guid" key to a new GUID generated with [this website](https://www.guidgenerator.com/online-guid-generator.aspx). Set the "name" to whatever your new game/mode is. You'll see a "match" line; replace the letters `ZELDANODENSETSU` with the tag from your game's ROM header. (Every SNES game has string containing the name of the game at `0xFFC0` which contains the game's name; on the NES, this still works, but you'll need to change `0xFFC0` to `0xFFEB`). Remove the "running" line for now. (You can use "running" to set a condition so the game only syncs while you're playing and not during menus and stuff, but you might not need that for your game.)
+Set the "guid" key to a new GUID generated with [this website](https://www.guidgenerator.com/online-guid-generator.aspx). Set the "name" to whatever your new game/mode is. You'll see a "match" line; replace the letters `ZELDANODENSETSU` with the tag from your game's ROM header. (Every SNES game has a string containing the name of the game at `0xFFC0` which contains the game's name; on the NES, this still works, but you'll need to change `0xFFC0` to `0xFFEB`). Remove the "running" line for now. (You can use "running" to set a condition so the game only syncs while you're playing and not during menus and stuff, but you might not need that for your game.)
 
 Now you just need to set up the sync table. The sync table is a list of memory addresses to sync, and a rule for each one describing what to do when the sync happens. The simplest example of a rule would be a line that says
 
