@@ -72,7 +72,7 @@ The value returned by the mode file is a mode table. The mode table has the foll
 
 * **format** *type: string*
 
-    This is the version of the mode file format you are using. Use "1.1", which is the version described in this document.
+    This is the version of the mode file format you are using. Use "1.2", which is the version described in this document.
 
 * **name** *type: string*
 
