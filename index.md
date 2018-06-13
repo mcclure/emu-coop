@@ -4,21 +4,21 @@ This is an emulator hack that turns 1-player games into 2-player games by sharin
 
 ![A screenshot. The Link on the right is now holding a lantern.](lantern.png)
 
-It currently works with Legend of Zelda: A Link to the Past; the [Link to the Past Randomizer](http://vt.alttp.run/randomizer); Super Metroid; and Legend of Zelda for the NES (plus its randomizer). It works well for any game that has locks and keys and backtracking.
+It currently works with Legend of Zelda: A Link to the Past; the [Link to the Past Randomizer](http://vt.alttp.run/randomizer); Legend of Zelda for the NES (plus its randomizer); and Super Metroid and its randomizer (although for Super Metroid, you might want to check out [Multitroid](http://multitroid.com/) instead). Emu-coop works well for any game that has locks and keys and backtracking.
 
 ## Downloading
 
 In order to run emu-coop, you will need an emulator that can run Lua scripts, such as snes9x-rr or FCEUX. (BizHawk does not work but could in a later version). If you already have an emulator, you can just download:
 
-* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.1.zip) (Version 1.1)
+* [emu-coop](https://github.com/mcclure/emu-coop/archive/1.2.zip) (Version 1.2)
 
 If you **don't** have one, here is a copy of snes9x-rr with the coop script bundled in:
 
-* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.1/snes9x-coop-1.1.zip) (Version 1.1)
+* [snes9x-coop](https://github.com/mcclure/emu-coop/releases/download/1.2/snes9x-coop-1.2.zip) (Version 1.2)
 
 The above are for Windows. You may need to install the "x86" version of the [VS2015 C++ redistributable](https://www.microsoft.com/en-us/download/details.aspx?id=48145).
 
-If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. I will try to get a Mac version uploaded soon.
+If you are on Mac or Linux, you can get this working by dropping built copies of LuaSocket and IUPLua into the folder with the Lua files. (We have not yet figured out how to get IUPLua to work on Mac.)
 
 ## Running
 
@@ -73,7 +73,6 @@ I think there's a LOT you could do with this basic concept, and there's some cha
 Some ideas I think are cool:
 
 * Item erasure: If you pick up an item in LTTP or Super Metroid, it should disappear in the other person's game. This would prevent double-collection of missile expansion in Super Metroid, or make it easier to integrate rupee and heart collection in LTTP (instead of syncing rupee count exactly, you could sync collection of the 50/100/300 rupee items etc). 
-* Deltas: Right now, emu-coop syncs only numbers that only go up. Something that can go up and down, like rupee or arrow count, is hard to sync because there could be a "race" where one player sends a lower number at the same time the other sends a higher one. A good (and easy, I just didn't get to it) fix for this would be to send deltas where it sends just "I got 50 more rupees". This would mean an actual shared wallet in LTTP, and would fix a problem in Super Metroid where if both players collect a missile expansion at once it just gets lost.
 * Forced coop: The LTTP randomizer discord was excited about the idea of generating two matched randomizer ROMs where each player has half the items and you have to cooperate to win.
 * Cross-game coop?: Another suggestion I've heard, although this would require modding the coop scripts and possibly the games a *lot*, is coop between two different games. For example you could play LTTP and Super Metroid and have some of the items Link needs be located on Zebes, or run Zero Mission and Metroid Fusion at the same time and sync "analogous" items.
 * More than two players at a time!
