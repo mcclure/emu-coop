@@ -1,5 +1,9 @@
 # Change history
 
+* `1.2`:
+	* Updated the LTTP Randomizer mode to work with the most recent LTTP randomizer (synchronizing the flute and other objects had broken due to a change in memory addresses some months ago.)
+	* Improved "Sync Everything" mode for Zelda 1
+	* Major improvements to mode API, including a "tick" function (called every frame), the ability for mode files to send and receive entirely custom messages which the mode file handles internally, and the option for conds to be functions.
 * `1.1`:
 	* Added a MODDING.md file that describes the mode file format.
 	* Changes to core Lua script: Fixed a bug with using "mask" and kind high, which was somehow messing up heart containers in Zelda 1.
