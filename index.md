@@ -32,11 +32,9 @@ If you run into any problems, please feel free to [file an issue on the GitHub p
 
 ## Modding
 
-You can add support for additional games-- or new modes for games emu-coop already supports-- by creating a .lua file and putting it into emu-coop's "modes" directory. If you add a new mode file, you will also need to add its name to the file `modes/index.lua`.
+You can add support for additional games-- or new modes for games emu-coop already supports-- by creating a .lua file. The instructions to do this are in the MODDING file included with the software, or [here](MODDING.md).
 
 **WARNING: Lua files are PROGRAMS, like a .exe file. A Lua file you install could give you a virus or delete files from your computer. Do not install a mode file unless it came from someone you know and trust.** 
-
-Sorry, there is no documentation for creating a mode file yet.
 
 ## Game Support
 
@@ -53,8 +51,6 @@ Some more about the games currently supported:
 * **Super Metroid**: Currently it tracks all items, beams, expansions, whether Zebes is awake, and whether you have beaten the four main bosses. Items you collect might not appear in the top icon bar, and when it updates your beams and armor the sprite won't update even though you have it until you change rooms or pause. The Super Metroid mode is fairly primitive, so if this interests you, you should instead use [Multitroid](http://multitroid.com/), an emulator mod just for running Super Metroid coop.
 
 	Co-op speedrun leaderboards (using Multitroid) are [here](https://www.speedrun.com/super_metroid_category_extensions#Co-op).
-
-You can add your own game support to emu-coop. Instructions are in the MODDING file included with the software, or [here](MODDING.md).
 
 ## Authors
 
