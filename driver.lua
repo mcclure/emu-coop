@@ -176,15 +176,17 @@ end
 
 function GameDriver:registerSync(t)
 	if self.lastSync then
-		for k,size in pairs(self.lastSync) do
-			memory.registerwrite(k, size) -- Set nil
+		for k,v in pairs(self.lastSync) do
+			memory.registerwrite(k, v.size or 1) -- Set nil. Hopefully the emulator actually supports this
 		end
 	end
 
 	if t then
-		self.lastSync = {}
+		local syncTable = {} -- Copy of t. Will not be able to change until next registerSync call
+		self.lastSync = syncTable
 		for k,v in pairs(t) do
-			local syncTable = self.spec.sync -- Assume sync table is not replaced at runtime
+			syncTable[k] = v
+
 			local baseAddr = k - (k%2)       -- 16-bit aligned equivalent of address
 			local size = v.size or 1
 
@@ -200,7 +202,6 @@ function GameDriver:registerSync(t)
 			end
 
 			memory.registerwrite (k, size, callback)
-			self.lastSync[k] = size
 		end
 	end
 end
