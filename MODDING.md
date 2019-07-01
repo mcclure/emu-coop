@@ -102,7 +102,9 @@ And the following **optional** keys:
 
 ## Sync table
 
-The sync table is a mapping of memory addresses to sync rules. Each sync rule is a table, and that table has the following keys (all optional):
+The sync table is a mapping of memory addresses to sync rules. Each sync rule is a table, and that table has the following keys (all optional).
+
+The sync table is read once at startup. See also `resetSync` below.
 
 * **kind** is really important because it tells emu-coop "how to sync". It can be any of:
     * *nil*
@@ -255,6 +257,10 @@ The following functions are available to code written in a mode file.
 * `message(x)`
 
     `x` must be a string. Displays `x` at the bottom of the screen, in the same fashion as the "Partner got whatever" messages.
+
+* `resetSync(sync)`
+
+    Unregisters all previous sync rules and assigns the table `sync` to be the new sync table. Do not call this before game start (`startup()`).
 
 * `send(name, payload)`
 

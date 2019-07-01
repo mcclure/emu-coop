@@ -174,27 +174,43 @@ function GameDriver:childTick()
 	end
 end
 
+function GameDriver:registerSync(t)
+	if self.lastSync then
+		for k,size in pairs(self.lastSync) do
+			memory.registerwrite(k, size) -- Set nil
+		end
+	end
+
+	if t then
+		self.lastSync = {}
+		for k,v in pairs(t) do
+			local syncTable = self.spec.sync -- Assume sync table is not replaced at runtime
+			local baseAddr = k - (k%2)       -- 16-bit aligned equivalent of address
+			local size = v.size or 1
+
+			local function callback(a,b) -- I have no idea what "b" is but snes9x passes it
+				-- So, this is pretty awful: There is a bug in some versions of snes9x-rr where you if you have registered a registerwrite for an even and odd address,
+				-- SOMETIMES (not always) writing to the odd address will trigger the even address's callback instead. So when we get a callback we trigger the underlying
+				-- callback twice, once for each byte in the current word. This does mean caughtWrite() must tolerate spurious extra calls.
+				for offset=0,1 do
+					local checkAddr = baseAddr + offset
+					local record = syncTable[checkAddr]
+					if record then self:caughtWrite(checkAddr, b, record, size) end
+				end
+			end
+
+			memory.registerwrite (k, size, callback)
+			self.lastSync[k] = size
+		end
+	end
+end
+
 function GameDriver:childWake()
 	self:sendTable {"hello", version=version.release, guid=self.spec.guid}
 
-	for k,v in pairs(self.spec.sync) do
-		local syncTable = self.spec.sync -- Assume sync table is not replaced at runtime
-		local baseAddr = k - (k%2)       -- 16-bit aligned equivalent of address
-		local size = v.size or 1
+	self:registerSync(self.spec.sync)
 
-		local function callback(a,b) -- I have no idea what "b" is but snes9x passes it
-			-- So, this is pretty awful: There is a bug in some versions of snes9x-rr where you if you have registered a registerwrite for an even and odd address,
-			-- SOMETIMES (not always) writing to the odd address will trigger the even address's callback instead. So when we get a callback we trigger the underlying
-			-- callback twice, once for each byte in the current word. This does mean caughtWrite() must tolerate spurious extra calls.
-			for offset=0,1 do
-				local checkAddr = baseAddr + offset
-				local record = syncTable[checkAddr]
-				if record then self:caughtWrite(checkAddr, b, record, size) end
-			end
-		end
-
-		memory.registerwrite (k, size, callback)
-	end
+	resetSync = function(sync) self:registerSync(sync) end -- Set global
 end
 
 function GameDriver:isRunning()
