@@ -189,6 +189,7 @@ function GameDriver:childWake()
 			for offset=0,1 do
 				local checkAddr = baseAddr + offset
 				local record = syncTable[checkAddr]
+				--print(string.format("%x", a), string.format("%x", checkAddr), record)
 				if record then self:caughtWrite(checkAddr, b, record, size) end
 			end
 		end

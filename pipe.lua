@@ -41,7 +41,7 @@ function Pipe:send(s)
 
 	local res, err = self.server:send(s .. "\r\n")
 	if not res then
-		errorMessage("Connection died: " .. s)
+		errorMessage("Connection died: " .. err)
 		self:exit()
 		return false
 	end

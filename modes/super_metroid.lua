@@ -41,7 +41,7 @@ return {
 				memory.writeword(0x7E09C2, value) -- Refill health on any memory tank collection
 			end
 		},
-		[0x7E09C8] = {name="Missile Expansion", kind="high", size=2, receiveTrigger=makeMissileTrigger(0x7E09C6)},
+		[0x7E09C8] = {name="Missile Expansion", kind="high", size=2, receiveTrigger=makeMissileTrigger(0x7E09C6)}, --Add this part into the check, and swap out the address in makeMissileTrigger with the SRAM one if in Z3
 		[0x7E09CC] = {name="Super Missiles",    kind="high", size=2, receiveTrigger=makeMissileTrigger(0x7E09CA)}, 
 		[0x7E09D0] = {name="Power Bombs",       kind="high", size=2, receiveTrigger=makeMissileTrigger(0x7E09CE)}, 
 		[0x7E09D4] = {name="Reserve Tank",      kind="high", size=2, receiveTrigger=makeMissileTrigger(0x7E09C6)}, 
