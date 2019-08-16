@@ -277,7 +277,7 @@ end
 return {
 	guid = "f003df87-0c3b-4b3b-86c8-d0deef93e6ec",
 	format = "1.2",
-	name = "Z3M3",
+	name = "Z3M3OLD",
 	match = {"stringtest", addr=0xFFC0, value="SMALTTP"},  -- This needs to be changed to the name of the file later
 
 	--running = {"test", addr = 0x7E0010, gte = 0x6, lte = 0x13}, --Zelda
