@@ -16,6 +16,7 @@ What it does NOT do:
 -***(3)Boomerang/M.Boomerang and Flute/Shovel are not progressive, so you can acquire the Magic Boomerang before the normal one
 -Mother Brain and Ganon are not synced, both players must still beat both game's end bosses
 -Keys, Compasses, and Maps for dungeons are not shared
+-Old Man rescue, Purple Chest, and Dwarf Rescue are not synced
 
 ***Known Issues and their fixes (or planned fixes):
 (1) -Sometimes, bosses in Super Metroid will resurrect when switching between games.
@@ -30,13 +31,4 @@ What it does NOT do:
 (3) -Boomerang/M.Boomerang are initially synced, but for some reason after acquiring both you may not be able to switch on one game while being able to switch on the other
 	-Flute and Shovel have same issue as above
 	-Unfortunately, there is not currently a fix for this issue, but one is in the works
-
-Misc:
--Another version is planned to release that allows both players to use different seeds.  
-	-However, certain items would become unobtainable if they are in an 'event' location, since one player completing the event prevents the other player from doing so.
-	-For example:  P1's Old Man has S.Arrows, P2's Purple Chest has S.Arrows.  If P1 completes Purple Chest and P2 completes Old Man,
-	-As such, this version needs to remove the following events from the synced memory addresses:
-	-Old Man cave escort
-	-Dwarf rescue
-	-Purple Chest
 	
