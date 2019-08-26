@@ -17,6 +17,7 @@ local int ZSTORAGE = 0x228800
 local int MSTORAGE = 0x236F5E
 local previous = {}
 local roomqueuez = {}
+local roomqueuem = {}
 for z = 0x7EF340, 0x7EF3C9 do --zelda item range
 	previous[z] = 0
 end
