@@ -2,33 +2,35 @@ This version of emu-coop comes pre-built
 with the Zelda 3: A Link to the Past + Metroid 3: Super Metroid 
 (henceforth referred to as Z3M3) co-op randomizer.
 
+Contact txcrnr#9668 on Discord if you run into any issues or have feedback on the co-op script.
+
 What it does:
--Syncs upgrades to health, equipment, and weaponry for both games
--Syncs ammunition upgrades for Metroid (missiles, power bombs, etc) but NOT for Zelda (arrow and bomb expansions)
+-Syncs upgrades and expansions to maximum health, equipment, and weaponry for both games
+-Shares consumables (bombs, bottles, arrows) in Zelda
 -Automatically equips upgrades in Super Metroid (with the exception of certain beam upgrades)
--***(1)Syncs defeat of Super Metroid bosses and all world events that change as part of this (wrecked ship power)
+-Syncs defeat of Super Metroid bosses and all world events that change as part of this (wrecked ship power)
+-Syncs defeat of Zelda bosses and all world events that change as part of this (dungeon bosses, Aga1, Aga2)
 -Syncs collection of crystals and pendants in Zelda
+-Syncs roomstates (key/colored doors opened, opened chests)
 
 What it does NOT do:
--Does not sync defeat of Agahnim in Zelda
--***(2)Does not sync defeat of dungeon bosses (however, they do not need to be defeated by both players as the game only cares that the player has the crystal)
--Does not open chests or collect items on the other player's game (for example, both players can open the chest in Link's house and both recieve the item)
--***(3)Boomerang/M.Boomerang and Flute/Shovel are not progressive, so you can acquire the Magic Boomerang before the normal one
+-Current health is not shared in either game
+-Current ammo in Super Metroid is not shared
+-Boomerang/M.Boomerang and Flute/Shovel are not progressive, so you can acquire the Magic Boomerang before the normal one
 -Mother Brain and Ganon are not synced, both players must still beat both game's end bosses
--Keys, Compasses, and Maps for dungeons are not shared
--Old Man rescue, Purple Chest, and Dwarf Rescue are not synced
 
 ***Known Issues and their fixes (or planned fixes):
-(1) -Sometimes, bosses in Super Metroid will resurrect when switching between games.
-	-To fix this, use one of the included debug scripts for killing bosses from anywhere on the map.  Only use these in Super Metroid!
-(2) -Fighting a boss in Link to the Past that you already have the crystal for causes you to get trapped in the boss room once it is defeated.
-	-This only happens in certain boss rooms.  For example, Eastern Palace you can just walk out to fix it.
-	-However, in the other boss rooms, menus are locked which prevents the player from leaving using save&quit or the Magic Mirror.
-	-This is because the game locks menus while the crystal falls from the ceiling, but since you already have it, no crystal falls but menus are still locked.
-	-Currently, the only fix is to have the emulator reset the game which places you back in Super Metroid.
-	-This should work fine as the game saves progress through the synchronization system but is not ideal for races.
-	-Another fix is in the works that should prevent the menu from ever becoming locked, allowing players to save and quit even when the player is trapped in a boss room.
-(3) -Boomerang/M.Boomerang are initially synced, but for some reason after acquiring both you may not be able to switch on one game while being able to switch on the other
-	-Flute and Shovel have same issue as above
-	-Unfortunately, there is not currently a fix for this issue, but one is in the works
-	
+-Due to the fact that opposite-game roomstates can only be synced after the game has finished changing, the item in Lower Norfair
+	transition room (normally where the Screw Attack is) will not be synced if the player uses this room to enter Super Metroid
+	after having received the roomstate sync for this location for the first time while in Zelda.  Due to this, the item in the
+	room can be duplicated a single time.  A fix to make this item always be a non-progressive item (I.E. not gloves or swords)
+	is being tested.
+-Because active rooms work differently than saved roomstates, if a roomstate change is received while the player is in that room,
+	it will not sync until the room is reloaded.  To prevent using this to duplicate items, if the player enters a room currently
+	occupied by their partner, they will stop sending values to their partner, and any values received from their partner
+	will be queued up until they leave the room.  Additionally, a backup will be created upon entering the same room, and
+	loaded upon leaving.  Obtaining any keys will have them be removed immediately so that the player cannot use this feature
+	to go through a key door in a room containing a key and have their partner take the key again, which would duplicate said key.
+-The code still has debug info instead of the ideal "partner received x item" messages; this is because this build, while near
+	completion, is still in a beta phase.  If you run into any issues where the script crashes or items fail to sync in
+	some way, please save the latest few messages in the Lua GUI to send the debug info to txcrnr#9668 on Discord.

@@ -9,13 +9,15 @@
 -- This file is available under Creative Commons CC0 
 
 --Mod by Trevor Thompson
---Current Revision: 1.1
---7/10/19, 17:10 EST
+--Current Revision: 1.2
+--8/19/19
 
 --Note: 0x7EF300 to 0x7EF3FF in ALTTP WRAM will be at 0xA17B00 to 0xA17BFF while in SM. Likewise, 0x7E09A2 to 0x7E09E2 in SM WRAM will be at 0xA17900 to 0xA1793F while in ALTTP.
 local int ZSTORAGE = 0x228800
 local int MSTORAGE = 0x236F5E
 local previous = {}
+local roomqueuez = {}
+local roomqueuem = {}
 for z = 0x7EF340, 0x7EF3C9 do --zelda item range
 	previous[z] = 0
 end
@@ -85,7 +87,7 @@ local function zeldaLocalBitTrigger(targetAddr)
 			local newBitVal = OR(value, previous[targetAddr])
 			local sendPayload = targetAddr .. newBitVal
 			send("zsyncbit", sendPayload)
-			previous[targetAddr] = value
+			previous[targetAddr] = newBitVal
 		end
 	end
 end
@@ -101,7 +103,7 @@ local function zeldaForeignBitTrigger(targetAddr)
 			local newBitVal = OR(value, previous[targetAddr])
 			local sendPayload = targetAddr .. newBitVal
 			send("zsyncbit", sendPayload)
-			previous[targetAddr] = value
+			previous[targetAddr] = newBitVal
 		end
 	end
 end
@@ -168,7 +170,7 @@ local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure e
 				local newBitVal = OR(value, previous[targetAddr])
 				local sendPayload = targetAddr .. mask .. newBitVal
 				send("msync", sendPayload)
-				previous[targetAddr] = value
+				previous[targetAddr] = newBitVal
 			end
 		end
 	end
@@ -186,7 +188,7 @@ local function metroidBossBitTrigger(targetAddr)
 				local newBitVal = OR(value, previous[targetAddr])
 				local sendPayload = targetAddr .. newBitVal
 				send("msyncbit", sendPayload)
-				previous[targetAddr] = value
+				previous[targetAddr] = newBitVal
 			end
 		end
 	end
@@ -245,7 +247,7 @@ local function metroidForeignBitTrigger(targetAddr, mask) -- check bit to ensure
 				local newBitVal = OR(value, previous[targetAddr])
 				local sendPayload = targetAddr .. mask .. newBitVal
 				send("msync", sendPayload)
-				previous[targetAddr] = value
+				previous[targetAddr] = newBitVal
 			end
 		end
 	end
@@ -274,16 +276,85 @@ local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensur
 	end
 end
 
+------------------------------
+--------Zelda Menu Fix--------
+------------------------------
+local function zeldaMenuTrigger()
+	return function(value, previousValue, forceSend)
+		local currentGame = memoryRead(0xA173FE)
+		if currentGame == 0 then
+			memoryWrite(0x7E0FFC, 0)
+		end
+	end
+end
+------------------------------
+---------Room Syncing---------
+------------------------------
+
+local function roomSync()
+	return function(value, previousValue, forceSend)
+		if currentGame == 0 then
+			while roomqueuez.getn > 0 do 
+				memoryWrite(tonumber(string.sub(roomqueuez[roomqueuez.size], 1, 8), 16),tonumber(string.sub(roomqueuez[roomqueuez.size], 9), 10))
+				roomqueuez[roomqueuez.size] = nil
+			end	
+		else
+			while roomqueuem.size > 0 do 
+				memoryWrite(tonumber(string.sub(roomqueuem[roomqueuem.size], 1, 8), 16),tonumber(string.sub(roomqueuem[roomqueuem.size], 9), 10))
+				roomqueuem[roomqueum.size] = nil
+			end	
+		end
+	end
+end
+
+local function zeldaRoomTrigger(targetAddr)
+	return function(value, previousValue, forceSend)
+		local currentGame = memoryRead(0xA173FE)
+		if currentGame == 0 then
+			if previous[targetAddr] == nil then	
+				previous[targetAddr] = 0
+			end
+			if value ~= previous[targetAddr] then
+				sendPayload = targetAddr .. value
+				send("zsyncroom", sendPayload)
+				previous[targetAddr] = value
+			end
+		end
+	end
+end
+
+local function metroidRoomTrigger(targetAddr)
+	return function(value, previousValue, forceSend)
+		local currentGame = memoryRead(0xA173FE)
+		if currentGame == 0 then
+			if previous[targetAddr] == nil then	
+				previous[targetAddr] = 0
+			end
+			if value ~= previous[targetAddr] then
+				sendPayload = targetAddr .. value
+				send("msyncroom", sendPayload)
+				previous[targetAddr] = value
+			end
+		end
+	end
+end
 return {
 	guid = "f003df87-0c3b-4b3b-86c8-d0deef93e6ec",
 	format = "1.2",
-	name = "Z3M3OLD",
+	name = "Z3M3",
 	match = {"stringtest", addr=0xFFC0, value="SMALTTP"},  -- This needs to be changed to the name of the file later
 
 	--running = {"test", addr = 0x7E0010, gte = 0x6, lte = 0x13}, --Zelda
 	--running = {"test", addr = 0x7E0998, gte = 0x8, lte = 0x18}, -- Super Metroid
 	sync = {
-		
+		------------------------------
+		---------Room Syncing---------
+		------------------------------
+		--[0xA173FE] = {nameMap={"RoomState"}, kind="trigger", writeTrigger=roomSync()},
+		------------------------------
+		--------Zelda Menu Fix--------
+		------------------------------
+		[0x7E0FFC] = {nameMap={"Menu"}, kind="trigger", writeTrigger=zeldaMenuTrigger("0x7E0FFC")},
 		------------------------------
 		--Zelda Items while in Zelda--
 		------------------------------
@@ -441,6 +512,20 @@ return {
 					previousValue = 0
 				end
 				memoryWrite(addressHex, OR(value, previousValue))
+			end
+		end,
+		
+		zsyncroom = function(payload)
+			local currentGame = memoryRead(0xA173FE)
+			if currentGame == 255 then
+				roomqueuez[roomqueuez.size + 1] = payload
+			end
+		end,
+		
+		msyncroom = function(payload)
+			local currentGame = memoryRead(0xA173FE)
+			if currentGame == 0 then
+				roomqueuem[roomqueuem.size + 1] = payload
 			end
 		end,
 		
