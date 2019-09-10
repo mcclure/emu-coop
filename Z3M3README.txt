@@ -2,6 +2,10 @@ This version of emu-coop comes pre-built
 with the Zelda 3: A Link to the Past + Metroid 3: Super Metroid 
 (henceforth referred to as Z3M3) co-op randomizer.
 
+*****IMPORTANT NOTE!*****
+When using the Z3M3 co-op mode, make sure that you are in-game and NOT on the title screen for Super Metroid before connecting.
+If you ever end up at the Super Metroid title screen while connected, the data in Zelda can be corrupted.
+
 Contact txcrnr#9668 on Discord if you run into any issues or have feedback on the co-op script.
 
 What it does:
