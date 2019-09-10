@@ -6,6 +6,10 @@ Each game you want to use this with requires a "mode" file in the modes/ directo
 
 To run, run coop.lua. To run with additional debug messages (more verbose errors, and visibility for every message sent) run debug.lua instead.
 
+This version of emu-coop comes pre-built with the Zelda 3: A Link to the Past + Metroid 3: Super Metroid (henceforth referred to as Z3M3) co-op randomizer.  
+
+When using the Z3M3 co-op mode, make sure that you are in-game and NOT on the title screen for Super Metroid before connecting.
+
 ## Author / License
 
 These files were written by <<andi.m.mcclure@gmail.com>>. The "tloz_" modes (Zelda 1) were written by megmacAttack.
