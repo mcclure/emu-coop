@@ -6,6 +6,17 @@ with the Zelda 3: A Link to the Past + Metroid 3: Super Metroid
 When using the Z3M3 co-op mode, make sure that you are in-game and NOT on the title screen for Super Metroid before connecting.
 If you ever end up at the Super Metroid title screen while connected, the data in Zelda can be corrupted.
 
+To start:  
+1) Download the file named snex9x-coop from https://mcclure.github.io/emu-coop/
+2) Extract the files somewhere
+3) In extracted the snes9x-coop folder, replace the coop folder with the emu-coop folder that this readme is located inside.
+4) Once both players start their ROMs (using the same seed generated from https://samus.link/randomizer),
+	they should both load a save file so that they are standing atop Samus's ship, and then load the coop.lua file
+	using snes9x's "browse lua scripts" option.
+5) Select Z3M3 as the game being played.
+6) Connect to IRC using a unique username, and make sure you input your partner's name the same way they typed it.
+	
+
 Contact txcrnr#9668 on Discord if you run into any issues or have feedback on the co-op script.
 
 What it does:
