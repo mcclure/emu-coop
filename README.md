@@ -4,6 +4,8 @@ This directory contains some Lua scripts that, when loaded by a compliant emulat
 
 Each game you want to use this with requires a "mode" file in the modes/ directory. Currently included are modes for Link to the Past, the Link to the Past "Randomizer", Zelda 1 and Super Metroid. **WARNING: Modes are PROGRAMS, like a .exe file. Do not install a mode file unless it came from someone you know and trust.** 
 
+This version of emu-coop comes pre-built with the Zelda 3: A Link to the Past + Metroid 3: Super Metroid (henceforth referred to as Z3M3) co-op randomizer.
+
 To run, run coop.lua. To run with additional debug messages (more verbose errors, and visibility for every message sent) run debug.lua instead.
 
 ## Author / License
