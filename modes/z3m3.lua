@@ -317,7 +317,7 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 			table.remove(backup, 0)
 			for k, v in pairs(backup) do
 			if v[1] ~= nil then
-				memoryWrite(k,v[1])
+				memoryWrite(k,v[1],v[4])
 				table.remove(backup, k)
 			end
 			end	
@@ -326,10 +326,10 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 			for k, v in pairs(backup) do
 			if v[1] ~= nil then
 				if v[2] == "m" then
-					memoryWrite(k-MSTORAGE,v[1])
+					memoryWrite(k-MSTORAGE,v[1],v[4])
 					table.remove(backup, k)
 				elseif v[3] == 0 then
-					memoryWrite(k+ZSTORAGE,v[1])
+					memoryWrite(k+ZSTORAGE,v[1],v[4])
 					table.remove(backup, k)
 				else
 					queuezbit[k] = v[1]
@@ -344,7 +344,7 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 			if v[1] ~= nil then
 				if v[1] ~= nil and k ~= nil then
 					--message(k .. " was changed to " .. v[1])
-					memoryWrite(k,v[1])
+					memoryWrite(k,v[1],v[4])
 					table.remove(backup, k)
 				end
 			end
@@ -354,10 +354,10 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 			for k, v in pairs(backup) do
 			if v[1] ~= nil then
 				if v[2] == "z" then
-					memoryWrite(k-ZSTORAGE,v[1])
+					memoryWrite(k-ZSTORAGE,v[1],v[4])
 					table.remove(backup, k)
 				elseif v[3] == 0 then
-					memoryWrite(k+MSTORAGE,v[1])
+					memoryWrite(k+MSTORAGE,v[1],v[4])
 					table.remove(backup, k)
 				else
 					queuembit[k] = v[1]
@@ -373,77 +373,77 @@ local function createBackup(payload) --if third arg is 0, it exists in the oppos
 	if payload == "m" then
 		backup[0] = "m"
 		
-		backup[0x7EF38C+ZSTORAGE] = {memoryRead(0x7EF38C+ZSTORAGE),"z",0} --Swap Equip
-		backup[0x7EF38E +ZSTORAGE] = {memoryRead(0x7EF38E +ZSTORAGE),"z",0} --Swap Equip
-		backup[0x7EF3C7+ZSTORAGE] = {memoryRead(0x7EF3C7+ZSTORAGE),"z",0} --Swap Equip
-		backup[0x7EF36C+ZSTORAGE] = {memoryRead(0x7EF36C+ZSTORAGE),"z",0} --Heart Containers
-		backup[0x7EF36B+ZSTORAGE] = {memoryRead(0x7EF36B+ZSTORAGE),"z",0} --Heart Pieces
-		backup[0x7EF37B+ZSTORAGE] = {memoryRead(0x7EF37B+ZSTORAGE),"z",0} --Half Magic
-		backup[0x7EF379+ZSTORAGE] = {memoryRead(0x7EF379+ZSTORAGE),"z",0} --Abilities
-		backup[0x7EF360+ZSTORAGE] = {memoryRead(0x7EF360+ZSTORAGE),"z",0} --Rupee 1
-		backup[0x7EF361+ZSTORAGE] = {memoryRead(0x7EF361+ZSTORAGE),"z",0} --Rupee 2
-		backup[0x7E09C4] = {memoryRead(0x7E09C4, 2),"m",0} --E-Tank
-		backup[0x7E09C8] = {memoryRead(0x7E09C8, 2),"m",0} --Missile
-		backup[0x7E09CC] = {memoryRead(0x7E09CC, 2),"m",0} --Supers
-		backup[0x7E09D0] = {memoryRead(0x7E09D0, 2),"m",0} --PBs
-		backup[0x7E09D4] = {memoryRead(0x7E09D4, 2),"m",0} --Reserves
-		backup[0x7E09A4] = {memoryRead(0x7E09A4),"m",0} --Suit
-		backup[0x7E09A2] = {memoryRead(0x7E09A2),"m",0} --Equip Suit
-		backup[0x7E09A5] = {memoryRead(0x7E09A5),"m",0} --Boots
-		backup[0x7E09A3] = {memoryRead(0x7E09A3),"m",0} --Equip Boots
-		backup[0x7E09A8] = {memoryRead(0x7E09A8),"m",0} --Beam 1
-		backup[0x7E09A6] = {memoryRead(0x7E09A6),"m",0} --Equip Beam 1
-		backup[0x7E09A9] = {memoryRead(0x7E09A9),"m",0} --Beam Charge
-		backup[0x7E09A7] = {memoryRead(0x7E09A7),"m",0} --Equip Beam Charge
+		backup[0x7EF38C+ZSTORAGE] = {memoryRead(0x7EF38C+ZSTORAGE),"z",0,1} --Swap Equip
+		backup[0x7EF38E +ZSTORAGE] = {memoryRead(0x7EF38E +ZSTORAGE),"z",0,1} --Swap Equip
+		backup[0x7EF3C7+ZSTORAGE] = {memoryRead(0x7EF3C7+ZSTORAGE),"z",0,1} --Swap Equip
+		backup[0x7EF36C+ZSTORAGE] = {memoryRead(0x7EF36C+ZSTORAGE),"z",0,1} --Heart Containers
+		backup[0x7EF36B+ZSTORAGE] = {memoryRead(0x7EF36B+ZSTORAGE),"z",0,1} --Heart Pieces
+		backup[0x7EF37B+ZSTORAGE] = {memoryRead(0x7EF37B+ZSTORAGE),"z",0,1} --Half Magic
+		backup[0x7EF379+ZSTORAGE] = {memoryRead(0x7EF379+ZSTORAGE),"z",0,1} --Abilities
+		backup[0x7EF360+ZSTORAGE] = {memoryRead(0x7EF360+ZSTORAGE),"z",0,1} --Rupee 1
+		backup[0x7EF361+ZSTORAGE] = {memoryRead(0x7EF361+ZSTORAGE),"z",0,1} --Rupee 2
+		backup[0x7E09C4] = {memoryRead(0x7E09C4, 2),"m",0,2} --E-Tank
+		backup[0x7E09C8] = {memoryRead(0x7E09C8, 2),"m",0,2} --Missile
+		backup[0x7E09CC] = {memoryRead(0x7E09CC, 2),"m",0,2} --Supers
+		backup[0x7E09D0] = {memoryRead(0x7E09D0, 2),"m",0,2} --PBs
+		backup[0x7E09D4] = {memoryRead(0x7E09D4, 2),"m",0,2} --Reserves
+		backup[0x7E09A4] = {memoryRead(0x7E09A4),"m",0,2} --Suit
+		backup[0x7E09A2] = {memoryRead(0x7E09A2),"m",0,2} --Equip Suit
+		backup[0x7E09A5] = {memoryRead(0x7E09A5),"m",0,2} --Boots
+		backup[0x7E09A3] = {memoryRead(0x7E09A3),"m",0,2} --Equip Boots
+		backup[0x7E09A8] = {memoryRead(0x7E09A8),"m",0,1} --Beam 1
+		backup[0x7E09A6] = {memoryRead(0x7E09A6),"m",0,1} --Equip Beam 1
+		backup[0x7E09A9] = {memoryRead(0x7E09A9),"m",0,1} --Beam Charge
+		backup[0x7E09A7] = {memoryRead(0x7E09A7),"m",0,1} --Equip Beam Charge
 		for a = 0x7ED820, 0x7ED8EF do --Metroid Rooms
-			backup[a] = {memoryRead(a),"m",1}
+			backup[a] = {memoryRead(a),"m",1,1}
 		end
 		for a = 0x7EF340+ZSTORAGE,0x7EF35F+ZSTORAGE  do --Zelda Items
-			backup[a] = {memoryRead(a),"z",0}
+			backup[a] = {memoryRead(a),"z",0,1}
 		end
 		--for a = ,  do
 		--	backup[a] = memoryRead(a)
 		--end
 	elseif payload == "z" then
 		backup[0] = "z"
-		backup[0x7EF374] = {memoryRead(0x7EF374),"z",1} --Pendant
-		backup[0x7EF37A] = {memoryRead(0x7EF37A),"z",1} --Crystal
-		backup[0x7EF38C] = {memoryRead(0x7EF38C),"z",0} --Swap Equip
-		backup[0x7EF38E] = {memoryRead(0x7EF38E),"z",0} --Swap Equip
-		backup[0x7EF3C7] = {memoryRead(0x7EF3C7),"z",0} --Swap Equip
-		backup[0x7EF36C] = {memoryRead(0x7EF36C),"z",0} --Heart Containers
-		backup[0x7EF36B] = {memoryRead(0x7EF36B),"z",0} --Heart Pieces
-		backup[0x7EF37B] = {memoryRead(0x7EF37B),"z",0} --Half Magic
-		backup[0x7EF379] = {memoryRead(0x7EF379),"z",0} --Abilities
-		backup[0x7EF360] = {memoryRead(0x7EF360),"z",0} --Rupee 1
-		backup[0x7EF361] = {memoryRead(0x7EF361),"z",0} --Rupee 2
-		backup[0x7E09C4+MSTORAGE] = {memoryRead(0x7E09C4+MSTORAGE, 2),"m",0} --E-Tank
-		backup[0x7E09C8+MSTORAGE] = {memoryRead(0x7E09C8+MSTORAGE, 2),"m",0} --Missile
-		backup[0x7E09CC+MSTORAGE] = {memoryRead(0x7E09CC+MSTORAGE, 2),"m",0} --Supers
-		backup[0x7E09D0+MSTORAGE] = {memoryRead(0x7E09D0+MSTORAGE, 2),"m",0} --PBs
-		backup[0x7E09D4+MSTORAGE] = {memoryRead(0x7E09D4+MSTORAGE, 2),"m",0} --Reserves
-		backup[0x7E09A4+MSTORAGE] = {memoryRead(0x7E09A4+MSTORAGE),"m",0} --Suit
-		backup[0x7E09A2+MSTORAGE] = {memoryRead(0x7E09A2+MSTORAGE),"m",0} --Equip Suit
-		backup[0x7E09A5+MSTORAGE] = {memoryRead(0x7E09A5+MSTORAGE),"m",0} --Boots
-		backup[0x7E09A3 +MSTORAGE] = {memoryRead(0x7E09A3 +MSTORAGE),"m",0} --Equip Boots
-		backup[0x7E09A8+MSTORAGE] = {memoryRead(0x7E09A8+MSTORAGE),"m",0} --Beam 1
-		backup[0x7E09A6+MSTORAGE] = {memoryRead(0x7E09A6+MSTORAGE),"m",0} --Equip Beam 1
-		backup[0x7E09A9+MSTORAGE] = {memoryRead(0x7E09A9+MSTORAGE),"m",0} --Beam Charge
-		backup[0x7E09A7+MSTORAGE] = {memoryRead(0x7E09A7+MSTORAGE),"m",0} --Equip Beam Charge
+		backup[0x7EF374] = {memoryRead(0x7EF374),"z",1,1} --Pendant
+		backup[0x7EF37A] = {memoryRead(0x7EF37A),"z",1,1} --Crystal
+		backup[0x7EF38C] = {memoryRead(0x7EF38C),"z",0,1} --Swap Equip
+		backup[0x7EF38E] = {memoryRead(0x7EF38E),"z",0,1} --Swap Equip
+		backup[0x7EF3C7] = {memoryRead(0x7EF3C7),"z",0,1} --Swap Equip
+		backup[0x7EF36C] = {memoryRead(0x7EF36C),"z",0,1} --Heart Containers
+		backup[0x7EF36B] = {memoryRead(0x7EF36B),"z",0,1} --Heart Pieces
+		backup[0x7EF37B] = {memoryRead(0x7EF37B),"z",0,1} --Half Magic
+		backup[0x7EF379] = {memoryRead(0x7EF379),"z",0,1} --Abilities
+		backup[0x7EF360] = {memoryRead(0x7EF360),"z",0,1} --Rupee 1
+		backup[0x7EF361] = {memoryRead(0x7EF361),"z",0,1} --Rupee 2
+		backup[0x7E09C4+MSTORAGE] = {memoryRead(0x7E09C4+MSTORAGE, 2),"m",0,2} --E-Tank
+		backup[0x7E09C8+MSTORAGE] = {memoryRead(0x7E09C8+MSTORAGE, 2),"m",0,2} --Missile
+		backup[0x7E09CC+MSTORAGE] = {memoryRead(0x7E09CC+MSTORAGE, 2),"m",0,2} --Supers
+		backup[0x7E09D0+MSTORAGE] = {memoryRead(0x7E09D0+MSTORAGE, 2),"m",0,2} --PBs
+		backup[0x7E09D4+MSTORAGE] = {memoryRead(0x7E09D4+MSTORAGE, 2),"m",0,2} --Reserves
+		backup[0x7E09A4+MSTORAGE] = {memoryRead(0x7E09A4+MSTORAGE),"m",0,2} --Suit
+		backup[0x7E09A2+MSTORAGE] = {memoryRead(0x7E09A2+MSTORAGE),"m",0,2} --Equip Suit
+		backup[0x7E09A5+MSTORAGE] = {memoryRead(0x7E09A5+MSTORAGE),"m",0,2} --Boots
+		backup[0x7E09A3 +MSTORAGE] = {memoryRead(0x7E09A3 +MSTORAGE),"m",0,2} --Equip Boots
+		backup[0x7E09A8+MSTORAGE] = {memoryRead(0x7E09A8+MSTORAGE),"m",0,1} --Beam 1
+		backup[0x7E09A6+MSTORAGE] = {memoryRead(0x7E09A6+MSTORAGE),"m",0,1} --Equip Beam 1
+		backup[0x7E09A9+MSTORAGE] = {memoryRead(0x7E09A9+MSTORAGE),"m",0,1} --Beam Charge
+		backup[0x7E09A7+MSTORAGE] = {memoryRead(0x7E09A7+MSTORAGE),"m",0,1} --Equip Beam Charge
 		for a = 0x7EF000,0x7EF24F  do --Zelda Rooms 1
-			backup[a] = {memoryRead(a),"z",1}
+			backup[a] = {memoryRead(a),"z",1,1}
 		end
 		for a = 0x7EF280,0x7EF2FF  do --Zelda Rooms 2
-			backup[a] = {memoryRead(a),"z",1}
+			backup[a] = {memoryRead(a),"z",1,1}
 		end
 		for a = 0x7EF37C,0x7EF389  do --Zelda Keys
-			backup[a] = {memoryRead(a),"z",1}
+			backup[a] = {memoryRead(a),"z",1,1}
 		end
 		for a = 0x7EF340,0x7EF35F  do --Zelda Items
-			backup[a] = {memoryRead(a),"z",0}
+			backup[a] = {memoryRead(a),"z",0,1}
 		end
 		for a = 0x7EF364,0x7EF367  do --Zelda Big keys
-			backup[a] = {memoryRead(a),"z",1}
+			backup[a] = {memoryRead(a),"z",1,1}
 		end
 	end
 end
@@ -755,12 +755,12 @@ return {
 		[0x7EF374] = {name="a Pendant", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF374")},
 		[0x7EF37A] = {name="a Crystal", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37A")},
 		[0x7EF37B] = {name="Half Magic", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF37B")},
-		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF36B")}, --Heart Pieces
+		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF36B")}, --Heart Pieces
 		[0x7EF36C] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF36C")},
-		[0x7EF360] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF360","either")}, -- Rupee byte 1
-		[0x7EF361] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF361","either")}, -- Rupee byte 2
-		[0x7EF343] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF343","either")}, -- Bombs
-		[0x7EF377] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF377","either")}, -- Arrows
+		[0x7EF360] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF360","either")}, -- Rupee byte 1
+		[0x7EF361] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF361","either")}, -- Rupee byte 2
+		[0x7EF343] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF343","either")}, -- Bombs
+		[0x7EF377] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF377","either")}, -- Arrows
 		---
 		[0x7EF364] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF364","bitOr")}, --Big Keys, Compasses
 		[0x7EF365] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF365","bitOr")}, --Big Keys, Compasses
@@ -812,12 +812,12 @@ return {
 		[0x7EF35F+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35F")},
 		[0x7EF379+ZSTORAGE] = {kind="bitOr", kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF379")}, --Abilities
 		[0x7EF37B+ZSTORAGE] = {name="Half Magic", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF37B")},
-		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF36B")}, --Heart Pieces
+		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF36B")}, --Heart Pieces
 		[0x7EF36C+ZSTORAGE] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF36C")},
-		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF360","either")}, -- Rupee byte 1
-		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF361","either")}, -- Rupee byte 2
-		[0x7EF343+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF343","either")}, -- Bombs
-		[0x7EF377+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF377","either")}, -- Arrows
+		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF360","either")}, -- Rupee byte 1
+		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF361","either")}, -- Rupee byte 2
+		[0x7EF343+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF343","either")}, -- Bombs
+		[0x7EF377+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF377","either")}, -- Arrows
 		[0x7EF38E +ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF38E","bitOr")}, --Extra swap equip
 		[0x7EF3C7+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C7","bitOr")}, --Extra swap equip
 		
@@ -1852,7 +1852,7 @@ return {
 			if currentGame == 0 then
 				if noSend == true then
 					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
@@ -1873,7 +1873,7 @@ return {
 			if currentGame == 0 then
 				if noSend == true then
 					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
@@ -1897,7 +1897,7 @@ return {
 			if currentGame == 0 then
 				if noSend == true then
 					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
@@ -1956,7 +1956,7 @@ return {
 			--message(string.sub(payload, 13))
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					backup[address-2] = {value, backup[address-2][2], backup[address-2][3]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
@@ -1988,7 +1988,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 255 then
 				if noSend == true then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
@@ -2009,7 +2009,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 255 then
 				if noSend == true then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
@@ -2032,7 +2032,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 255 then
 				if noSend == true then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
@@ -2057,7 +2057,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
 				end
@@ -2086,7 +2086,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
 				end
@@ -2106,7 +2106,7 @@ return {
 			--message("recieved value " .. value .. "for beam equip")
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
 				end
@@ -2157,7 +2157,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
 				end
@@ -2190,7 +2190,7 @@ return {
 			local newVal = tonumber(value, 10)
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
 				end
@@ -2220,7 +2220,7 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true then
 				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3]}
+					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
 					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
 				end
