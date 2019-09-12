@@ -652,7 +652,7 @@ local function roomSwapZeldaO(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if state ~= 7 and state ~= 0 state ~= 23 then
+		if state ~= 7 and state ~= 0 and state ~= 23 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
@@ -680,7 +680,7 @@ local function roomSwapZeldaD(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if state ~= 9 and state ~= 0 state ~= 23 then
+		if state ~= 9 and state ~= 0 and state ~= 23 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
 				noSend = true
 				message("Same Room as Partner")
