@@ -316,12 +316,15 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 		if backup[0] == "m" then
 			table.remove(backup, 0)
 			for k, v in pairs(backup) do
+			if v[1] ~= nil then
 				memoryWrite(k,v[1])
 				table.remove(backup, k)
+			end
 			end	
 		else
 			table.remove(backup, 0)
 			for k, v in pairs(backup) do
+			if v[1] ~= nil then
 				if v[2] == "m" then
 					memoryWrite(k-MSTORAGE,v[1])
 					table.remove(backup, k)
@@ -331,21 +334,25 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 				else
 					queuezbit[k] = v[1]
 				end
+			end
 			end	
 		end
 	elseif payload == "z" then
 		if backup[0] == "z" then
 			table.remove(backup, 0)
 			for k, v in pairs(backup) do
+			if v[1] ~= nil then
 				if v[1] ~= nil and k ~= nil then
 					--message(k .. " was changed to " .. v[1])
 					memoryWrite(k,v[1])
 					table.remove(backup, k)
 				end
+			end
 			end	
 		else
 			table.remove(backup, 0)
 			for k, v in pairs(backup) do
+			if v[1] ~= nil then
 				if v[2] == "z" then
 					memoryWrite(k-ZSTORAGE,v[1])
 					table.remove(backup, k)
@@ -356,6 +363,7 @@ local function loadBackup(payload) --BACKUP LOADS TOO EARLY
 					queuembit[k] = v[1]
 				end
 			end	
+			end
 		end
 	end
 end
@@ -643,7 +651,8 @@ end
 local function roomSwapZeldaO(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if memoryRead(0x7E0010) ~= 7 then
+		local state = memoryRead(0x7E0010)
+		if state ~= 7 and state ~= 0 state ~= 23 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
@@ -670,7 +679,8 @@ end
 local function roomSwapZeldaD(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if memoryRead(0x7E0010) ~= 9 then
+		local state = memoryRead(0x7E0010)
+		if state ~= 9 and state ~= 0 state ~= 23 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
 				noSend = true
 				message("Same Room as Partner")
