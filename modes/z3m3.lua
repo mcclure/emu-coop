@@ -380,21 +380,11 @@ local function createBackup(payload) --if third arg is 0, it exists in the oppos
 		backup[0x7EF36B+ZSTORAGE] = {memoryRead(0x7EF36B+ZSTORAGE),"z",0,1} --Heart Pieces
 		backup[0x7EF37B+ZSTORAGE] = {memoryRead(0x7EF37B+ZSTORAGE),"z",0,1} --Half Magic
 		backup[0x7EF379+ZSTORAGE] = {memoryRead(0x7EF379+ZSTORAGE),"z",0,1} --Abilities
-		backup[0x7EF360+ZSTORAGE] = {memoryRead(0x7EF360+ZSTORAGE),"z",0,1} --Rupee 1
-		backup[0x7EF361+ZSTORAGE] = {memoryRead(0x7EF361+ZSTORAGE),"z",0,1} --Rupee 2
 		backup[0x7E09C4] = {memoryRead(0x7E09C4, 2),"m",0,2} --E-Tank
 		backup[0x7E09C8] = {memoryRead(0x7E09C8, 2),"m",0,2} --Missile
 		backup[0x7E09CC] = {memoryRead(0x7E09CC, 2),"m",0,2} --Supers
 		backup[0x7E09D0] = {memoryRead(0x7E09D0, 2),"m",0,2} --PBs
 		backup[0x7E09D4] = {memoryRead(0x7E09D4, 2),"m",0,2} --Reserves
-		backup[0x7E09A4] = {memoryRead(0x7E09A4),"m",0,2} --Suit
-		backup[0x7E09A2] = {memoryRead(0x7E09A2),"m",0,2} --Equip Suit
-		backup[0x7E09A5] = {memoryRead(0x7E09A5),"m",0,2} --Boots
-		backup[0x7E09A3] = {memoryRead(0x7E09A3),"m",0,2} --Equip Boots
-		backup[0x7E09A8] = {memoryRead(0x7E09A8),"m",0,1} --Beam 1
-		backup[0x7E09A6] = {memoryRead(0x7E09A6),"m",0,1} --Equip Beam 1
-		backup[0x7E09A9] = {memoryRead(0x7E09A9),"m",0,1} --Beam Charge
-		backup[0x7E09A7] = {memoryRead(0x7E09A7),"m",0,1} --Equip Beam Charge
 		for a = 0x7ED820, 0x7ED8EF do --Metroid Rooms
 			backup[a] = {memoryRead(a),"m",1,1}
 		end
@@ -415,21 +405,11 @@ local function createBackup(payload) --if third arg is 0, it exists in the oppos
 		backup[0x7EF36B] = {memoryRead(0x7EF36B),"z",0,1} --Heart Pieces
 		backup[0x7EF37B] = {memoryRead(0x7EF37B),"z",0,1} --Half Magic
 		backup[0x7EF379] = {memoryRead(0x7EF379),"z",0,1} --Abilities
-		backup[0x7EF360] = {memoryRead(0x7EF360),"z",0,1} --Rupee 1
-		backup[0x7EF361] = {memoryRead(0x7EF361),"z",0,1} --Rupee 2
 		backup[0x7E09C4+MSTORAGE] = {memoryRead(0x7E09C4+MSTORAGE, 2),"m",0,2} --E-Tank
 		backup[0x7E09C8+MSTORAGE] = {memoryRead(0x7E09C8+MSTORAGE, 2),"m",0,2} --Missile
 		backup[0x7E09CC+MSTORAGE] = {memoryRead(0x7E09CC+MSTORAGE, 2),"m",0,2} --Supers
 		backup[0x7E09D0+MSTORAGE] = {memoryRead(0x7E09D0+MSTORAGE, 2),"m",0,2} --PBs
 		backup[0x7E09D4+MSTORAGE] = {memoryRead(0x7E09D4+MSTORAGE, 2),"m",0,2} --Reserves
-		backup[0x7E09A4+MSTORAGE] = {memoryRead(0x7E09A4+MSTORAGE),"m",0,2} --Suit
-		backup[0x7E09A2+MSTORAGE] = {memoryRead(0x7E09A2+MSTORAGE),"m",0,2} --Equip Suit
-		backup[0x7E09A5+MSTORAGE] = {memoryRead(0x7E09A5+MSTORAGE),"m",0,2} --Boots
-		backup[0x7E09A3 +MSTORAGE] = {memoryRead(0x7E09A3 +MSTORAGE),"m",0,2} --Equip Boots
-		backup[0x7E09A8+MSTORAGE] = {memoryRead(0x7E09A8+MSTORAGE),"m",0,1} --Beam 1
-		backup[0x7E09A6+MSTORAGE] = {memoryRead(0x7E09A6+MSTORAGE),"m",0,1} --Equip Beam 1
-		backup[0x7E09A9+MSTORAGE] = {memoryRead(0x7E09A9+MSTORAGE),"m",0,1} --Beam Charge
-		backup[0x7E09A7+MSTORAGE] = {memoryRead(0x7E09A7+MSTORAGE),"m",0,1} --Equip Beam Charge
 		for a = 0x7EF000,0x7EF24F  do --Zelda Rooms 1
 			backup[a] = {memoryRead(a),"z",1,1}
 		end
@@ -1828,11 +1808,11 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9), 10)
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 0 then
-					backup[address] = {value, "z",0}
+					backup[address] = {value, "z",0.1}
 				else 
-					backup[address+ZSTORAGE] = {value, "z",0}
+					backup[address+ZSTORAGE] = {value, "z",0,1}
 				end
 			else
 				if currentGame == 0 then
@@ -1851,7 +1831,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
-				if noSend == true then
+				if noSend == true and backup[address] ~= nil then
 					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
@@ -1872,7 +1852,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
-				if noSend == true then
+				if noSend == true and backup[address] ~= nil then
 					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
@@ -1896,7 +1876,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
-				if noSend == true then
+				if noSend == true and backup[address] ~= nil then
 					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
@@ -1922,11 +1902,11 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9), 10)
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 0 then
-					backup[address] = {value, "z",0}
+					backup[address] = {value, "z",0,1}
 				else 
-					backup[address+ZSTORAGE] = {value, "z",0}
+					backup[address+ZSTORAGE] = {value, "z",0,1}
 				end
 			else
 				if currentGame == 0 then
@@ -1955,7 +1935,7 @@ return {
 			--message(string.sub(payload, 1, 8))
 			--message(string.sub(payload, 9, 12))
 			--message(string.sub(payload, 13))
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					backup[address-2] = {value, backup[address-2][2], backup[address-2][3]}
@@ -1988,7 +1968,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 255 then
-				if noSend == true then
+				if noSend == true and backup[address] ~= nil then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
@@ -2009,7 +1989,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 255 then
-				if noSend == true then
+				if noSend == true and backup[address] ~= nil then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
@@ -2032,7 +2012,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 255 then
-				if noSend == true then
+				if noSend == true and backup[address] ~= nil then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
@@ -2056,7 +2036,7 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9), 10)
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
@@ -2085,7 +2065,7 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			--message("recieved value " .. value .. "for beam sync")
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
@@ -2105,7 +2085,7 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9),10)
 			--message("recieved value " .. value .. "for beam equip")
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
@@ -2156,7 +2136,7 @@ return {
 			local value = string.sub(payload, 9)
 			local newVal = tonumber(value, 10)
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
@@ -2189,7 +2169,7 @@ return {
 			local value = string.sub(payload, 9)
 			local currentGame = memoryRead(0xA173FE)
 			local newVal = tonumber(value, 10)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
@@ -2219,7 +2199,7 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = string.sub(payload, 9)
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true then
+			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 				else 
