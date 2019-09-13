@@ -180,7 +180,7 @@ local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure e
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 255 and noSend == false then
+		if currentGame == 255 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
@@ -195,29 +195,11 @@ local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure e
 	end
 end
 
-local function metroidBossBitTrigger(targetAddr)
-	return function(value, previousValue, forceSend)
-		--message("Equipment Changed")
-		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 255 and noSend == false then
-			if previous[targetAddr] == nil then	
-				previous[targetAddr] = 0
-			end
-			if value > previous[targetAddr] then
-				local newBitVal = OR(value, previous[targetAddr])
-				local sendPayload = targetAddr .. newBitVal
-				send("msyncbit", sendPayload)
-				previous[targetAddr] = newBitVal
-			end
-		end
-	end
-end
-
 local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 255 and noSend == false and value ~= 0 then
+		if currentGame == 255 and value ~= 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
@@ -257,7 +239,7 @@ end
 local function metroidForeignBitTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 0 and noSend == false then
+		if currentGame == 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
@@ -275,7 +257,7 @@ end
 local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 0 and noSend == false and value ~= 0 then
+		if currentGame == 0 and value ~= 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
@@ -830,8 +812,7 @@ return {
 		[0x7E09A4+MSTORAGE] = {nameBitmap={"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"},kind="trigger", writeTrigger=metroidForeignBitTrigger("0x7E09A4", "0x2F")},
 		[0x7E09A5+MSTORAGE] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"},kind="trigger", writeTrigger=metroidForeignBitTrigger("0x7E09A5", "0xF3")}, 
 		[0x7E09A8+MSTORAGE] = {nameBitmap={"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"},kind="trigger",writeTrigger=metroidForeignBeamTrigger("0x7E09A8", "0x0F")}, -- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
-		[0x7E09A9+MSTORAGE] = {nameBitmap={"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"},
-			kind="trigger", writeTrigger=metroidForeignBeamTrigger("0x7E09A9", "0x10")},
+		[0x7E09A9+MSTORAGE] = {nameBitmap={"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"},kind="trigger", writeTrigger=metroidForeignBeamTrigger("0x7E09A9", "0x10")},
 		
 		
 		------------------------------
@@ -1935,31 +1916,21 @@ return {
 			--message(string.sub(payload, 1, 8))
 			--message(string.sub(payload, 9, 12))
 			--message(string.sub(payload, 13))
-			if noSend == true and backup[address] ~= nil then
-				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
-					backup[address-2] = {value, backup[address-2][2], backup[address-2][3]}
-				else 
-					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
-					backup[address+MSTORAGE-2] = {value, backup[address+MSTORAGE-2][2], backup[address+MSTORAGE-2][3]}
+			if currentGame == 0 then
+				local addressHex = address + MSTORAGE
+				local previousValue = memoryRead(addressHex)
+				if previousValue == nil then
+					previousValue = 0
 				end
+				memoryWrite(addressHex, OR(value, previousValue))
+				makeItemTrigger(addressHex-2, mask, value, previousValue)
 			else
-				if currentGame == 0 then
-					local addressHex = address + MSTORAGE
-					local previousValue = memoryRead(addressHex)
-					if previousValue == nil then
-						previousValue = 0
-					end
-					memoryWrite(addressHex, OR(value, previousValue))
-					makeItemTrigger(addressHex-2, mask, value, previousValue)
-				else
-					local previousValue = memoryRead(address)
-					if previousValue == nil then
-						previousValue = 0
-					end
-					memoryWrite(address, OR(value, previousValue))
-					makeItemTrigger(address-2, mask, value, previousValue)
+				local previousValue = memoryRead(address)
+				if previousValue == nil then
+					previousValue = 0
 				end
+				memoryWrite(address, OR(value, previousValue))
+				makeItemTrigger(address-2, mask, value, previousValue)
 			end
 		end,
 		
@@ -2065,19 +2036,11 @@ return {
 			local value = tonumber(string.sub(payload, 9),10)
 			--message("recieved value " .. value .. "for beam sync")
 			local currentGame = memoryRead(0xA173FE)
-			if noSend == true and backup[address] ~= nil then
-				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
-				else 
-					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
-				end
+			if currentGame == 0 then
+				local addressHex = address + MSTORAGE
+				memoryWrite(addressHex, value)
 			else
-				if currentGame == 0 then
-					local addressHex = address + MSTORAGE
-					memoryWrite(addressHex, value)
-				else
-					memoryWrite(address, value)
-				end
+				memoryWrite(address, value)
 			end
 		end,
 		
@@ -2085,49 +2048,41 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9),10)
 			--message("recieved value " .. value .. "for beam equip")
-			if noSend == true and backup[address] ~= nil then
-				if currentGame == 255 then
-					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
-				else 
-					backup[address+MSTORAGE] = {value, backup[address+MSTORAGE][2], backup[address+MSTORAGE][3]}
+			if currentGame == 0 then
+				local current = memory.readbyte(address + MSTORAGE)
+				local currentEquip = memory.readbyte(address-2 + MSTORAGE)
+				if current == nil then
+					current = 0
 				end
+				if currentEquip == nil then
+					currentEquip = 0
+				end
+				newItem = value
+				newVal = OR(currentEquip, newItem)
+				--message(newVal)
+				if newVal >= 12 and address == 0x7E09A8 then
+					newVal = newVal - 4
+				end
+				memory.writebyte(address - 2 + MSTORAGE, newVal)
+				--message("wrote beamequip to Metroid while in Metroid")
 			else
-				if currentGame == 0 then
-					local current = memory.readbyte(address + MSTORAGE)
-					local currentEquip = memory.readbyte(address-2 + MSTORAGE)
-					if current == nil then
-						current = 0
-					end
-					if currentEquip == nil then
-						currentEquip = 0
-					end
-					newItem = value
-					newVal = OR(currentEquip, newItem)
-					--message(newVal)
-					if newVal >= 12 and address == 0x7E09A8 then
-						newVal = newVal - 4
-					end
-					memory.writebyte(address - 2 + MSTORAGE, newVal)
-					--message("wrote beamequip to Metroid while in Metroid")
-				else
-					local current = memory.readbyte(address)
-					local currentEquip = memory.readbyte(address - 2)
-					if current == nil then
-						current = 0
-					end
-					if currentEquip == nil then
-						currentEquip = 0
-					end
-					--message(value)
-					newItem = value
-					newVal = OR(currentEquip, newItem)
-					--message(newVal)
-					if newVal >= 12 and address == 0x7E09A8 then
-						newVal = newVal - 4
-					end
-					memory.writebyte(address - 2, newVal)
-					--message("wrote beamequip to Metroid while in Metroid")
+				local current = memory.readbyte(address)
+				local currentEquip = memory.readbyte(address - 2)
+				if current == nil then
+					current = 0
 				end
+				if currentEquip == nil then
+					currentEquip = 0
+				end
+				--message(value)
+				newItem = value
+				newVal = OR(currentEquip, newItem)
+				--message(newVal)
+				if newVal >= 12 and address == 0x7E09A8 then
+					newVal = newVal - 4
+				end
+				memory.writebyte(address - 2, newVal)
+				--message("wrote beamequip to Metroid while in Metroid")
 			end
 		end,
 		
