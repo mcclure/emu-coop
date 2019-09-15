@@ -407,6 +407,9 @@ local function createBackup(payload) --if third arg is 0, it exists in the oppos
 		for a = 0x7EF364,0x7EF367  do --Zelda Big keys
 			backup[a] = {memoryRead(a),"z",1,1}
 		end
+		for a = 0x7EF37C, 0x7EF389 do --Zelda key removal
+			memoryWrite(a, 0)
+		end
 	end
 end
 
@@ -537,6 +540,7 @@ local function zeldaQueueTrigger(targetAddr, syncType)
 	end
 end
 
+
 local function zeldaKeyQueueTrigger(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
@@ -550,25 +554,7 @@ local function zeldaKeyQueueTrigger(targetAddr, syncType)
 		if previous[targetAddr] == nil then	
 			previous[targetAddr] = 0
 		end
-		if currentGame == 0 and noSend == true then
-			memoryWrite(targetAddr, 0)
-		elseif currentGame == 0 and testVal == true and value ~= previous[targetAddr] then
-			message("Zqueue active")
-			message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
-			local sendPayload = targetAddr .. value
-			send("zsyncqueueval", sendPayload)
-			previous[targetAddr] = value
-		end
-	end
-end
-
-local function zeldaForeignQueueTrigger(targetAddr, syncType)
-	return function(value, previousValue, forceSend)
-		local currentGame = memoryRead(0xA173FE)
-		if previous[targetAddr] == nil then	
-			previous[targetAddr] = 0
-		end
-		if currentGame == 255 and noSend == false and value ~= previous[targetAddr] then
+		if currentGame == 0 and testVal == true and noSend == false and value ~= previous[targetAddr] then
 			message("Zqueue active")
 			message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
 			if syncType == "high" then
@@ -586,6 +572,8 @@ local function zeldaForeignQueueTrigger(targetAddr, syncType)
 			else
 				message("neither")
 			end
+		elseif currentGame == 0 and noSend == true then
+			memoryWrite(targetAddr, 0)
 		end
 	end
 end
@@ -717,10 +705,10 @@ return {
 		[0x7EF374] = {name="a Pendant", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF374")},
 		[0x7EF37A] = {name="a Crystal", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37A")},
 		[0x7EF37B] = {name="Half Magic", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF37B")},
-		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF36B")}, --Heart Pieces
+		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF36B")}, --Heart Pieces
 		[0x7EF36C] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF36C")},
-		[0x7EF360] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF360","either")}, -- Rupee byte 1
-		[0x7EF361] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF361","either")}, -- Rupee byte 2
+		[0x7EF360] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF360","either")}, -- Rupee byte 1
+		[0x7EF361] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF361","either")}, -- Rupee byte 2
 		[0x7EF343] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF343","either")}, -- Bombs
 		[0x7EF377] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF377","either")}, -- Arrows
 		---
@@ -734,9 +722,9 @@ return {
 		[0x7EF38C] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF38C")}, --Extra swap equip
 		[0x7EF38E] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF38E")}, --Extra swap equip
 		[0x7EF3C7] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF3C7")}, --Extra swap equip
-		[0x7EF3C5] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C5","high")}, -- Events
-		[0x7EF3C6] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C6","bitOr")},  -- Events 2
-		[0x7EF3C9] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF3C9")}, -- Dwarf rescue bit (required for bomb shop)
+		[0x7EF3C5] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C5","bitOr")}, -- Events
+		[0x7EF3C6] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF3C6","bitOr")},  -- Events 2
+		[0x7EF3C9] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF3C9","bitOr")}, -- Dwarf rescue bit (required for bomb shop)
 		
 		
 		--------------------------------------
@@ -774,7 +762,7 @@ return {
 		[0x7EF35F+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35F")},
 		[0x7EF379+ZSTORAGE] = {kind="bitOr", kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF379")}, --Abilities
 		[0x7EF37B+ZSTORAGE] = {name="Half Magic", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF37B")},
-		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF36B")}, --Heart Pieces
+		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF36B")}, --Heart Pieces
 		[0x7EF36C+ZSTORAGE] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF36C")},
 		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF360","either")}, -- Rupee byte 1
 		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF361","either")}, -- Rupee byte 2
