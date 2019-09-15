@@ -387,6 +387,10 @@ local function createBackup(payload) --if third arg is 0, it exists in the oppos
 		backup[0x7EF36B] = {memoryRead(0x7EF36B),"z",0,1} --Heart Pieces
 		backup[0x7EF37B] = {memoryRead(0x7EF37B),"z",0,1} --Half Magic
 		backup[0x7EF379] = {memoryRead(0x7EF379),"z",0,1} --Abilities
+		backup[0x7EF3C5] = {memoryRead(0x7EF3C5),"z",0,1} -- Events
+		backup[0x7EF3C6] = {memoryRead(0x7EF3C6),"z",0,1}  -- Events 2
+		backup[0x7EF410] = {memoryRead(0x7EF410),"z",0,1} -- Events 3
+		backup[0x7EF3C9] = {memoryRead(0x7EF3C9),"z",0,1} -- Dwarf rescue bit (required for bomb shop)
 		backup[0x7E09C4+MSTORAGE] = {memoryRead(0x7E09C4+MSTORAGE, 2),"m",0,2} --E-Tank
 		backup[0x7E09C8+MSTORAGE] = {memoryRead(0x7E09C8+MSTORAGE, 2),"m",0,2} --Missile
 		backup[0x7E09CC+MSTORAGE] = {memoryRead(0x7E09CC+MSTORAGE, 2),"m",0,2} --Supers
@@ -724,6 +728,7 @@ return {
 		[0x7EF3C7] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF3C7")}, --Extra swap equip
 		[0x7EF3C5] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C5","bitOr")}, -- Events
 		[0x7EF3C6] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF3C6","bitOr")},  -- Events 2
+		[0x7EF410] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF410","bitOr")}, -- Events 3
 		[0x7EF3C9] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF3C9","bitOr")}, -- Dwarf rescue bit (required for bomb shop)
 		
 		
