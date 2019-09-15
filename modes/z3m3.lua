@@ -705,12 +705,12 @@ return {
 		[0x7EF374] = {name="a Pendant", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF374")},
 		[0x7EF37A] = {name="a Crystal", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37A")},
 		[0x7EF37B] = {name="Half Magic", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF37B")},
-		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF36B")}, --Heart Pieces
+		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF36B")}, --Heart Pieces
 		[0x7EF36C] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF36C")},
-		[0x7EF360] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF360","either")}, -- Rupee byte 1
-		[0x7EF361] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF361","either")}, -- Rupee byte 2
-		[0x7EF343] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF343","either")}, -- Bombs
-		[0x7EF377] = {kind="trigger", writeTrigger=zeldaQueueTrigger("0x7EF377","either")}, -- Arrows
+		[0x7EF360] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF360")}, -- Rupee byte 1
+		[0x7EF361] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF361")}, -- Rupee byte 2
+		[0x7EF343] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF343")}, -- Bombs
+		[0x7EF377] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF377")}, -- Arrows
 		---
 		[0x7EF364] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF364","bitOr")}, --Big Keys, Compasses
 		[0x7EF365] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF365","bitOr")}, --Big Keys, Compasses
@@ -764,10 +764,10 @@ return {
 		[0x7EF37B+ZSTORAGE] = {name="Half Magic", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF37B")},
 		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF36B")}, --Heart Pieces
 		[0x7EF36C+ZSTORAGE] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF36C")},
-		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF360","either")}, -- Rupee byte 1
-		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF361","either")}, -- Rupee byte 2
-		[0x7EF343+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF343","either")}, -- Bombs
-		[0x7EF377+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF377","either")}, -- Arrows
+		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF360","either")}, -- Rupee byte 1
+		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF361","either")}, -- Rupee byte 2
+		[0x7EF343+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF343","either")}, -- Bombs
+		[0x7EF377+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF377","either")}, -- Arrows
 		[0x7EF38C+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF38C")}, --Extra swap equip
 		[0x7EF38E +ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF38E")}, --Extra swap equip
 		[0x7EF3C7+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF3C7")}, --Extra swap equip
