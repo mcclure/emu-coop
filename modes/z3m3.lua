@@ -38,19 +38,6 @@ for m = 0x7E09C4, 0x7ED82C do --metroid item range
 end
 -- When you get a missile, super missile or power bomb, your current count goes up by the size of the expansion
 
-local function wait(seconds)
-  local start = os.time()
-  repeat until os.time() > start + seconds
-end
-
-
-local function makeMissileTrigger(targetAddr) -- 2 byte size
-	return function(value, previousValue)
-		local current = memory.readword(targetAddr)
-		memory.writeword(targetAddr, current + (value - previousValue))
-	end
-end
-
 local function difference(a, b) -- 1 byte size
 	return AND(a, XOR(b, 0xFF))
 end
@@ -291,7 +278,7 @@ end
 ------------------------------
 ---------Room Syncing---------
 ------------------------------
-local function loadBackup(payload) --BACKUP LOADS TOO EARLY
+local function loadBackup(payload)
 	message("backup loaded")
 	local currentGame = memoryRead(0xA173FE)
 	if payload == "m" then
@@ -2160,7 +2147,6 @@ return {
 					--message("wrote R-tank to Metroid while in Zelda")
 				else
 					memoryWrite(address, value, 2)
-					makeMissileTrigger(address - 14)
 					--message("wrote R-tank to Metroid while in Metroid")
 				end
 			end
