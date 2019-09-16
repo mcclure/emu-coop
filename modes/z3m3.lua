@@ -14,6 +14,8 @@
 ------------------------------
 ----------9/16/2019-----------
 ------------------------------
+----------2:25PM EST----------
+------------------------------
 --Note: 0x7EF300 to 0x7EF3FF in ALTTP WRAM will be at 0xA17B00 to 0xA17BFF while in SM. Likewise, 0x7E09A2 to 0x7E09E2 in SM WRAM will be at 0xA17900 to 0xA1793F while in ALTTP.
 socket = require("socket")
 
