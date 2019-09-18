@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.1.1--
+--Current Revision: Beta 2.1.2--
 --------------------------------
 -----------9/17/2019------------
 --------------------------------
------------9:00PM EST-----------
+-----------10:40PM EST----------
 --------------------------------
 
 
@@ -614,15 +614,21 @@ local function roomSwapMetroid(targetAddr, syncType) --MAKE SURE THIS CAN TELL I
 		if currentGame == partnerGame and currentGame == 255 and value == partnerRoom and value ~= previous[targetAddr] then
 			noSend = true
 			message("Same Room as Partner")
-			send("mroomswap",value)
+			if previous[targetAddr] ~= value then
+				send("mroomswap",value)
+			end
 			createBackup("m")
 		elseif currentGame == 255 and value ~= previous[targetAddr] then
 			if noSend == true then
 				noSend = false
 				loadBackup("m")
-				send("mroomswap",value)
+				if previous[targetAddr] ~= value then
+					send("mroomswap",value)
+				end
 			else
-				send("mroomswap",value)
+				if previous[targetAddr] ~= value then
+					send("mroomswap",value)
+				end
 			end
 		end
 	end
@@ -632,27 +638,35 @@ local function roomSwapZeldaO(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if previous[targetAddr] == 0 then	
-			previous[targetAddr] = 10000000
+		if previous[targetAddr] == nil then	
+			previous[targetAddr] = 0
 		end
-		if state ~= 7 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] then
+		if state ~= 7 and state ~= 0 and state ~= 23 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
 					message("Same Room as Partner")
-					send("zroomswap",value)
+					if previous[targetAddr] ~= value then
+						send("zroomswap",value)
+					end
 					createBackup("z")
 				else 
-					send("zroomswap",value)
+					if previous[targetAddr] ~= value then
+						send("zroomswap",value)
+					end
 					message("Same Room as Partner")
 				end
 			elseif currentGame == 0 then
 				if noSend == true then
 					noSend = false
 					loadBackup("z")
-					send("zroomswap",value)
+					if previous[targetAddr] ~= value then
+						send("zroomswap",value)
+					end
 				else
-					send("zroomswap",value)
+					if previous[targetAddr] ~= value then
+						send("zroomswap",value)
+					end
 				end
 			end
 		end
@@ -676,7 +690,9 @@ local function roomSwapZeldaD(targetAddr, syncType)
 					noSend = false
 					loadBackup("z")
 				else
-					send("zroomswap",value)
+					if previous[targetAddr] ~= value then
+						send("zroomswap",value)
+					end
 				end
 			end
 		end
