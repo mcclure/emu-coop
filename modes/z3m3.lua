@@ -608,8 +608,8 @@ end
 local function roomSwapMetroid(targetAddr, syncType) --MAKE SURE THIS CAN TELL IF GAME IS LOADED WHEN COMING FROM ZELDA
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if previous[targetAddr] == 0 then	
-			previous[targetAddr] = 10000000
+		if previous[targetAddr] == nil then	
+			previous[targetAddr] = 0
 		end
 		if currentGame == partnerGame and currentGame == 255 and value == partnerRoom and value ~= previous[targetAddr] then
 			noSend = true
@@ -677,8 +677,8 @@ local function roomSwapZeldaD(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if previous[targetAddr] == 0 then	
-			previous[targetAddr] = 10000000
+		if previous[targetAddr] == nil then	
+			previous[targetAddr] = 0
 		end
 		if state ~= 9 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
