@@ -91,7 +91,9 @@ local function zeldaLocalBottleTrigger(targetAddr)
 			end
 			if value ~= nil then  
 				local sendPayload = targetAddr .. value
-				send("zsync", sendPayload)
+				if previous[targetAddr] ~= value then
+					send("zsync", sendPayload)
+				end
 				previous[targetAddr] = value
 			end
 		end
@@ -108,7 +110,9 @@ local function zeldaLocalBitTrigger(targetAddr)
 			end
 			local newBitVal = OR(value, previous[targetAddr])
 			local sendPayload = targetAddr .. newBitVal
-			send("zsyncbit", sendPayload)
+			if previous[targetAddr] ~= value then
+				send("zsyncbit", sendPayload)
+			end
 			previous[targetAddr] = newBitVal
 		end
 	end
@@ -124,7 +128,9 @@ local function zeldaForeignBitTrigger(targetAddr)
 			end
 			local newBitVal = OR(value, previous[targetAddr])
 			local sendPayload = targetAddr .. newBitVal
-			send("zsyncbit", sendPayload)
+			if previous[targetAddr] ~= value then
+				send("zsyncbit", sendPayload)
+			end
 			previous[targetAddr] = newBitVal
 		end
 	end
@@ -155,7 +161,9 @@ local function zeldaForeignBottleTrigger(targetAddr)
 			end
 			if value ~= nil then
 				local sendPayload = targetAddr .. value
-				send("zsync", sendPayload)
+				if previous[targetAddr] ~= value then
+					send("zsync", sendPayload)
+				end
 				previous[targetAddr] = value
 			end
 		end
@@ -172,7 +180,9 @@ local function metroidLocalExpTrigger(targetAddr, localFunc)
 			end
 			if value ~= nil and value > previous[targetAddr] then
 				local sendPayload = targetAddr .. value
-				send(localFunc, sendPayload)
+				if previous[targetAddr] ~= value then
+					send(localFunc, sendPayload)
+				end
 				previous[targetAddr] = value
 			end
 		end
@@ -191,7 +201,9 @@ local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure e
 			if AND(rising, previous[targetAddr]) == 0 then
 				local newBitVal = OR(value, previous[targetAddr])
 				local sendPayload = targetAddr .. mask .. newBitVal
-				send("msync", sendPayload)
+				if previous[targetAddr] ~= value then
+					send("msync", sendPayload)
+				end
 				previous[targetAddr] = newBitVal
 			end
 		end
@@ -214,8 +226,10 @@ local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure 
 				local newBitVal = OR(value, previous[targetAddr])
 				--message(newBitVal)
 				local sendPayload = targetAddr .. newBitVal
-				send("msyncbeam", sendPayload)
-				send("msyncbeamequip", sendPayload)
+				if previous[targetAddr] ~= value then
+					send("msyncbeam", sendPayload)
+					send("msyncbeamequip", sendPayload)
+				end
 				previous[targetAddr] = value
 			end
 			previous[targetAddr] = value
@@ -232,7 +246,9 @@ local function metroidForeignExpTrigger(targetAddr, localFunc)
 			end
 			if value ~= nil and value > previous[targetAddr] then
 				local sendPayload = targetAddr .. value
-				send(localFunc, sendPayload)
+				if previous[targetAddr] ~= value then
+					send(localFunc, sendPayload)
+				end
 				previous[targetAddr] = value
 			end
 		end
@@ -250,7 +266,9 @@ local function metroidForeignBitTrigger(targetAddr, mask) -- check bit to ensure
 			if AND(rising, previous[targetAddr]) == 0 then
 				local newBitVal = OR(value, previous[targetAddr])
 				local sendPayload = targetAddr .. mask .. newBitVal
-				send("msync", sendPayload)
+				if previous[targetAddr] ~= value then
+					send("msync", sendPayload)
+				end
 				previous[targetAddr] = newBitVal
 			end
 		end
@@ -272,8 +290,10 @@ local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensur
 				local newBitVal = OR(value, previous[targetAddr])
 				--message(newBitVal)
 				local sendPayload = targetAddr .. newBitVal
-				send("msyncbeam", sendPayload)
-				send("msyncbeamequip", sendPayload)
+				if previous[targetAddr] ~= value then
+					send("msyncbeam", sendPayload)
+					send("msyncbeamequip", sendPayload)
+				end
 				previous[targetAddr] = value
 			end
 		end
