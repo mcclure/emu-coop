@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.0.4--
+--Current Revision: Beta 2.1.1--
 --------------------------------
------------9/16/2019------------
+-----------9/17/2019------------
 --------------------------------
------------2:29PM EST-----------
+-----------9:00PM EST-----------
 --------------------------------
 
 
@@ -608,12 +608,15 @@ end
 local function roomSwapMetroid(targetAddr, syncType) --MAKE SURE THIS CAN TELL IF GAME IS LOADED WHEN COMING FROM ZELDA
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == partnerGame and currentGame == 255 and value == partnerRoom then
+		if previous[targetAddr] == 0 then	
+			previous[targetAddr] = 10000000
+		end
+		if currentGame == partnerGame and currentGame == 255 and value == partnerRoom and value ~= previous[targetAddr] then
 			noSend = true
 			message("Same Room as Partner")
 			send("mroomswap",value)
 			createBackup("m")
-		elseif currentGame == 255 then
+		elseif currentGame == 255 and value ~= previous[targetAddr] then
 			if noSend == true then
 				noSend = false
 				loadBackup("m")
@@ -629,7 +632,10 @@ local function roomSwapZeldaO(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if state ~= 7 and state ~= 0 and state ~= 23 then
+		if previous[targetAddr] == 0 then	
+			previous[targetAddr] = 10000000
+		end
+		if state ~= 7 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
@@ -657,7 +663,10 @@ local function roomSwapZeldaD(targetAddr, syncType)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if state ~= 9 and state ~= 0 and state ~= 23 then
+		if previous[targetAddr] == 0 then	
+			previous[targetAddr] = 10000000
+		end
+		if state ~= 9 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
 				noSend = true
 				message("Same Room as Partner")
