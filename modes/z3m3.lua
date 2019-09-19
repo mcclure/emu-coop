@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.1.2--
+--Current Revision: Beta 2.1.3--
 --------------------------------
------------9/17/2019------------
+-----------9/18/2019------------
 --------------------------------
------------10:40PM EST----------
+-----------9:00PM EST-----------
 --------------------------------
 
 
@@ -605,7 +605,7 @@ local function zeldaKeyQueueTrigger(targetAddr, syncType)
 	end
 end
 
-local function roomSwapMetroid(targetAddr, syncType) --MAKE SURE THIS CAN TELL IF GAME IS LOADED WHEN COMING FROM ZELDA
+local function roomSwapMetroid(targetAddr) --MAKE SURE THIS CAN TELL IF GAME IS LOADED WHEN COMING FROM ZELDA
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if previous[targetAddr] == nil then	
@@ -634,13 +634,10 @@ local function roomSwapMetroid(targetAddr, syncType) --MAKE SURE THIS CAN TELL I
 	end
 end
 
-local function roomSwapZeldaO(targetAddr, syncType)
+local function roomSwapZeldaO(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if previous[targetAddr] == nil then	
-			previous[targetAddr] = 0
-		end
 		if state ~= 7 and state ~= 0 and state ~= 23 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
@@ -673,7 +670,7 @@ local function roomSwapZeldaO(targetAddr, syncType)
 	end
 end
 
-local function roomSwapZeldaD(targetAddr, syncType)
+local function roomSwapZeldaD(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
@@ -713,9 +710,9 @@ return {
 		------------------------------
 		[0x7E0010] = {kind="trigger",   writeTrigger=queueUnloadZelda()},
 		[0x7E0998] = {kind="trigger",   writeTrigger=queueUnloadMetroid()},
-		[0x7E079B] = {kind="trigger",   writeTrigger=roomSwapMetroid()},
-		[0x7E008A] = {kind="trigger",   writeTrigger=roomSwapZeldaO()},
-		[0x7E00A0] = {kind="trigger",   writeTrigger=roomSwapZeldaD()},
+		[0x7E079B] = {kind="trigger",   writeTrigger=roomSwapMetroid("0x7E079B")},
+		[0x7E008A] = {kind="trigger",   writeTrigger=roomSwapZeldaO("0x7E008A")},
+		[0x7E00A0] = {kind="trigger",   writeTrigger=roomSwapZeldaD("0x7E00A0")},
 		
 		
 		------------------------------
