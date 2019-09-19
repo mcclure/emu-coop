@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.1.3--
+--Current Revision: Beta 2.1.4--
 --------------------------------
------------9/18/2019------------
+-----------9/19/2019------------
 --------------------------------
------------9:00PM EST-----------
+-----------1:00AM EST-----------
 --------------------------------
 
 
@@ -1829,17 +1829,19 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true and backup[address] ~= nil then
 				if currentGame == 0 then
-					backup[address] = {value, "z",0.1}
+					backup[address] = {value, "z",0,1}
 				else 
 					backup[address+ZSTORAGE] = {value, "z",0,1}
 				end
 			else
 				if currentGame == 0 then
 					memoryWrite(address, value)
+					previous[address] = value
 					--message("wrote val to Zelda while in Zelda")
 				else
 					local addressHex = address + ZSTORAGE
 					memoryWrite(addressHex, value)
+					previous[address] = value
 					--message("wrote val to Zelda while in Metroid")
 				end
 			end
