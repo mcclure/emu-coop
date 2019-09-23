@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.1.5--
+--Current Revision: Beta 2.2.0--
 --------------------------------
 -----------9/19/2019------------
 --------------------------------
-----------12:45PM EST-----------
+-----------2:55PM EST-----------
 --------------------------------
 
 
@@ -85,7 +85,14 @@ end
 local function zeldaLocalBottleTrigger(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 0 and noSend == false then
+		local stateCheck = memoryRead(0x7E0010)
+		local testVal = false
+		if stateCheck == 7 then
+			testVal = true
+		elseif stateCheck == 9 then
+			testVal = true
+		end
+		if currentGame == 0 and noSend == false and testVal = true then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
@@ -413,6 +420,7 @@ local function createBackup(payload) --if third arg is 0, it exists in the oppos
 		backup[0x7EF3C5] = {memoryRead(0x7EF3C5),"z",0,1} -- Events
 		backup[0x7EF3C6] = {memoryRead(0x7EF3C6),"z",0,1}  -- Events 2
 		backup[0x7EF410] = {memoryRead(0x7EF410),"z",0,1} -- Events 3
+		backup[0x7EF411] = {memoryRead(0x7EF411),"z",0,1} -- Events 4
 		backup[0x7EF3C9] = {memoryRead(0x7EF3C9),"z",0,1} -- Dwarf rescue bit (required for bomb shop)
 		backup[0x7E09C4+MSTORAGE] = {memoryRead(0x7E09C4+MSTORAGE, 2),"m",0,2} --E-Tank
 		backup[0x7E09C8+MSTORAGE] = {memoryRead(0x7E09C8+MSTORAGE, 2),"m",0,2} --Missile
@@ -790,6 +798,7 @@ return {
 		[0x7EF3C5] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C5","bitOr")}, -- Events
 		[0x7EF3C6] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C6","bitOr")},  -- Events 2
 		[0x7EF410] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF410","bitOr")}, -- Events 3
+		[0x7EF411] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF411","bitOr")}, -- Events 4
 		[0x7EF3C9] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C9","bitOr")}, -- Dwarf rescue bit (required for bomb shop)
 		
 		
