@@ -92,7 +92,7 @@ local function zeldaLocalBottleTrigger(targetAddr)
 		elseif stateCheck == 9 then
 			testVal = true
 		end
-		if currentGame == 0 and noSend == false and testVal = true then
+		if currentGame == 0 and noSend == false and testVal == true then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
