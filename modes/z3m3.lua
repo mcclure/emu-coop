@@ -16,16 +16,57 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.2.2--
+--Current Revision: Beta 2.2.3--
 --------------------------------
 -----------10/30/2019-----------
 --------------------------------
------------11:00AM EST----------
+-----------4:30PM EST-----------
 --------------------------------
 
+--Memory Addresses to check:
+-- org $f7fd00
+-- base $b7fd00
+-- sm_check_ending_door:        ; Check if ALTTP has been beaten, and only then activate the escape.
+    -- pha
+    -- lda #$0001
+    -- sta.l !SRAM_SM_COMPLETED      ; Set supermetroid as completed
+    -- lda.l !SRAM_ALTTP_COMPLETED
+    -- bne .alttp_done
+    -- pla
+    -- jsl $808212         ; Clear event flag if set
+    -- jml $8fc932         ; Jump to "RTS"
+-- .alttp_done
+    -- pla
+    -- jsl $8081fa         ; Call the code we replaced
+    -- jml $8fc926         ; Jump to "LDA #$0012"
 
+-- sm_check_ending_mb:
+    -- lda #$0001
+    -- sta.l !SRAM_SM_COMPLETED      ; Set supermetroid as completed
+    -- lda.l !SRAM_ALTTP_COMPLETED
+    -- bne .alttp_done
+    -- lda #$b2f9
+    -- sta $0fa8
+    -- lda #$0020
+    -- sta $0fb2
+    -- rtl
 
+-- .alttp_done    
+    -- lda #$0000
+    -- sta $7e7808
+    -- rtl
 
+-- org $f7fe00
+-- base $b7fe00
+-- alttp_check_ending:
+    -- lda.b #$01
+    -- sta.l !SRAM_ALTTP_COMPLETED
+    -- lda.l !SRAM_SM_COMPLETED
+    -- bne .sm_completed
+    -- lda.b #$08 : sta $010c
+    -- lda.b #$0f : sta $10
+    -- lda.b #$20 : sta $a0
+    -- lda.b #$00 : sta $a1
 
 
 
@@ -85,18 +126,11 @@ end
 local function zeldaLocalBottleTrigger(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
-		local stateCheck = memoryRead(0x7E0010)
-		local testVal = false
-		if stateCheck == 7 then
-			testVal = true
-		elseif stateCheck == 9 then
-			testVal = true
-		end
-		if currentGame == 0 and noSend == false and testVal == true then
+		if currentGame == 0 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
-			if value ~= nil then  
+			if value ~= nil then
 				local sendPayload = targetAddr .. value
 				if previous[targetAddr] ~= value then
 					send("zsync", sendPayload)
