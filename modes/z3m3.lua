@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.2.0--
+--Current Revision: Beta 2.2.1--
 --------------------------------
------------9/19/2019------------
+-----------10/30/2019-----------
 --------------------------------
------------2:55PM EST-----------
+-----------10:45AM EST----------
 --------------------------------
 
 
@@ -235,7 +235,7 @@ local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure 
 				local sendPayload = targetAddr .. newBitVal
 				if previous[targetAddr] ~= value then
 					send("msyncbeam", sendPayload)
-					send("msyncbeamequip", sendPayload)
+					--send("msyncbeamequip", sendPayload)
 				end
 				previous[targetAddr] = value
 			end
@@ -299,7 +299,7 @@ local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensur
 				local sendPayload = targetAddr .. newBitVal
 				if previous[targetAddr] ~= value then
 					send("msyncbeam", sendPayload)
-					send("msyncbeamequip", sendPayload)
+					--send("msyncbeamequip", sendPayload)
 				end
 				previous[targetAddr] = value
 			end
@@ -1861,7 +1861,7 @@ return {
 			else
 				if currentGame == 0 then
 					memoryWrite(address, value)
-					previous[address] = value
+					previous[address] = value 
 					--message("wrote val to Zelda while in Zelda")
 				else
 					local addressHex = address + ZSTORAGE
@@ -2109,47 +2109,47 @@ return {
 			end
 		end,
 		
-		msyncbeamequip = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9),10)
-			--message("recieved value " .. value .. "for beam equip")
-			if currentGame == 0 then
-				local current = memory.readbyte(address + MSTORAGE)
-				local currentEquip = memory.readbyte(address-2 + MSTORAGE)
-				if current == nil then
-					current = 0
-				end
-				if currentEquip == nil then
-					currentEquip = 0
-				end
-				newItem = value
-				newVal = OR(currentEquip, newItem)
-				--message(newVal)
-				if newVal >= 12 and address == 0x7E09A8 then
-					newVal = newVal - 4
-				end
-				memory.writebyte(address - 2 + MSTORAGE, newVal)
-				--message("wrote beamequip to Metroid while in Metroid")
-			else
-				local current = memory.readbyte(address)
-				local currentEquip = memory.readbyte(address - 2)
-				if current == nil then
-					current = 0
-				end
-				if currentEquip == nil then
-					currentEquip = 0
-				end
-				--message(value)
-				newItem = value
-				newVal = OR(currentEquip, newItem)
-				--message(newVal)
-				if newVal >= 12 and address == 0x7E09A8 then
-					newVal = newVal - 4
-				end
-				memory.writebyte(address - 2, newVal)
-				--message("wrote beamequip to Metroid while in Metroid")
-			end
-		end,
+		-- msyncbeamequip = function(payload)
+			-- local address = tonumber(string.sub(payload, 1, 8), 16)
+			-- local value = tonumber(string.sub(payload, 9),10)
+			-- --message("recieved value " .. value .. "for beam equip")
+			-- if currentGame == 0 then
+				-- local current = memory.readbyte(address + MSTORAGE)
+				-- local currentEquip = memory.readbyte(address-2 + MSTORAGE)
+				-- if current == nil then
+					-- current = 0
+				-- end
+				-- if currentEquip == nil then
+					-- currentEquip = 0
+				-- end
+				-- newItem = value
+				-- newVal = OR(currentEquip, newItem)
+				-- --message(newVal)
+				-- if newVal >= 12 and address == 0x7E09A8 then
+					-- newVal = newVal - 4
+				-- end
+				-- memory.writebyte(address - 2 + MSTORAGE, newVal)
+				-- --message("wrote beamequip to Metroid while in Metroid")
+			-- else
+				-- local current = memory.readbyte(address)
+				-- local currentEquip = memory.readbyte(address - 2)
+				-- if current == nil then
+					-- current = 0
+				-- end
+				-- if currentEquip == nil then
+					-- currentEquip = 0
+				-- end
+				-- --message(value)
+				-- newItem = value
+				-- newVal = OR(currentEquip, newItem)
+				-- --message(newVal)
+				-- if newVal >= 12 and address == 0x7E09A8 then
+					-- newVal = newVal - 4
+				-- end
+				-- memory.writebyte(address - 2, newVal)
+				-- --message("wrote beamequip to Metroid while in Metroid")
+			-- end
+		-- end,
 		
 		msyncexp = function(payload)
 			local address = tonumber(string.sub(payload, 1, 8), 16)
