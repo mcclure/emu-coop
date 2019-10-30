@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.2.1--
+--Current Revision: Beta 2.2.2--
 --------------------------------
 -----------10/30/2019-----------
 --------------------------------
------------10:45AM EST----------
+-----------11:00AM EST----------
 --------------------------------
 
 
@@ -225,19 +225,17 @@ local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure 
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
-			--message("local")
-			--message(value)
 			local rising = value - previous[targetAddr]
-			--message(rising)
-			if AND(rising, previous[targetAddr]) == 0 then
-				local newBitVal = OR(value, previous[targetAddr])
-				--message(newBitVal)
-				local sendPayload = targetAddr .. newBitVal
-				if previous[targetAddr] ~= value then
-					send("msyncbeam", sendPayload)
-					--send("msyncbeamequip", sendPayload)
+			if value ~= previous[targetAddr] then
+				if AND(rising, previous[targetAddr]) == 0 then
+					local newBitVal = OR(value, previous[targetAddr])
+					local sendPayload = targetAddr .. newBitVal
+					if previous[targetAddr] ~= value then
+						send("msyncbeam", sendPayload)
+						send("msyncbeamequip", sendPayload)
+					end
+					previous[targetAddr] = value
 				end
-				previous[targetAddr] = value
 			end
 			previous[targetAddr] = value
 		end
@@ -289,19 +287,17 @@ local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensur
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
-			--message("foreign")
-			--message(value)
 			local rising = value - previous[targetAddr]
-			--message(rising)
-			if AND(rising, previous[targetAddr]) == 0 then
-				local newBitVal = OR(value, previous[targetAddr])
-				--message(newBitVal)
-				local sendPayload = targetAddr .. newBitVal
-				if previous[targetAddr] ~= value then
-					send("msyncbeam", sendPayload)
-					--send("msyncbeamequip", sendPayload)
+			if value ~= previous[targetAddr] then
+				if AND(rising, previous[targetAddr]) == 0 then
+					local newBitVal = OR(value, previous[targetAddr])
+					local sendPayload = targetAddr .. newBitVal
+					if previous[targetAddr] ~= value then
+						send("msyncbeam", sendPayload)
+						send("msyncbeamequip", sendPayload)
+					end
+					previous[targetAddr] = value
 				end
-				previous[targetAddr] = value
 			end
 		end
 	end
@@ -2109,47 +2105,47 @@ return {
 			end
 		end,
 		
-		-- msyncbeamequip = function(payload)
-			-- local address = tonumber(string.sub(payload, 1, 8), 16)
-			-- local value = tonumber(string.sub(payload, 9),10)
-			-- --message("recieved value " .. value .. "for beam equip")
-			-- if currentGame == 0 then
-				-- local current = memory.readbyte(address + MSTORAGE)
-				-- local currentEquip = memory.readbyte(address-2 + MSTORAGE)
-				-- if current == nil then
-					-- current = 0
-				-- end
-				-- if currentEquip == nil then
-					-- currentEquip = 0
-				-- end
-				-- newItem = value
-				-- newVal = OR(currentEquip, newItem)
-				-- --message(newVal)
-				-- if newVal >= 12 and address == 0x7E09A8 then
-					-- newVal = newVal - 4
-				-- end
-				-- memory.writebyte(address - 2 + MSTORAGE, newVal)
-				-- --message("wrote beamequip to Metroid while in Metroid")
-			-- else
-				-- local current = memory.readbyte(address)
-				-- local currentEquip = memory.readbyte(address - 2)
-				-- if current == nil then
-					-- current = 0
-				-- end
-				-- if currentEquip == nil then
-					-- currentEquip = 0
-				-- end
-				-- --message(value)
-				-- newItem = value
-				-- newVal = OR(currentEquip, newItem)
-				-- --message(newVal)
-				-- if newVal >= 12 and address == 0x7E09A8 then
-					-- newVal = newVal - 4
-				-- end
-				-- memory.writebyte(address - 2, newVal)
-				-- --message("wrote beamequip to Metroid while in Metroid")
-			-- end
-		-- end,
+		msyncbeamequip = function(payload)
+			local address = tonumber(string.sub(payload, 1, 8), 16)
+			local value = tonumber(string.sub(payload, 9),10)
+			--message("recieved value " .. value .. "for beam equip")
+			if currentGame == 0 then
+				local current = memory.readbyte(address + MSTORAGE)
+				local currentEquip = memory.readbyte(address-2 + MSTORAGE)
+				if current == nil then
+					current = 0
+				end
+				if currentEquip == nil then
+					currentEquip = 0
+				end
+				newItem = value
+				newVal = OR(currentEquip, newItem)
+				--message(newVal)
+				if newVal >= 12 and address == 0x7E09A8 then
+					newVal = newVal - 4
+				end
+				memory.writebyte(address - 2 + MSTORAGE, newVal)
+				--message("wrote beamequip to Metroid while in Metroid")
+			else
+				local current = memory.readbyte(address)
+				local currentEquip = memory.readbyte(address - 2)
+				if current == nil then
+					current = 0
+				end
+				if currentEquip == nil then
+					currentEquip = 0
+				end
+				--message(value)
+				newItem = value
+				newVal = OR(currentEquip, newItem)
+				--message(newVal)
+				if newVal >= 12 and address == 0x7E09A8 then
+					newVal = newVal - 4
+				end
+				memory.writebyte(address - 2, newVal)
+				--message("wrote beamequip to Metroid while in Metroid")
+			end
+		end,
 		
 		msyncexp = function(payload)
 			local address = tonumber(string.sub(payload, 1, 8), 16)
