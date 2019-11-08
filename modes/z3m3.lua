@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.2.3--
+--Current Revision: Beta 2.2.4--
 --------------------------------
------------10/30/2019-----------
+------------11/7/2019-----------
 --------------------------------
------------4:30PM EST-----------
+-----------9:10PM EST-----------
 --------------------------------
 
 --Memory Addresses to check:
@@ -125,8 +125,11 @@ end
 
 local function zeldaLocalBottleTrigger(targetAddr)
 	return function(value, previousValue, forceSend)
+		--THIS NEEDS FIXED!!!  CURRENTLY HAS ISSUES WHEN RETURNING TO MENU, BUT THIS IS NEEDED TO PREVENT THE SM RUPEE BUG
+		--MAYBE TEST FOR VALUE TO NOT BE ZERO?
 		local currentGame = memoryRead(0xA173FE)
-		if currentGame == 0 and noSend == false then
+		local stateCheck = memoryRead(0x7E0010)
+		if currentGame == 0 and noSend == false and stateCheck ~= 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
@@ -143,7 +146,6 @@ end
 
 local function zeldaLocalBitTrigger(targetAddr)
 	return function(value, previousValue, forceSend)
-		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 0 and noSend == false then
 			if previous[targetAddr] == nil then	
@@ -606,7 +608,7 @@ local function zeldaQueueTrigger(targetAddr, syncType)
 end
 
 
-local function zeldaKeyQueueTrigger(targetAddr, syncType)
+local function zeldaKeyQueueTrigger(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local stateCheck = memoryRead(0x7E0010)
@@ -622,21 +624,9 @@ local function zeldaKeyQueueTrigger(targetAddr, syncType)
 		if currentGame == 0 and testVal == true and noSend == false and value ~= previous[targetAddr] then
 			message("Zqueue active")
 			message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
-			if syncType == "high" then
-				local sendPayload = targetAddr .. value
-				send("zsyncqueuehigh", sendPayload)
-				previous[targetAddr] = value
-			elseif syncType == "bitOr" then
-				local sendPayload = targetAddr .. value
-				send("zsyncqueuebit", sendPayload)
-				previous[targetAddr] = value
-			elseif syncType == "either" then
-				local sendPayload = targetAddr .. value
-				send("zsyncqueueval", sendPayload)
-				previous[targetAddr] = value
-			else
-				message("neither")
-			end
+			local sendPayload = targetAddr .. value
+			send("zsyncqueueval", sendPayload)
+			previous[targetAddr] = value
 		elseif currentGame == 0 and noSend == true then
 			memoryWrite(targetAddr, 0)
 		end
