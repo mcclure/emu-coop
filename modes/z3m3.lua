@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.2.4--
+--Current Revision: Beta 2.2.5--
 --------------------------------
-------------11/7/2019-----------
+-----------11/10/2019-----------
 --------------------------------
------------9:10PM EST-----------
+-----------6:50PM EST-----------
 --------------------------------
 
 --Memory Addresses to check:
@@ -485,19 +485,19 @@ local function queueUnloadMetroid()
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 255 and noSend == false and value ~= 11 then
 			for k, v in pairs(queuembit) do
-				message("queue wrote " .. v .. " at " .. string.format("%X", k))
+				--message("queue wrote " .. v .. " at " .. string.format("%X", k))
 				memoryWrite(k, OR(memoryRead(k),v))
 				table.remove(queuembit, k)
 			end	
 			for k, v in pairs(queuemhigh) do
 				if v > memoryRead(k) then
-					message("queue wrote " .. v .. " at " .. string.format("%X", k))
+					--message("queue wrote " .. v .. " at " .. string.format("%X", k))
 					memoryWrite(k, v)
 				end
 				table.remove(queuemhigh, k)
 			end	
 			for k, v in pairs(queuemval) do
-				message("queue wrote " .. v .. " at " .. string.format("%X", k))
+				--message("queue wrote " .. v .. " at " .. string.format("%X", k))
 				memoryWrite(k, v)
 				table.remove(queuemval, k)
 			end	
@@ -520,19 +520,19 @@ local function queueUnloadZelda()
 		end
 		if currentGame == 0 and testVal == true and noSend == false then
 			for k, v in pairs(queuezbit) do
-				message("queue wrote " .. v .. " at " .. string.format("%X", k))
+				--message("queue wrote " .. v .. " at " .. string.format("%X", k))
 				memoryWrite(k, OR(memoryRead(k),v))
 				table.remove(queuezbit, k)
 			end	
 			for k, v in pairs(queuezhigh) do
 				if v > memoryRead(k) then
-					message("queue wrote " .. v .. " at " .. string.format("%X", k))
+					--message("queue wrote " .. v .. " at " .. string.format("%X", k))
 					memoryWrite(k, v)
 				end
 				table.remove(queuezhigh, k)
 			end	
 			for k, v in pairs(queuezval) do
-				message("queue wrote " .. v .. " at " .. string.format("%X", k))
+				--message("queue wrote " .. v .. " at " .. string.format("%X", k))
 				memoryWrite(k, v)
 				table.remove(queuezval, k)
 			end	
@@ -551,8 +551,8 @@ local function metroidQueueTrigger(targetAddr, syncType)
 			previous[targetAddr] = 0
 		end
 		if currentGame == 255 and stateCheck ~= 0 and noSend == false and value ~= previous[targetAddr] then
-			message("Mqueue active")
-			message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
+			--message("Mqueue active")
+			--message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
 			if syncType == "high" then
 				local sendPayload = targetAddr .. value
 				send("msyncqueuehigh", sendPayload)
@@ -566,7 +566,7 @@ local function metroidQueueTrigger(targetAddr, syncType)
 				send("msyncqueueval", sendPayload)
 				previous[targetAddr] = value
 			else
-				message("neither")
+				--message("neither")
 			end
 		end
 	end
@@ -586,8 +586,8 @@ local function zeldaQueueTrigger(targetAddr, syncType)
 			previous[targetAddr] = 0
 		end
 		if currentGame == 0 and testVal == true and noSend == false and value ~= previous[targetAddr] then
-			message("Zqueue active")
-			message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
+			--message("Zqueue active")
+			--message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
 			if syncType == "high" then
 				local sendPayload = targetAddr .. value
 				send("zsyncqueuehigh", sendPayload)
@@ -601,7 +601,7 @@ local function zeldaQueueTrigger(targetAddr, syncType)
 				send("zsyncqueueval", sendPayload)
 				previous[targetAddr] = value
 			else
-				message("neither")
+				--message("neither")
 			end
 		end
 	end
@@ -622,8 +622,8 @@ local function zeldaKeyQueueTrigger(targetAddr)
 			previous[targetAddr] = 0
 		end
 		if currentGame == 0 and testVal == true and noSend == false and value ~= previous[targetAddr] then
-			message("Zqueue active")
-			message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
+			--message("Zqueue active")
+			--message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
 			local sendPayload = targetAddr .. value
 			send("zsyncqueueval", sendPayload)
 			previous[targetAddr] = value
@@ -1898,17 +1898,17 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
 				if noSend == true and backup[address] ~= nil then
-					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
+					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
-					message("valSync")
+					--message("valSync")
 					memoryWrite(address, value)
 					previous[address] = value
 				end
 			else 
-				message("hiQ")
+				--message("hiQ")
 				queuezval[address] = value
 			end
 		end,
@@ -1919,12 +1919,12 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
 				if noSend == true and backup[address] ~= nil then
-					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
+					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
-					message("bitSync")
+					--message("bitSync")
 					if previous[address] == nil then	
 						previous[address] = memoryRead(address)
 					end
@@ -1932,7 +1932,7 @@ return {
 					previous[address] = OR(value, previous[address])
 				end
 			else 
-				message("bitQ")
+				--message("bitQ")
 				queuezbit[address] = value
 			end
 		end,
@@ -1943,12 +1943,12 @@ return {
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
 				if noSend == true and backup[address] ~= nil then
-					message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
+					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
 					previous[address] = value
 				else
-					message("hiSync")
+					--message("hiSync")
 					if previous[address] == nil then	
 						previous[address] = memoryRead(address)
 					end
@@ -1957,7 +1957,7 @@ return {
 					end
 				end
 			else 
-				message("hiQ")
+				--message("hiQ")
 				queuezhigh[address] = value
 				previous[address] = value
 			end
@@ -2029,12 +2029,12 @@ return {
 					memoryWrite(address, value)
 					previous[address] = value
 				else
-					message("valSync")
+					--message("valSync")
 					memoryWrite(address, value)
 					previous[address] = value
 				end
 			else 
-				message("hiQ")
+				--message("hiQ")
 				queuemval[address] = value
 				previous[address] = value
 			end
@@ -2050,7 +2050,7 @@ return {
 					memoryWrite(address, value)
 					previous[address] = value
 				else
-					message("bitSync")
+					--message("bitSync")
 					if previous[address] == nil then
 						previous[address] = memoryRead(address)
 					end
@@ -2058,7 +2058,7 @@ return {
 					previous[address] = OR(value, previous[address])
 				end
 			else 
-				message("bitQ")
+				--message("bitQ")
 				queuembit[address] = value
 			end
 		end,
@@ -2073,7 +2073,7 @@ return {
 					memoryWrite(address, value)
 					previous[address] = value
 				else
-					message("hiSync")
+					--message("hiSync")
 					if previous[address] == nil then
 						previous[address] = memoryRead(address)
 					end
@@ -2083,7 +2083,7 @@ return {
 					end
 				end
 			else 
-				message("hiQ")
+				--message("hiQ")
 				queuemhigh[address] = value
 			end
 		end,
@@ -2260,15 +2260,15 @@ return {
 		mroomswap = function(payload)
 			partnerGame = 255
 			partnerRoom = tonumber(payload, 10)
-			message(partnerGame)
-			message(partnerRoom)
+			--message(partnerGame)
+			message("Partner room is " .. partnerRoom)
 		end,
 		
 		zroomswap = function(payload)
 			partnerGame = 0
 			partnerRoom = tonumber(payload, 10)
-			message(partnerGame)
-			message(partnerRoom)
+			--message(partnerGame)
+			message("Partner room is " .. partnerRoom)
 		end
 		
 	}
