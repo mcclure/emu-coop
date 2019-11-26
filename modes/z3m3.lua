@@ -2267,7 +2267,7 @@ return {
 			partnerRoom = tonumber(payload, 10)
 			--message(partnerGame)
 			message("Partner room is " .. partnerRoom)
-		end
+		end,
 		
 		bossBeaten = function(payload)
 			if payload == 1 then
@@ -2293,5 +2293,6 @@ return {
 				end
 			end
 		end
+	end
 	}
 }
