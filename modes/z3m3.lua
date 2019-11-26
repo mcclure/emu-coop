@@ -731,6 +731,7 @@ local function finalBossTrigger(bossVal)
 		end
 	end
 end
+end
 
 return {
 	guid = "f003df87-0c3b-4b3b-86c8-d0deef93e6ec",
