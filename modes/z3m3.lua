@@ -2271,8 +2271,10 @@ return {
 		bossBeaten = function(payload)
 			if payload == 1 then
 				metroidCompleted = true
+				memory.writebyte(0xA17402,1)
 			else if payload == 2 then
 				zeldaCompleted = true
+				memory.writebyte(0xA17506,1)
 			end
 			Bosses = 0
 			if metroidCompleted == true then
