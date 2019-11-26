@@ -16,58 +16,16 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.2.5--
+--Current Revision: Beta 2.3.0--
 --------------------------------
------------11/10/2019-----------
+-----------11/25/2019-----------
 --------------------------------
------------6:55PM EST-----------
+-----------7:45PM EST-----------
 --------------------------------
 
 --Memory Addresses to check:
--- org $f7fd00
--- base $b7fd00
--- sm_check_ending_door:        ; Check if ALTTP has been beaten, and only then activate the escape.
-    -- pha
-    -- lda #$0001
-    -- sta.l !SRAM_SM_COMPLETED      ; Set supermetroid as completed
-    -- lda.l !SRAM_ALTTP_COMPLETED
-    -- bne .alttp_done
-    -- pla
-    -- jsl $808212         ; Clear event flag if set
-    -- jml $8fc932         ; Jump to "RTS"
--- .alttp_done
-    -- pla
-    -- jsl $8081fa         ; Call the code we replaced
-    -- jml $8fc926         ; Jump to "LDA #$0012"
-
--- sm_check_ending_mb:
-    -- lda #$0001
-    -- sta.l !SRAM_SM_COMPLETED      ; Set supermetroid as completed
-    -- lda.l !SRAM_ALTTP_COMPLETED
-    -- bne .alttp_done
-    -- lda #$b2f9
-    -- sta $0fa8
-    -- lda #$0020
-    -- sta $0fb2
-    -- rtl
-
--- .alttp_done    
-    -- lda #$0000
-    -- sta $7e7808
-    -- rtl
-
--- org $f7fe00
--- base $b7fe00
--- alttp_check_ending:
-    -- lda.b #$01
-    -- sta.l !SRAM_ALTTP_COMPLETED
-    -- lda.l !SRAM_SM_COMPLETED
-    -- bne .sm_completed
-    -- lda.b #$08 : sta $010c
-    -- lda.b #$0f : sta $10
-    -- lda.b #$20 : sta $a0
-    -- lda.b #$00 : sta $a1
-
+--0xA17402 SM COMPLETED
+--0xA17506 ZD COMPLETED
 
 
 socket = require("socket")
@@ -758,6 +716,11 @@ return {
 		[0x7E008A] = {kind="trigger",   writeTrigger=roomSwapZeldaO("0x7E008A")},
 		[0x7E00A0] = {kind="trigger",   writeTrigger=roomSwapZeldaD("0x7E00A0")},
 		
+		------------------------------
+		---------Boss Syncing---------
+		------------------------------
+		[0xA17402] = {kind="high", name="Metroid Finished"},
+		[0xA17506] = {kind="high", name="Zelda Finished"},
 		
 		------------------------------
 		--Zelda Items while in Zelda--
