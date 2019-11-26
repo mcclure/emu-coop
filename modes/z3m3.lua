@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 2.3.0--
+--Current Revision: Beta 3.0.0--
 --------------------------------
 -----------11/25/2019-----------
 --------------------------------
------------7:45PM EST-----------
+-----------9:30PM EST-----------
 --------------------------------
 
 --Memory Addresses to check:
@@ -43,6 +43,8 @@ local backup = {}
 local partnerRoom = 0
 local partnerGame = 1
 local noSend = false
+local metroidCompleted = false
+local zeldaCompleted = false
 --metroid = 255
 --zelda = 0
 for z = 0x7EF340, 0x7EF3C9 do --zelda item range
@@ -698,6 +700,38 @@ local function roomSwapZeldaD(targetAddr)
 	end
 end
 
+local function finalBossTrigger(bossVal)
+	return function(value, previousValue, forceSend)
+		if previous["Bosses"] == nil then	
+			previous["Bosses"] = 0
+		end
+		Bosses = 0
+		if metroidCompleted == true then
+			Bosses = Bosses + 1
+		end
+		if zeldaCompleted == true then
+			Bosses = Bosses + 2
+		end
+		
+		if metroidCompleted ~= true and zeldaCompleted ~= true and Bosses ~= previous["Bosses"] then
+			if bossVal == 1 then	
+				metroidCompleted = true
+				send("bossBeaten",1)
+			else if bossVal == 2 then
+				zeldaCompleted = true
+				send("bossBeaten",2)
+			end
+			if metroidCompleted == true and zeldaCompleted == true then
+				if currentGame == 255 then
+					memory.writebyte(0x7ED821,255)
+				else
+					queuemval[0x7ED821] = 255
+				end
+			end
+		end
+	end
+end
+
 return {
 	guid = "f003df87-0c3b-4b3b-86c8-d0deef93e6ec",
 	format = "1.2",
@@ -719,8 +753,8 @@ return {
 		------------------------------
 		---------Boss Syncing---------
 		------------------------------
-		[0xA17402] = {kind="high", name="Metroid Finished"},
-		[0xA17506] = {kind="high", name="Zelda Finished"},
+		[0xA17402] = {kind="trigger", writeTrigger = finalBossTrigger(1), name="Metroid Finished"},
+		[0xA17506] = {kind="trigger", writeTrigger = finalBossTrigger(2), name="Zelda Finished"},
 		
 		------------------------------
 		--Zelda Items while in Zelda--
@@ -2234,5 +2268,27 @@ return {
 			message("Partner room is " .. partnerRoom)
 		end
 		
+		bossBeaten = function(payload)
+			if payload == 1 then
+				metroidCompleted = true
+			else if payload == 2 then
+				zeldaCompleted = true
+			end
+			Bosses = 0
+			if metroidCompleted == true then
+				Bosses = Bosses + 1
+			end
+			if zeldaCompleted == true then
+				Bosses = Bosses + 2
+			end
+			previous["Bosses"] = Bosses
+			if Bosses == 3 then
+				if currentGame == 255 then
+					memory.writebyte(0x7ED821,255)
+				else
+					queuemval[0x7ED821] = 255
+				end
+			end
+		end
 	}
 }
