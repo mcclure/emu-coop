@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 3.0.0--
+--Current Revision: Beta 3.0.2--
 --------------------------------
 -----------11/25/2019-----------
 --------------------------------
------------9:30PM EST-----------
+-----------9:55PM EST-----------
 --------------------------------
 
 --Memory Addresses to check:
@@ -637,7 +637,7 @@ local function roomSwapZeldaO(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if state ~= 7 and state ~= 0 and state ~= 23 then
+		if state ~= 7 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] and value ~= 0 and value ~= 156 and value ~= 149 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
@@ -680,7 +680,8 @@ local function roomSwapZeldaD(targetAddr)
 		if previous[targetAddr] == nil then	
 			previous[targetAddr] = 0
 		end
-		if state ~= 9 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] then
+		if state ~= 9 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] and value ~= 0 and value ~= 156 and value ~= 149 then
+			value = value + 1000
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
 				noSend = true
 				message("Same Room as Partner")
