@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 3.0.2--
+--Current Revision: Beta 3.0.3--
 --------------------------------
------------11/25/2019-----------
+-----------11/27/2019-----------
 --------------------------------
------------9:55PM EST-----------
+-----------1:05AM EST-----------
 --------------------------------
 
 --Memory Addresses to check:
@@ -637,7 +637,7 @@ local function roomSwapZeldaO(targetAddr)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local state = memoryRead(0x7E0010)
-		if state ~= 7 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] and value ~= 0 and value ~= 156 and value ~= 149 then
+		if state ~= 7 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] and value ~= 0 and value ~= 156 and value ~= 149 and value ~= 150 then
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
@@ -680,7 +680,7 @@ local function roomSwapZeldaD(targetAddr)
 		if previous[targetAddr] == nil then	
 			previous[targetAddr] = 0
 		end
-		if state ~= 9 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] and value ~= 0 and value ~= 156 and value ~= 149 then
+		if state ~= 9 and state ~= 0 and state ~= 23 and value ~= previous[targetAddr] and value ~= 0 and value ~= 156 and value ~= 149 and value ~= 150 then
 			value = value + 1000
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
 				noSend = true
@@ -701,37 +701,40 @@ local function roomSwapZeldaD(targetAddr)
 	end
 end
 
-local function finalBossTrigger(bossVal)
+local function finalBossTriggerMetroid(targetAddr)
 	return function(value, previousValue, forceSend)
-		if previous["Bosses"] == nil then	
-			previous["Bosses"] = 0
+		if value == 1 and value ~= previous[targetAddr] then
+			metroidCompleted = true
+			send("metroidDone","true")
+			previous[targetAddr] = 1
 		end
-		Bosses = 0
-		if metroidCompleted == true then
-			Bosses = Bosses + 1
-		end
-		if zeldaCompleted == true then
-			Bosses = Bosses + 2
-		end
-		
-		if metroidCompleted ~= true and zeldaCompleted ~= true and Bosses ~= previous["Bosses"] then
-			if bossVal == 1 then	
-				metroidCompleted = true
-				send("bossBeaten",1)
-			else if bossVal == 2 then
-				zeldaCompleted = true
-				send("bossBeaten",2)
-			end
-			if metroidCompleted == true and zeldaCompleted == true then
-				if currentGame == 255 then
-					memory.writebyte(0x7ED821,255)
-				else
-					queuemval[0x7ED821] = 255
-				end
+		if metroidCompleted == true and zeldaCompleted == true then
+			if currentGame == 255 then
+				memory.writebyte(0x7ED821,255)
+			else
+				queuemval[0x7ED821] = 255
 			end
 		end
 	end
 end
+
+local function finalBossTriggerZelda(targetAddr)
+	return function(value, previousValue, forceSend)
+		if value == 1 and value ~= previous[targetAddr] then
+			zeldaCompleted = true
+			send("zeldaDone","true")
+			previous[targetAddr] = 1
+		end
+		if metroidCompleted == true and zeldaCompleted == true then
+			if currentGame == 255 then
+				memory.writebyte(0x7ED821,255)
+			else
+				queuemval[0x7ED821] = 255
+			end
+		end
+	end
+end
+
 end
 
 return {
@@ -755,8 +758,8 @@ return {
 		------------------------------
 		---------Boss Syncing---------
 		------------------------------
-		[0xA17402] = {kind="trigger", writeTrigger = finalBossTrigger(1), name="Metroid Finished"},
-		[0xA17506] = {kind="trigger", writeTrigger = finalBossTrigger(2), name="Zelda Finished"},
+		[0xA17402] = {kind="trigger", writeTrigger = finalBossTriggerMetroid("0xA17402"), name="Metroid Finished"},
+		[0xA17506] = {kind="trigger", writeTrigger = finalBossTriggerZelda("0xA17506"), name="Zelda Finished"},
 		
 		------------------------------
 		--Zelda Items while in Zelda--
@@ -2261,6 +2264,14 @@ return {
 			partnerRoom = tonumber(payload, 10)
 			--message(partnerGame)
 			message("Partner room is " .. partnerRoom)
+			if memory.readbyte(0xA17402) == 1 then
+				zeldaCompleted = true
+				send("zeldaDone","true")
+			end
+			if memory.readbyte(0xA17506) == 1 then
+				metroidCompleted = true
+				send("metroidDone","true")
+			end
 		end,
 		
 		zroomswap = function(payload)
@@ -2268,25 +2279,34 @@ return {
 			partnerRoom = tonumber(payload, 10)
 			--message(partnerGame)
 			message("Partner room is " .. partnerRoom)
+			if memory.readbyte(0xA17402) == 1 then
+				zeldaCompleted = true
+				send("zeldaDone","true")
+			end
+			if memory.readbyte(0xA17506) == 1 then
+				metroidCompleted = true
+				send("metroidDone","true")
+			end
 		end,
 		
-		bossBeaten = function(payload)
-			if payload == 1 then
+		metroidDone = function(payload)
+			if payload == "true" then
 				metroidCompleted = true
-				memory.writebyte(0xA17402,1)
-			else if payload == 2 then
+			end
+			if zeldaCompleted == true and metroidCompleted == true then
+				if currentGame == 255 then
+					memory.writebyte(0x7ED821,255)
+				else
+					queuemval[0x7ED821] = 255
+				end
+			end
+		end,
+		
+		zeldaDone = function(payload)
+			if payload == "true" then
 				zeldaCompleted = true
-				memory.writebyte(0xA17506,1)
 			end
-			Bosses = 0
-			if metroidCompleted == true then
-				Bosses = Bosses + 1
-			end
-			if zeldaCompleted == true then
-				Bosses = Bosses + 2
-			end
-			previous["Bosses"] = Bosses
-			if Bosses == 3 then
+			if zeldaCompleted == true and metroidCompleted == true then
 				if currentGame == 255 then
 					memory.writebyte(0x7ED821,255)
 				else
