@@ -16,11 +16,11 @@
 --------------------------------
 -----Mod by Trevor Thompson-----
 --------------------------------
---Current Revision: Beta 3.0.3--
+--Current Revision: Beta 3.1.0--
 --------------------------------
------------11/27/2019-----------
+------------12/2/2019-----------
 --------------------------------
------------1:05AM EST-----------
+-----------11:00AM EST----------
 --------------------------------
 
 --Memory Addresses to check:
@@ -64,10 +64,9 @@ end
 local function makeItemTrigger(targetAddr, mask, value, previousValue) -- 2 byte size
 	local current = memory.readbyte(targetAddr)
 	memory.writebyte(targetAddr, OR(current, AND(mask, difference(value, previousValue))))
-	--message("equipped at " .. targetAddr .. " old = " .. previousValue .. " new = " .. value)
 end
 
-local function zeldaLocalItemTrigger(targetAddr)
+local function zeldaLocalItemTrigger(targetAddr,nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 0 and noSend == false then
@@ -78,15 +77,18 @@ local function zeldaLocalItemTrigger(targetAddr)
 				local sendPayload = targetAddr .. value
 				send("zsync", sendPayload)
 				previous[targetAddr] = value
+				if nameMap[value] ~= nil then
+					send("messageRead","Partner got " .. nameMap[value])
+				elseif nameMap[1] ~= nil then
+					send ("messageRead","Partner got " .. nameMap[1])
+				end
 			end
 		end
 	end
 end
 
-local function zeldaLocalBottleTrigger(targetAddr)
+local function zeldaLocalBottleTrigger(targetAddr,nameMap)
 	return function(value, previousValue, forceSend)
-		--THIS NEEDS FIXED!!!  CURRENTLY HAS ISSUES WHEN RETURNING TO MENU, BUT THIS IS NEEDED TO PREVENT THE SM RUPEE BUG
-		--MAYBE TEST FOR VALUE TO NOT BE ZERO?
 		local currentGame = memoryRead(0xA173FE)
 		local stateCheck = memoryRead(0x7E0010)
 		if currentGame == 0 and noSend == false and stateCheck ~= 0 then
@@ -97,6 +99,11 @@ local function zeldaLocalBottleTrigger(targetAddr)
 				local sendPayload = targetAddr .. value
 				if previous[targetAddr] ~= value then
 					send("zsync", sendPayload)
+					if nameMap[value] ~= nil then
+						send("messageRead","Partner got " .. nameMap[value])
+					elseif nameMap[1] ~= nil then
+						send ("messageRead","Partner got " .. nameMap[1])
+					end
 				end
 				previous[targetAddr] = value
 			end
@@ -104,7 +111,7 @@ local function zeldaLocalBottleTrigger(targetAddr)
 	end
 end
 
-local function zeldaLocalBitTrigger(targetAddr)
+local function zeldaLocalBitTrigger(targetAddr, nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 0 and noSend == false then
@@ -115,13 +122,37 @@ local function zeldaLocalBitTrigger(targetAddr)
 			local sendPayload = targetAddr .. newBitVal
 			if previous[targetAddr] ~= value then
 				send("zsyncbit", sendPayload)
+				local rising = value - previousValue
+				local bitNameVal = 1
+				if rising == 1 then
+					bitNameVal = 1
+				elseif rising == 2 then
+					bitNameVal = 2
+				elseif rising == 4 then
+					bitNameVal = 3
+				elseif rising == 8 then
+					bitNameVal = 4
+				elseif rising == 16 then
+					bitNameVal = 5
+				elseif rising == 32 then
+					bitNameVal = 6
+				elseif rising == 64 then
+					bitNameVal = 7
+				elseif rising == 128 then
+					bitNameVal = 8
+				end
+				if nameMap[bitNameVal] ~= nil then
+					send("messageRead","Partner got " .. nameMap[bitNameVal])
+				elseif nameMap[1] ~= nil then
+					send ("messageRead","Partner got " .. nameMap[1])
+				end
 			end
 			previous[targetAddr] = newBitVal
 		end
 	end
 end
 
-local function zeldaForeignBitTrigger(targetAddr)
+local function zeldaForeignBitTrigger(targetAddr, nameMap)
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
@@ -133,13 +164,37 @@ local function zeldaForeignBitTrigger(targetAddr)
 			local sendPayload = targetAddr .. newBitVal
 			if previous[targetAddr] ~= value then
 				send("zsyncbit", sendPayload)
+				local rising = value - previousValue
+				local bitNameVal = 1
+				if rising == 1 then
+					bitNameVal = 1
+				elseif rising == 2 then
+					bitNameVal = 2
+				elseif rising == 4 then
+					bitNameVal = 3
+				elseif rising == 8 then
+					bitNameVal = 4
+				elseif rising == 16 then
+					bitNameVal = 5
+				elseif rising == 32 then
+					bitNameVal = 6
+				elseif rising == 64 then
+					bitNameVal = 7
+				elseif rising == 128 then
+					bitNameVal = 8
+				end
+				if nameMap[bitNameVal] ~= nil then
+					send("messageRead","Partner got " .. nameMap[bitNameVal])
+				elseif nameMap[1] ~= nil then
+					send ("messageRead","Partner got " .. nameMap[1])
+				end
 			end
 			previous[targetAddr] = newBitVal
 		end
 	end
 end
 
-local function zeldaForeignItemTrigger(targetAddr)  
+local function zeldaForeignItemTrigger(targetAddr, nameMap)  
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 255 and noSend == false then
@@ -149,13 +204,18 @@ local function zeldaForeignItemTrigger(targetAddr)
 			if value ~= nil and value > previous[targetAddr] then
 				local sendPayload = targetAddr .. value
 				send("zsync", sendPayload)
+				if nameMap[value] ~= nil then
+					send("messageRead","Partner got " .. nameMap[value])
+				elseif nameMap[1] ~= nil then
+					send ("messageRead","Partner got " .. nameMap[1])
+				end
 				previous[targetAddr] = value
 			end
 		end
 	end
 end
 
-local function zeldaForeignBottleTrigger(targetAddr)  
+local function zeldaForeignBottleTrigger(targetAddr, nameMap)  
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 255 and noSend == false then
@@ -166,6 +226,11 @@ local function zeldaForeignBottleTrigger(targetAddr)
 				local sendPayload = targetAddr .. value
 				if previous[targetAddr] ~= value then
 					send("zsync", sendPayload)
+					if nameMap[value] ~= nil then
+						send("messageRead","Partner got " .. nameMap[value])
+					elseif nameMap[1] ~= nil then
+						send ("messageRead","Partner got " .. nameMap[1])
+					end
 				end
 				previous[targetAddr] = value
 			end
@@ -173,7 +238,7 @@ local function zeldaForeignBottleTrigger(targetAddr)
 	end
 end
 
-local function metroidLocalExpTrigger(targetAddr, localFunc)
+local function metroidLocalExpTrigger(targetAddr, localFunc, nameMap)
 	return function(value, previousValue, forceSend)
 		--message("Expansions Changed")
 		local currentGame = memoryRead(0xA173FE)
@@ -185,6 +250,11 @@ local function metroidLocalExpTrigger(targetAddr, localFunc)
 				local sendPayload = targetAddr .. value
 				if previous[targetAddr] ~= value then
 					send(localFunc, sendPayload)
+					if nameMap[value] ~= nil then
+						send("messageRead","Partner got " .. nameMap[value])
+					elseif nameMap[1] ~= nil then
+						send ("messageRead","Partner got " .. nameMap[1])
+					end
 				end
 				previous[targetAddr] = value
 			end
@@ -192,7 +262,7 @@ local function metroidLocalExpTrigger(targetAddr, localFunc)
 	end
 end
 
-local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup:  Subtract old from new, AND this value with old, if that value is not zero then ignore
+local function metroidLocalBitTrigger(targetAddr, mask, nameMap) -- check bit to ensure extra value is not being added on second pickup:  Subtract old from new, AND this value with old, if that value is not zero then ignore
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
@@ -206,6 +276,30 @@ local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure e
 				local sendPayload = targetAddr .. mask .. newBitVal
 				if previous[targetAddr] ~= value then
 					send("msync", sendPayload)
+					local rising = value - previousValue
+					local bitNameVal = 1
+					if rising == 1 then
+						bitNameVal = 1
+					elseif rising == 2 then
+						bitNameVal = 2
+					elseif rising == 4 then
+						bitNameVal = 3
+					elseif rising == 8 then
+						bitNameVal = 4
+					elseif rising == 16 then
+						bitNameVal = 5
+					elseif rising == 32 then
+						bitNameVal = 6
+					elseif rising == 64 then
+						bitNameVal = 7
+					elseif rising == 128 then
+						bitNameVal = 8
+					end
+					if nameMap[bitNameVal] ~= nil then
+						send("messageRead","Partner got " .. nameMap[bitNameVal])
+					elseif nameMap[1] ~= nil then
+						send ("messageRead","Partner got " .. nameMap[1])
+					end
 				end
 				previous[targetAddr] = newBitVal
 			end
@@ -213,7 +307,7 @@ local function metroidLocalBitTrigger(targetAddr, mask) -- check bit to ensure e
 	end
 end
 
-local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup
+local function metroidLocalBeamTrigger(targetAddr, mask, nameMap) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
@@ -229,6 +323,30 @@ local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure 
 					if previous[targetAddr] ~= value then
 						send("msyncbeam", sendPayload)
 						send("msyncbeamequip", sendPayload)
+						local rising = value - previousValue
+						local bitNameVal = 1
+						if rising == 1 then
+							bitNameVal = 1
+						elseif rising == 2 then
+							bitNameVal = 2
+						elseif rising == 4 then
+							bitNameVal = 3
+						elseif rising == 8 then
+							bitNameVal = 4
+						elseif rising == 16 then
+							bitNameVal = 5
+						elseif rising == 32 then
+							bitNameVal = 6
+						elseif rising == 64 then
+							bitNameVal = 7
+						elseif rising == 128 then
+							bitNameVal = 8
+						end
+						if nameMap[bitNameVal] ~= nil then
+							send("messageRead","Partner got " .. nameMap[bitNameVal])
+						elseif nameMap[1] ~= nil then
+							send ("messageRead","Partner got " .. nameMap[1])
+						end
 					end
 					previous[targetAddr] = value
 				end
@@ -238,7 +356,7 @@ local function metroidLocalBeamTrigger(targetAddr, mask) -- check bit to ensure 
 	end
 end
 
-local function metroidForeignExpTrigger(targetAddr, localFunc)
+local function metroidForeignExpTrigger(targetAddr, localFunc, nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 0 and noSend == false then
@@ -249,6 +367,11 @@ local function metroidForeignExpTrigger(targetAddr, localFunc)
 				local sendPayload = targetAddr .. value
 				if previous[targetAddr] ~= value then
 					send(localFunc, sendPayload)
+					if nameMap[value] ~= nil then
+						send("messageRead","Partner got " .. nameMap[value])
+					elseif nameMap[1] ~= nil then
+						send ("messageRead","Partner got " .. nameMap[1])
+					end	
 				end
 				previous[targetAddr] = value
 			end
@@ -256,7 +379,7 @@ local function metroidForeignExpTrigger(targetAddr, localFunc)
 	end
 end
 
-local function metroidForeignBitTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup
+local function metroidForeignBitTrigger(targetAddr, mask, nameMap) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 0 then
@@ -269,6 +392,30 @@ local function metroidForeignBitTrigger(targetAddr, mask) -- check bit to ensure
 				local sendPayload = targetAddr .. mask .. newBitVal
 				if previous[targetAddr] ~= value then
 					send("msync", sendPayload)
+					local rising = value - previousValue
+					local bitNameVal = 1
+					if rising == 1 then
+						bitNameVal = 1
+					elseif rising == 2 then
+						bitNameVal = 2
+					elseif rising == 4 then
+						bitNameVal = 3
+					elseif rising == 8 then
+						bitNameVal = 4
+					elseif rising == 16 then
+						bitNameVal = 5
+					elseif rising == 32 then
+						bitNameVal = 6
+					elseif rising == 64 then
+						bitNameVal = 7
+					elseif rising == 128 then
+						bitNameVal = 8
+					end
+					if nameMap[bitNameVal] ~= nil then
+						send("messageRead","Partner got " .. nameMap[bitNameVal])
+					elseif nameMap[1] ~= nil then
+						send ("messageRead","Partner got " .. nameMap[1])
+					end
 				end
 				previous[targetAddr] = newBitVal
 			end
@@ -276,7 +423,7 @@ local function metroidForeignBitTrigger(targetAddr, mask) -- check bit to ensure
 	end
 end
 
-local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensure extra value is not being added on second pickup
+local function metroidForeignBeamTrigger(targetAddr, mask, nameMap) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		if currentGame == 0 and value ~= 0 then
@@ -291,6 +438,30 @@ local function metroidForeignBeamTrigger(targetAddr, mask) -- check bit to ensur
 					if previous[targetAddr] ~= value then
 						send("msyncbeam", sendPayload)
 						send("msyncbeamequip", sendPayload)
+						local rising = value - previousValue
+						local bitNameVal = 1
+						if rising == 1 then
+							bitNameVal = 1
+						elseif rising == 2 then
+							bitNameVal = 2
+						elseif rising == 4 then
+							bitNameVal = 3
+						elseif rising == 8 then
+							bitNameVal = 4
+						elseif rising == 16 then
+							bitNameVal = 5
+						elseif rising == 32 then
+							bitNameVal = 6
+						elseif rising == 64 then
+							bitNameVal = 7
+						elseif rising == 128 then
+							bitNameVal = 8
+						end
+						if nameMap[bitNameVal] ~= nil then
+							send("messageRead","Partner got " .. nameMap[bitNameVal])
+						elseif nameMap[1] ~= nil then
+							send ("messageRead","Partner got " .. nameMap[1])
+						end
 					end
 					previous[targetAddr] = value
 				end
@@ -373,7 +544,7 @@ local function loadBackup(payload)
 end
 
 local function createBackup(payload) --if third arg is 0, it exists in the opposite game's buffer and doesnt need a queue
-	message("backup created")
+	--message("backup created")
 	if payload == "m" then
 		backup[0] = "m"
 		
@@ -613,7 +784,7 @@ local function roomSwapMetroid(targetAddr) --MAKE SURE THIS CAN TELL IF GAME IS 
 					send("mroomswap",value)
 					previous[targetAddr] = value
 				end
-				message("Same Room as Partner")
+				message("Same Room as Partner, Backup Created")
 			end
 		elseif currentGame == 255 then
 			if noSend == true then
@@ -641,7 +812,7 @@ local function roomSwapZeldaO(targetAddr)
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 				if noSend == false then
 					noSend = true
-					message("Same Room as Partner")
+					message("Same Room as Partner, Backup Created")
 					if previous[targetAddr] ~= value then
 						send("zroomswap",value)
 						previous[targetAddr] = value
@@ -652,7 +823,7 @@ local function roomSwapZeldaO(targetAddr)
 						send("zroomswap",value)
 						previous[targetAddr] = value
 					end
-					message("Same Room as Partner")
+					message("Same Room as Partner, Backup Created")
 				end
 			elseif currentGame == 0 then
 				if noSend == true then
@@ -684,7 +855,7 @@ local function roomSwapZeldaD(targetAddr)
 			value = value + 1000
 			if currentGame == partnerGame and currentGame == 0 and value == partnerRoom and noSend == false then
 				noSend = true
-				message("Same Room as Partner")
+				message("Same Room as Partner, Backup Created")
 				createBackup("z")
 			elseif currentGame == 0 then
 				if noSend == true then
@@ -701,11 +872,12 @@ local function roomSwapZeldaD(targetAddr)
 	end
 end
 
-local function finalBossTriggerMetroid(targetAddr)
+local function finalBossTriggerMetroid(targetAddr,nameMap)
 	return function(value, previousValue, forceSend)
 		if value == 1 and value ~= previous[targetAddr] then
 			metroidCompleted = true
 			send("metroidDone","true")
+			send("messageRead","Partner completed " .. nameMap)
 			previous[targetAddr] = 1
 		end
 		if metroidCompleted == true and zeldaCompleted == true then
@@ -718,11 +890,12 @@ local function finalBossTriggerMetroid(targetAddr)
 	end
 end
 
-local function finalBossTriggerZelda(targetAddr)
+local function finalBossTriggerZelda(targetAddr,nameMap)
 	return function(value, previousValue, forceSend)
 		if value == 1 and value ~= previous[targetAddr] then
 			zeldaCompleted = true
 			send("zeldaDone","true")
+			send("messageRead","Partner completed " .. nameMap)
 			previous[targetAddr] = 1
 		end
 		if metroidCompleted == true and zeldaCompleted == true then
@@ -756,54 +929,54 @@ return {
 		------------------------------
 		---------Boss Syncing---------
 		------------------------------
-		[0xA17402] = {kind="trigger", writeTrigger = finalBossTriggerMetroid("0xA17402"), name="Metroid Finished"},
-		[0xA17506] = {kind="trigger", writeTrigger = finalBossTriggerZelda("0xA17506"), name="Zelda Finished"},
+		[0xA17402] = {kind="trigger", writeTrigger = finalBossTriggerMetroid("0xA17402",{"Metroid"})},
+		[0xA17506] = {kind="trigger", writeTrigger = finalBossTriggerZelda("0xA17506",{"Zelda"})},
 		
 		------------------------------
 		--Zelda Items while in Zelda--
 		------------------------------
 		---
-		[0x7EF340] = {nameMap={"Bow", "Bow", "Silver Arrows", "Silver Arrows"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF340")},
-		[0x7EF341] = {nameMap={"Boomerang", "Magic Boomerang"}, kind="trigger", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF341")},
-		[0x7EF342] = {name="Hookshot", kind="trigger",   writeTrigger=zeldaLocalItemTrigger("0x7EF342")},
-		[0x7EF344] = {nameMap={"Mushroom", "Magic Powder"}, kind="trigger",   writeTrigger=zeldaLocalItemTrigger("0x7EF344")},
-		[0x7EF345] = {name="Fire Rod", kind="trigger",   writeTrigger=zeldaLocalItemTrigger("0x7EF345")},
-		[0x7EF346] = {name="Ice Rod", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF346")},
-		[0x7EF347] = {name="Bombos", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF347")},
-		[0x7EF348] = {name="Ether", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF348")},
-		[0x7EF349] = {name="Quake", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF349")},
-		[0x7EF34A] = {name="Lantern", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34A")},
-		[0x7EF34B] = {name="Hammer", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34B")},
-		[0x7EF34C] = {nameMap={"Shovel", "Flute", "Bird"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34C")},
-		[0x7EF34D] = {name="Net", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34D")},
-		[0x7EF34E] = {name="Book", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34E")},
-		[0x7EF34F] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34F")},-- Bottle count
-		[0x7EF350] = {name="Red Cane", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF350")},
-		[0x7EF351] = {name="Blue Cane", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF351")},
-		[0x7EF352] = {name="Cape", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF352")},
-		[0x7EF353] = {name="Mirror", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF353")},
-		[0x7EF354] = {name="Gloves", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF354")},
-		[0x7EF355] = {name="Boots", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF355")},
-		[0x7EF356] = {name="Flippers", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF356")},
-		[0x7EF357] = {name="Pearl", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF357")},
-		[0x7EF359] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="trigger", cond={"test", gte = 0x1, lte = 0x4}, writeTrigger=zeldaLocalItemTrigger("0x7EF359")},
-		[0x7EF35A] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF35A")},
-		[0x7EF35B] = {nameMap={"Blue Armor", "Red Armor"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF35B")},
-		[0x7EF35C] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35C")},
-		[0x7EF35D] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35D")},
-		[0x7EF35E] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35E")},
-		[0x7EF35F] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35F")},
+		[0x7EF340] = {nameMap={"Bow", "Bow", "Silver Arrows", "Silver Arrows"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF340",{"Bow", "Bow", "Silver Arrows", "Silver Arrows"})},
+		[0x7EF341] = {nameMap={"Boomerang", "Magic Boomerang"}, kind="trigger", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF341",{"Boomerang", "Magic Boomerang"})},
+		[0x7EF342] = {name="Hookshot", kind="trigger",   writeTrigger=zeldaLocalItemTrigger("0x7EF342",{"Hookshot"})},
+		[0x7EF344] = {nameMap={"Mushroom", "Magic Powder"}, kind="trigger",   writeTrigger=zeldaLocalItemTrigger("0x7EF344",{"Mushroom", "Magic Powder"})},
+		[0x7EF345] = {name="Fire Rod", kind="trigger",   writeTrigger=zeldaLocalItemTrigger("0x7EF345",{"Fire Rod"})},
+		[0x7EF346] = {name="Ice Rod", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF346",{"Ice Rod"})},
+		[0x7EF347] = {name="Bombos", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF347",{"Bombos"})},
+		[0x7EF348] = {name="Ether", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF348",{"Ether"})},
+		[0x7EF349] = {name="Quake", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF349",{"Quake"})},
+		[0x7EF34A] = {name="Lantern", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34A",{"Lantern"})},
+		[0x7EF34B] = {name="Hammer", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34B",{"Hammer"})},
+		[0x7EF34C] = {nameMap={"Shovel", "Flute", "Bird"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34C",{"Shovel", "Flute", "Bird"})},
+		[0x7EF34D] = {name="Net", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34D",{"Net"})},
+		[0x7EF34E] = {name="Book", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34E",{"Book"})},
+		[0x7EF34F] = {kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF34F",{"A Bottle?"})},-- Bottle count
+		[0x7EF350] = {name="Red Cane", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF350",{"Red Cane"})},
+		[0x7EF351] = {name="Blue Cane", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF351",{"Blue Cane"})},
+		[0x7EF352] = {name="Cape", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF352",{"Cape"})},
+		[0x7EF353] = {name="Mirror", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF353",{"Mirror"})},
+		[0x7EF354] = {name="Gloves", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF354",{"Gloves"})},
+		[0x7EF355] = {name="Boots", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF355",{"Boots"})},
+		[0x7EF356] = {name="Flippers", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF356",{"Flippers"})},
+		[0x7EF357] = {name="Pearl", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF357",{"Pearl"})},
+		[0x7EF359] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="trigger", cond={"test", gte = 0x1, lte = 0x4}, writeTrigger=zeldaLocalItemTrigger("0x7EF359",{"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"})},
+		[0x7EF35A] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF35A",{"Shield", "Fire Shield", "Mirror Shield"})},
+		[0x7EF35B] = {nameMap={"Blue Armor", "Red Armor"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF35B",{"Blue Armor", "Red Armor"})},
+		--[0x7EF35C] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35C",{"or filled/used bottle in slot 1"})},
+		--[0x7EF35D] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35D",{"or filled/used bottle in slot 2"})},
+		--[0x7EF35E] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35E",{"or filled/used bottle in slot 3"})},
+		--[0x7EF35F] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35F",{"or filled/used bottle in slot 4"})},
 		---
-		[0x7EF379] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF379")}, --Abilities
-		[0x7EF374] = {name="a Pendant", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF374")},
-		[0x7EF37A] = {name="a Crystal", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37A")},
-		[0x7EF37B] = {name="Half Magic", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37B")},
-		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF36B")}, --Heart Pieces
-		[0x7EF36C] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF36C")},
-		[0x7EF360] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF360")}, -- Rupee byte 1
-		[0x7EF361] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF361")}, -- Rupee byte 2
-		[0x7EF343] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF343")}, -- Bombs
-		[0x7EF377] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF377")}, -- Arrows
+		[0x7EF379] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF379",{})}, --Abilities
+		[0x7EF374] = {name="a Pendant", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF374",{"a Pendant"})},
+		[0x7EF37A] = {name="a Crystal", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37A",{"a Crystal"})},
+		[0x7EF37B] = {name="Half Magic", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF37B",{"Half Magic"})},
+		[0x7EF36B] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF36B", {"a Heart Piece"})}, --Heart Pieces
+		[0x7EF36C] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF36C",{"a Heart Container"})},
+		[0x7EF360] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF360", {})}, -- Rupee byte 1
+		[0x7EF361] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF361",{})}, -- Rupee byte 2
+		[0x7EF343] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF343",{})}, -- Bombs
+		[0x7EF377] = {kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF377",{})}, -- Arrows
 		---
 		[0x7EF364] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF364","bitOr")}, --Big Keys, Compasses
 		[0x7EF365] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF365","bitOr")}, --Big Keys, Compasses
@@ -812,9 +985,9 @@ return {
 		[0x7EF366] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF366","bitOr")}, --Big Keys, Compasses
 		[0x7EF367] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF367","bitOr")}, --Big Keys, Compasses
 		---
-		[0x7EF38C] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF38C")}, --Extra swap equip
-		[0x7EF38E] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF38E")}, --Extra swap equip
-		[0x7EF3C7] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF3C7")}, --Extra swap equip
+		[0x7EF38C] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF38C",{})}, --Extra swap equip
+		[0x7EF38E] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF38E",{})}, --Extra swap equip
+		[0x7EF3C7] = {kind="trigger",   writeTrigger=zeldaLocalBitTrigger("0x7EF3C7",{})}, --Extra swap equip
 		[0x7EF3C5] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C5","bitOr")}, -- Events
 		[0x7EF3C6] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF3C6","bitOr")},  -- Events 2
 		[0x7EF410] = {kind="trigger",   writeTrigger=zeldaQueueTrigger("0x7EF410","bitOr")}, -- Events 3
@@ -825,77 +998,77 @@ return {
 		--------------------------------------
 		--Zelda Items while in Super Metroid--
 		--------------------------------------
-		[0x7EF340+ZSTORAGE] = {nameMap={"Bow", "Bow", "Silver Arrows", "Silver Arrows"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF340")},
-		[0x7EF341+ZSTORAGE] = {nameMap={"Boomerang", "Magic Boomerang"}, kind="trigger", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF341")},
-		[0x7EF342+ZSTORAGE] = {name="Hookshot", kind="trigger",   writeTrigger=zeldaForeignItemTrigger("0x7EF342")},
-		[0x7EF344+ZSTORAGE] = {nameMap={"Mushroom", "Magic Powder"}, kind="trigger",   writeTrigger=zeldaForeignItemTrigger("0x7EF344")},
-		[0x7EF345+ZSTORAGE] = {name="Fire Rod", kind="trigger",   writeTrigger=zeldaForeignItemTrigger("0x7EF345")},
-		[0x7EF346+ZSTORAGE] = {name="Ice Rod", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF346")},
-		[0x7EF347+ZSTORAGE] = {name="Bombos", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF347")},
-		[0x7EF348+ZSTORAGE] = {name="Ether", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF348")},
-		[0x7EF349+ZSTORAGE] = {name="Quake", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF349")},
-		[0x7EF34A+ZSTORAGE] = {name="Lantern", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34A")},
-		[0x7EF34B+ZSTORAGE] = {name="Hammer", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34B")},
-		[0x7EF34C+ZSTORAGE] = {nameMap={"Shovel", "Flute", "Bird"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34C")},
-		[0x7EF34D+ZSTORAGE] = {name="Net", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34D")},
-		[0x7EF34E +ZSTORAGE] = {name="Book", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34E")},
-		[0x7EF34F+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34F")},-- Bottle count
-		[0x7EF350+ZSTORAGE] = {name="Red Cane", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF350")},
-		[0x7EF351+ZSTORAGE] = {name="Blue Cane", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF351")},
-		[0x7EF352+ZSTORAGE] = {name="Cape", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF352")},
-		[0x7EF353+ZSTORAGE] = {name="Mirror", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF353")},
-		[0x7EF354+ZSTORAGE] = {name="Gloves", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF354")},
-		[0x7EF355+ZSTORAGE] = {name="Boots", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF355")},
-		[0x7EF356+ZSTORAGE] = {name="Flippers", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF356")},
-		[0x7EF357+ZSTORAGE] = {name="Pearl", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF357")},
-		[0x7EF359+ZSTORAGE] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="trigger", cond={"test", gte = 0x1, lte = 0x4}, writeTrigger=zeldaForeignItemTrigger("0x7EF359")},
-		[0x7EF35A+ZSTORAGE] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF35A")},
-		[0x7EF35B+ZSTORAGE] = {nameMap={"Blue Armor", "Red Armor"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF35B")},
-		[0x7EF35C+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35C")},
-		[0x7EF35D+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35D")},
-		[0x7EF35E +ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35E")},
-		[0x7EF35F+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35F")},
-		[0x7EF379+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF379")}, --Abilities
-		[0x7EF37B+ZSTORAGE] = {name="Half Magic", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF37B")},
-		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF36B")}, --Heart Pieces
-		[0x7EF36C+ZSTORAGE] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF36C")},
-		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF360")}, -- Rupee byte 1
-		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF361")}, -- Rupee byte 2
-		[0x7EF343+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF343")}, -- Bombs
-		[0x7EF377+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF377")}, -- Arrows
-		[0x7EF38C+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF38C")}, --Extra swap equip
-		[0x7EF38E +ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF38E")}, --Extra swap equip
-		[0x7EF3C7+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF3C7")}, --Extra swap equip
+		[0x7EF340+ZSTORAGE] = {nameMap={"Bow", "Bow", "Silver Arrows", "Silver Arrows"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF340",{"Bow", "Bow", "Silver Arrows", "Silver Arrows"})},
+		[0x7EF341+ZSTORAGE] = {nameMap={"Boomerang", "Magic Boomerang"}, kind="trigger", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF341",{"Boomerang", "Magic Boomerang"})},
+		[0x7EF342+ZSTORAGE] = {name="Hookshot", kind="trigger",   writeTrigger=zeldaForeignItemTrigger("0x7EF342",{"Hookshot"})},
+		[0x7EF344+ZSTORAGE] = {nameMap={"Mushroom", "Magic Powder"}, kind="trigger",   writeTrigger=zeldaForeignItemTrigger("0x7EF344",{"Mushroom", "Magic Powder"})},
+		[0x7EF345+ZSTORAGE] = {name="Fire Rod", kind="trigger",   writeTrigger=zeldaForeignItemTrigger("0x7EF345",{"Fire Rod"})},
+		[0x7EF346+ZSTORAGE] = {name="Ice Rod", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF346",{"Ice Rod"})},
+		[0x7EF347+ZSTORAGE] = {name="Bombos", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF347",{"Bombos"})},
+		[0x7EF348+ZSTORAGE] = {name="Ether", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF348",{"Ether"})},
+		[0x7EF349+ZSTORAGE] = {name="Quake", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF349",{"Quake"})},
+		[0x7EF34A+ZSTORAGE] = {name="Lantern", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34A",{"Lantern"})},
+		[0x7EF34B+ZSTORAGE] = {name="Hammer", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34B",{"Hammer"})},
+		[0x7EF34C+ZSTORAGE] = {nameMap={"Shovel", "Flute", "Bird"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34C",{"Shovel", "Flute", "Bird"})},
+		[0x7EF34D+ZSTORAGE] = {name="Net", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34D",{"Net"})},
+		[0x7EF34E +ZSTORAGE] = {name="Book", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34E",{"Book"})},
+		[0x7EF34F+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF34F",{"Bottle"})},-- Bottle count
+		[0x7EF350+ZSTORAGE] = {name="Red Cane", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF350",{"Red Cane"})},
+		[0x7EF351+ZSTORAGE] = {name="Blue Cane", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF351",{"Blue Cane"})},
+		[0x7EF352+ZSTORAGE] = {name="Cape", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF352",{"Cape"})},
+		[0x7EF353+ZSTORAGE] = {name="Mirror", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF353",{"Mirror"})},
+		[0x7EF354+ZSTORAGE] = {name="Gloves", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF354",{"Gloves"})},
+		[0x7EF355+ZSTORAGE] = {name="Boots", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF355",{"Boots"})},
+		[0x7EF356+ZSTORAGE] = {name="Flippers", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF356",{"Flippers"})},
+		[0x7EF357+ZSTORAGE] = {name="Pearl", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF357",{"Pearl"})},
+		[0x7EF359+ZSTORAGE] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="trigger", cond={"test", gte = 0x1, lte = 0x4}, writeTrigger=zeldaForeignItemTrigger("0x7EF359",{"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"})},
+		[0x7EF35A+ZSTORAGE] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF35A",{"Shield", "Fire Shield", "Mirror Shield"})},
+		[0x7EF35B+ZSTORAGE] = {nameMap={"Blue Armor", "Red Armor"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF35B",{"Blue Armor", "Red Armor"})},
+		--[0x7EF35C+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35C",{})},
+		--[0x7EF35D+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35D",{})},
+		--[0x7EF35E +ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35E",{})},
+		--[0x7EF35F+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35F",{})},
+		[0x7EF379+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF379",{})}, --Abilities
+		[0x7EF37B+ZSTORAGE] = {name="Half Magic", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF37B",{"Half Magic"})},
+		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF36B",{"Heart Piece"})}, --Heart Pieces
+		[0x7EF36C+ZSTORAGE] = {name="a Heart Container", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF36C",{"a Heart Container"})},
+		[0x7EF360+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF360",{})}, -- Rupee byte 1
+		[0x7EF361+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF361",{})}, -- Rupee byte 2
+		[0x7EF343+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF343",{})}, -- Bombs
+		[0x7EF377+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF377",{})}, -- Arrows
+		[0x7EF38C+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF38C",{})}, --Extra swap equip
+		[0x7EF38E +ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF38E",{})}, --Extra swap equip
+		[0x7EF3C7+ZSTORAGE] = {kind="trigger",   writeTrigger=zeldaForeignBitTrigger("0x7EF3C7",{})}, --Extra swap equip
 		
 		
 		
 		----------------------------------------------
 		--Super Metroid Items while in Super Metroid--
 		----------------------------------------------
-		[0x7E09C4] = {name="Energy Tank", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09C4","msynctank")},
-		[0x7E09C8] = {name="Missile Expansion", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09C8","msyncexp")},
-		[0x7E09CC] = {name="Super Missiles", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09CC","msyncexp")},
-		[0x7E09D0] = {name="Power Bombs", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09D0","msyncexp")},
-		[0x7E09D4] = {name="Reserve Tank", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09D4","msynctankreserve")},
-		[0x7E09A4] = {nameBitmap={"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"}, kind="trigger", writeTrigger=metroidLocalBitTrigger("0x7E09A4", "0x2F")},
-		[0x7E09A5] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"}, kind="trigger", writeTrigger=metroidLocalBitTrigger("0x7E09A5", "0xF3")},
-		[0x7E09A8] = {nameBitmap={"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"}, kind="trigger", writeTrigger=metroidLocalBeamTrigger("0x7E09A8", "0x0F")}, -- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
-		[0x7E09A9] = {nameBitmap={"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"}, kind="trigger", writeTrigger=metroidLocalBeamTrigger("0x7E09A9", "0x10")},
+		[0x7E09C4] = {name="Energy Tank", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09C4","msynctank",{"Energy Tank"})},
+		[0x7E09C8] = {name="Missile Expansion", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09C8","msyncexp",{"Missile Expansion"})},
+		[0x7E09CC] = {name="Super Missiles", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09CC","msyncexp",{"Super Missiles"})},
+		[0x7E09D0] = {name="Power Bombs", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09D0","msyncexp",{"Power Bombs"})},
+		[0x7E09D4] = {name="Reserve Tank", kind="trigger", size=2, writeTrigger=metroidLocalExpTrigger("0x7E09D4","msynctankreserve",{})},
+		[0x7E09A4] = {nameBitmap={"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"}, kind="trigger", writeTrigger=metroidLocalBitTrigger("0x7E09A4", "0x2F",{"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"})},
+		[0x7E09A5] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"}, kind="trigger", writeTrigger=metroidLocalBitTrigger("0x7E09A5", "0xF3",{"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"})},
+		[0x7E09A8] = {nameBitmap={"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"}, kind="trigger", writeTrigger=metroidLocalBeamTrigger("0x7E09A8", "0x0F",{"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"})}, -- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
+		[0x7E09A9] = {nameBitmap={"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"}, kind="trigger", writeTrigger=metroidLocalBeamTrigger("0x7E09A9", "0x10",{"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"})},
 		
 		
 		
 		--------------------------------------
 		--Super Metroid Items while in Zelda--
 		--------------------------------------
-		[0x7E09C4+MSTORAGE] = {name="Energy Tank", kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09C4","msynctank")},
-		[0x7E09C8+MSTORAGE] = {name="Missile Expansion", kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09C8","msyncexp")},
-		[0x7E09CC+MSTORAGE] = {name="Super Missiles",    kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09CC","msyncexp")},
-		[0x7E09D0+MSTORAGE] = {name="Power Bombs",       kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09D0","msyncexp")},
-		[0x7E09D4+MSTORAGE] = {name="Reserve Tank",      kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09D4","msynctankreserve")},
-		[0x7E09A4+MSTORAGE] = {nameBitmap={"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"},kind="trigger", writeTrigger=metroidForeignBitTrigger("0x7E09A4", "0x2F")},
-		[0x7E09A5+MSTORAGE] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"},kind="trigger", writeTrigger=metroidForeignBitTrigger("0x7E09A5", "0xF3")}, 
-		[0x7E09A8+MSTORAGE] = {nameBitmap={"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"},kind="trigger",writeTrigger=metroidForeignBeamTrigger("0x7E09A8", "0x0F")}, -- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
-		[0x7E09A9+MSTORAGE] = {nameBitmap={"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"},kind="trigger", writeTrigger=metroidForeignBeamTrigger("0x7E09A9", "0x10")},
+		[0x7E09C4+MSTORAGE] = {name="Energy Tank", kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09C4","msynctank",{"Energy Tank"})},
+		[0x7E09C8+MSTORAGE] = {name="Missile Expansion", kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09C8","msyncexp",{"Missile Expansion"})},
+		[0x7E09CC+MSTORAGE] = {name="Super Missiles",    kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09CC","msyncexp",{"Super Missiles"})},
+		[0x7E09D0+MSTORAGE] = {name="Power Bombs",       kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09D0","msyncexp",{"Power Bombs"})},
+		[0x7E09D4+MSTORAGE] = {name="Reserve Tank",      kind="trigger", size=2, writeTrigger=metroidForeignExpTrigger("0x7E09D4","msynctankreserve",{"Reserve Tank"})},
+		[0x7E09A4+MSTORAGE] = {nameBitmap={"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"},kind="trigger", writeTrigger=metroidForeignBitTrigger("0x7E09A4", "0x2F",{"Varia Suit", "Spring Ball", "Morph Ball", "Screw Attack", "unknown item", "Gravity Suit"})},
+		[0x7E09A5+MSTORAGE] = {nameBitmap={"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"},kind="trigger", writeTrigger=metroidForeignBitTrigger("0x7E09A5", "0xF3",{"Hi-Jump Boots", "Space Jump", "unknown item", "unknown item", "Bomb", "Speed Booster", "Grapple Beam", "X-Ray Scope"})}, 
+		[0x7E09A8+MSTORAGE] = {nameBitmap={"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"},kind="trigger",writeTrigger=metroidForeignBeamTrigger("0x7E09A8", "0x0F",{"Wave Beam", "Ice Beam", "Spazer Beam", "Plasma Beam"})}, -- Trigger for beams is same as makeItemTrigger, EXCEPT we must make sure the plasma and spazer beam never go high at once
+		[0x7E09A9+MSTORAGE] = {nameBitmap={"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"},kind="trigger", writeTrigger=metroidForeignBeamTrigger("0x7E09A9", "0x10",{"unknown beam", "unknown beam", "unknown beam", "unknown beam", "Charge Beam"})},
 		
 		
 		------------------------------
@@ -2311,6 +2484,10 @@ return {
 					queuemval[0x7ED821] = 255
 				end
 			end
+		end,
+		
+		messageRead = function(payload)
+			message(payload)
 		end
 	}
 }
