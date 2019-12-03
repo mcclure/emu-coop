@@ -122,7 +122,7 @@ local function zeldaLocalBitTrigger(targetAddr, nameMap)
 			local sendPayload = targetAddr .. newBitVal
 			if previous[targetAddr] ~= value then
 				send("zsyncbit", sendPayload)
-				local rising = value - previousValue
+				local rising = value - previous[targetAddr]
 				local bitNameVal = 1
 				if rising == 1 then
 					bitNameVal = 1
@@ -164,7 +164,7 @@ local function zeldaForeignBitTrigger(targetAddr, nameMap)
 			local sendPayload = targetAddr .. newBitVal
 			if previous[targetAddr] ~= value then
 				send("zsyncbit", sendPayload)
-				local rising = value - previousValue
+				local rising = value - previous[targetAddr]
 				local bitNameVal = 1
 				if rising == 1 then
 					bitNameVal = 1
@@ -276,7 +276,7 @@ local function metroidLocalBitTrigger(targetAddr, mask, nameMap) -- check bit to
 				local sendPayload = targetAddr .. mask .. newBitVal
 				if previous[targetAddr] ~= value then
 					send("msync", sendPayload)
-					local rising = value - previousValue
+					local rising = value - previous[targetAddr]
 					local bitNameVal = 1
 					if rising == 1 then
 						bitNameVal = 1
@@ -323,7 +323,7 @@ local function metroidLocalBeamTrigger(targetAddr, mask, nameMap) -- check bit t
 					if previous[targetAddr] ~= value then
 						send("msyncbeam", sendPayload)
 						send("msyncbeamequip", sendPayload)
-						local rising = value - previousValue
+						local rising = value - previous[targetAddr]
 						local bitNameVal = 1
 						if rising == 1 then
 							bitNameVal = 1
@@ -392,7 +392,7 @@ local function metroidForeignBitTrigger(targetAddr, mask, nameMap) -- check bit 
 				local sendPayload = targetAddr .. mask .. newBitVal
 				if previous[targetAddr] ~= value then
 					send("msync", sendPayload)
-					local rising = value - previousValue
+					local rising = value - previous[targetAddr]
 					local bitNameVal = 1
 					if rising == 1 then
 						bitNameVal = 1
@@ -438,7 +438,7 @@ local function metroidForeignBeamTrigger(targetAddr, mask, nameMap) -- check bit
 					if previous[targetAddr] ~= value then
 						send("msyncbeam", sendPayload)
 						send("msyncbeamequip", sendPayload)
-						local rising = value - previousValue
+						local rising = value - previous[targetAddr]
 						local bitNameVal = 1
 						if rising == 1 then
 							bitNameVal = 1
