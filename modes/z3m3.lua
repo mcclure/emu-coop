@@ -485,7 +485,7 @@ end
 ---------Room Syncing---------
 ------------------------------
 local function loadBackup(payload)
-	message("backup loaded")
+	message("Backup loaded")
 	local currentGame = memoryRead(0xA173FE)
 	if payload == "m" then
 		if backup[0] == "m" then
@@ -773,7 +773,7 @@ local function roomSwapMetroid(targetAddr) --MAKE SURE THIS CAN TELL IF GAME IS 
 		if currentGame == partnerGame and currentGame == 0 and value == partnerRoom then
 			if noSend == false then
 				noSend = true
-				message("Same Room as Partner")
+				message("Same Room as Partner, Backup Created")
 				if previous[targetAddr] ~= value then
 					send("mroomswap",value)
 					previous[targetAddr] = value
@@ -2434,7 +2434,7 @@ return {
 			partnerGame = 255
 			partnerRoom = tonumber(payload, 10)
 			--message(partnerGame)
-			message("Partner room is " .. partnerRoom)
+			--message("Partner room is " .. partnerRoom)
 			if memory.readbyte(0xA17402) == 1 then
 				zeldaCompleted = true
 				send("zeldaDone","true")
@@ -2449,7 +2449,7 @@ return {
 			partnerGame = 0
 			partnerRoom = tonumber(payload, 10)
 			--message(partnerGame)
-			message("Partner room is " .. partnerRoom)
+			--message("Partner room is " .. partnerRoom)
 			if memory.readbyte(0xA17402) == 1 then
 				zeldaCompleted = true
 				send("zeldaDone","true")
