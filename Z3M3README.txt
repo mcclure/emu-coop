@@ -18,6 +18,7 @@ To start:
 	
 
 Contact txcrnr#9668 on Discord if you run into any issues or have feedback on the co-op script.
+I am also on twitter as txcrnr.
 
 What it does:
 -Syncs upgrades and expansions to maximum health, equipment, and weaponry for both games

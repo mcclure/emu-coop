@@ -1,5 +1,8 @@
 # emu-coop
 
+Contact txcrnr#9668 on Discord or @txcrnr on twitter if you run into any issues or have feedback on the Z3M3 Randomizer co-op mode script.
+
+
 This directory contains some Lua scripts that, when loaded by a compliant emulator such as snes9x-rr or FCEUX, can synchronize emulator state over the internet (allowing "cooperative" playthroughs of single-player games).
 
 Each game you want to use this with requires a "mode" file in the modes/ directory. Currently included are modes for Link to the Past, the Link to the Past "Randomizer", Zelda 1 and Super Metroid. **WARNING: Modes are PROGRAMS, like a .exe file. Do not install a mode file unless it came from someone you know and trust.** 
