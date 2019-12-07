@@ -962,10 +962,10 @@ return {
 		[0x7EF359] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="trigger", cond={"test", gte = 0x1, lte = 0x4}, writeTrigger=zeldaLocalItemTrigger("0x7EF359",{"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"})},
 		[0x7EF35A] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF35A",{"Shield", "Fire Shield", "Mirror Shield"})},
 		[0x7EF35B] = {nameMap={"Blue Armor", "Red Armor"}, kind="trigger", writeTrigger=zeldaLocalItemTrigger("0x7EF35B",{"Blue Armor", "Red Armor"})},
-		--[0x7EF35C] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35C",{"or filled/used bottle in slot 1"})},
-		--[0x7EF35D] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35D",{"or filled/used bottle in slot 2"})},
-		--[0x7EF35E] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35E",{"or filled/used bottle in slot 3"})},
-		--[0x7EF35F] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35F",{"or filled/used bottle in slot 4"})},
+		[0x7EF35C] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35C",{})},
+		[0x7EF35D] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35D",{})},
+		[0x7EF35E] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35E",{})},
+		[0x7EF35F] = {name="Bottle", kind="trigger", writeTrigger=zeldaLocalBottleTrigger("0x7EF35F",{})},
 		---
 		[0x7EF379] = {kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF379",{})}, --Abilities
 		[0x7EF374] = {name="a Pendant", kind="trigger", writeTrigger=zeldaLocalBitTrigger("0x7EF374",{"a Pendant"})},
@@ -1024,10 +1024,10 @@ return {
 		[0x7EF359+ZSTORAGE] = {nameMap={"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"}, kind="trigger", cond={"test", gte = 0x1, lte = 0x4}, writeTrigger=zeldaForeignItemTrigger("0x7EF359",{"Fighter's Sword", "Master Sword", "Tempered Sword", "Golden Sword"})},
 		[0x7EF35A+ZSTORAGE] = {nameMap={"Shield", "Fire Shield", "Mirror Shield"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF35A",{"Shield", "Fire Shield", "Mirror Shield"})},
 		[0x7EF35B+ZSTORAGE] = {nameMap={"Blue Armor", "Red Armor"}, kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF35B",{"Blue Armor", "Red Armor"})},
-		--[0x7EF35C+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35C",{})},
-		--[0x7EF35D+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35D",{})},
-		--[0x7EF35E +ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35E",{})},
-		--[0x7EF35F+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35F",{})},
+		[0x7EF35C+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35C",{})},
+		[0x7EF35D+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35D",{})},
+		[0x7EF35E +ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35E",{})},
+		[0x7EF35F+ZSTORAGE] = {name="Bottle", kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF35F",{})},
 		[0x7EF379+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBitTrigger("0x7EF379",{})}, --Abilities
 		[0x7EF37B+ZSTORAGE] = {name="Half Magic", kind="trigger", writeTrigger=zeldaForeignItemTrigger("0x7EF37B",{"Half Magic"})},
 		[0x7EF36B+ZSTORAGE] = {kind="trigger", writeTrigger=zeldaForeignBottleTrigger("0x7EF36B",{"Heart Piece"})}, --Heart Pieces
