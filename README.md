@@ -18,7 +18,7 @@ Big thanks to:
 
 Unless otherwise noted, the license is:
 
-	Copyright (C) 2017 Andi McClure
+	Copyright (C) 2017-2020 Andi McClure
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
