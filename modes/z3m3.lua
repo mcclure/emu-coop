@@ -895,7 +895,7 @@ local function finalBossTriggerZelda(targetAddr,nameMap)
 		if value == 1 and value ~= previous[targetAddr] then
 			zeldaCompleted = true
 			send("zeldaDone","true")
-			send("messageRead","Partner completed " .. nameMapnameMap[value])
+			send("messageRead","Partner completed " .. nameMap[value])
 			previous[targetAddr] = 1
 		end
 		if metroidCompleted == true and zeldaCompleted == true then
