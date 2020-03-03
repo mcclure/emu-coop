@@ -69,19 +69,21 @@ end
 local function zeldaLocalItemTrigger(targetAddr,nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 0 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			if value ~= nil and value > previous[targetAddr] then  
-				local sendPayload = targetAddr .. value
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				if nameMap[value] ~= nil then
+					sendPayload[3] = nameMap[value]
+				elseif nameMap[1] ~= nil then
+					sendPayload[3] = nameMap[1]
+				end
 				send("zsync", sendPayload)
 				previous[targetAddr] = value
-				if nameMap[value] ~= nil then
-					send("messageRead","Partner got " .. nameMap[value])
-				elseif nameMap[1] ~= nil then
-					send ("messageRead","Partner got " .. nameMap[1])
-				end
 			end
 		end
 	end
@@ -91,19 +93,21 @@ local function zeldaLocalBottleTrigger(targetAddr,nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
 		local stateCheck = memoryRead(0x7E0010)
+		local sendPayload = {}
 		if currentGame == 0 and noSend == false and stateCheck ~= 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			if value ~= nil then
-				local sendPayload = targetAddr .. value
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				if nameMap[value] ~= nil then
+					sendPayload[3] = nameMap[value]
+				elseif nameMap[1] ~= nil then
+					sendPayload[3] = nameMap[1]
+				end
 				if previous[targetAddr] ~= value then
 					send("zsync", sendPayload)
-					if nameMap[value] ~= nil then
-						send("messageRead","Partner got " .. nameMap[value])
-					elseif nameMap[1] ~= nil then
-						send ("messageRead","Partner got " .. nameMap[1])
-					end
 				end
 				previous[targetAddr] = value
 			end
@@ -114,14 +118,15 @@ end
 local function zeldaLocalBitTrigger(targetAddr, nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 0 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			local newBitVal = OR(value, previous[targetAddr])
-			local sendPayload = targetAddr .. newBitVal
+			sendPayload[1] = targetAddr
+			sendPayload[2] = value
 			if previous[targetAddr] ~= value then
-				send("zsyncbit", sendPayload)
 				local rising = value - previous[targetAddr]
 				local bitNameVal = 1
 				if rising == 1 then
@@ -142,10 +147,11 @@ local function zeldaLocalBitTrigger(targetAddr, nameMap)
 					bitNameVal = 8
 				end
 				if nameMap[bitNameVal] ~= nil then
-					send("messageRead","Partner got " .. nameMap[bitNameVal])
+					sendPayload[3] = nameMap[bitNameVal]
 				elseif nameMap[1] ~= nil then
-					send ("messageRead","Partner got " .. nameMap[1])
+					sendPayload[3] = nameMap[1]
 				end
+				send("zsyncbit", sendPayload)
 			end
 			previous[targetAddr] = newBitVal
 		end
@@ -156,14 +162,15 @@ local function zeldaForeignBitTrigger(targetAddr, nameMap)
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 255 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			local newBitVal = OR(value, previous[targetAddr])
-			local sendPayload = targetAddr .. newBitVal
+			sendPayload[1] = targetAddr
+			sendPayload[2] = value
 			if previous[targetAddr] ~= value then
-				send("zsyncbit", sendPayload)
 				local rising = value - previous[targetAddr]
 				local bitNameVal = 1
 				if rising == 1 then
@@ -184,10 +191,11 @@ local function zeldaForeignBitTrigger(targetAddr, nameMap)
 					bitNameVal = 8
 				end
 				if nameMap[bitNameVal] ~= nil then
-					send("messageRead","Partner got " .. nameMap[bitNameVal])
+					sendPayload[3] = nameMap[bitNameVal]
 				elseif nameMap[1] ~= nil then
-					send ("messageRead","Partner got " .. nameMap[1])
+					sendPayload[3] = nameMap[1]
 				end
+				send("zsyncbit", sendPayload)
 			end
 			previous[targetAddr] = newBitVal
 		end
@@ -197,18 +205,20 @@ end
 local function zeldaForeignItemTrigger(targetAddr, nameMap)  
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 255 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			if value ~= nil and value > previous[targetAddr] then
-				local sendPayload = targetAddr .. value
-				send("zsync", sendPayload)
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
 				if nameMap[value] ~= nil then
-					send("messageRead","Partner got " .. nameMap[value])
+					sendPayload[3] = nameMap[value]
 				elseif nameMap[1] ~= nil then
-					send ("messageRead","Partner got " .. nameMap[1])
+					sendPayload[3] = nameMap[1]
 				end
+				send("zsync", sendPayload)
 				previous[targetAddr] = value
 			end
 		end
@@ -218,19 +228,21 @@ end
 local function zeldaForeignBottleTrigger(targetAddr, nameMap)  
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 255 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			if value ~= nil then
-				local sendPayload = targetAddr .. value
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				if nameMap[value] ~= nil then
+					sendPayload[3] = nameMap[value]
+				elseif nameMap[1] ~= nil then
+					sendPayload[3] = nameMap[1]
+				end
 				if previous[targetAddr] ~= value then
 					send("zsync", sendPayload)
-					if nameMap[value] ~= nil then
-						send("messageRead","Partner got " .. nameMap[value])
-					elseif nameMap[1] ~= nil then
-						send ("messageRead","Partner got " .. nameMap[1])
-					end
 				end
 				previous[targetAddr] = value
 			end
@@ -242,19 +254,21 @@ local function metroidLocalExpTrigger(targetAddr, localFunc, nameMap)
 	return function(value, previousValue, forceSend)
 		--message("Expansions Changed")
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 255 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			if value ~= nil and value > previous[targetAddr] then
-				local sendPayload = targetAddr .. value
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				if nameMap[value] ~= nil then
+					sendPayload[3] = nameMap[value]
+				elseif nameMap[1] ~= nil then
+					sendPayload[3] = nameMap[1]
+				end
 				if previous[targetAddr] ~= value then
 					send(localFunc, sendPayload)
-					if nameMap[value] ~= nil then
-						send("messageRead","Partner got " .. nameMap[value])
-					elseif nameMap[1] ~= nil then
-						send ("messageRead","Partner got " .. nameMap[1])
-					end
 				end
 				previous[targetAddr] = value
 			end
@@ -266,6 +280,7 @@ local function metroidLocalBitTrigger(targetAddr, mask, nameMap) -- check bit to
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 255 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
@@ -273,9 +288,10 @@ local function metroidLocalBitTrigger(targetAddr, mask, nameMap) -- check bit to
 			local rising = value - previous[targetAddr]
 			if AND(rising, previous[targetAddr]) == 0 then
 				local newBitVal = OR(value, previous[targetAddr])
-				local sendPayload = targetAddr .. mask .. newBitVal
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				sendPayload[4] = newBitVal
 				if previous[targetAddr] ~= value then
-					send("msync", sendPayload)
 					local rising = value - previous[targetAddr]
 					local bitNameVal = 1
 					if rising == 1 then
@@ -296,10 +312,11 @@ local function metroidLocalBitTrigger(targetAddr, mask, nameMap) -- check bit to
 						bitNameVal = 8
 					end
 					if nameMap[bitNameVal] ~= nil then
-						send("messageRead","Partner got " .. nameMap[bitNameVal])
+						sendPayload[3] = nameMap[bitNameVal]
 					elseif nameMap[1] ~= nil then
-						send ("messageRead","Partner got " .. nameMap[1])
+						sendPayload[3] = nameMap[1]
 					end
+					send("msync", sendPayload)
 				end
 				previous[targetAddr] = newBitVal
 			end
@@ -311,17 +328,19 @@ local function metroidLocalBeamTrigger(targetAddr, mask, nameMap) -- check bit t
 	return function(value, previousValue, forceSend)
 		--message("Equipment Changed")
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 255 and value ~= 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			local rising = value - previous[targetAddr]
+			local newBitVal = OR(value, previous[targetAddr])
 			if value ~= previous[targetAddr] then
 				if AND(rising, previous[targetAddr]) == 0 then
-					local newBitVal = OR(value, previous[targetAddr])
-					local sendPayload = targetAddr .. newBitVal
+					sendPayload[1] = targetAddr
+					sendPayload[2] = value
+					sendPayload[4] = newBitVal
 					if previous[targetAddr] ~= value then
-						send("msyncbeam", sendPayload)
 						send("msyncbeamequip", sendPayload)
 						local rising = value - previous[targetAddr]
 						local bitNameVal = 1
@@ -343,10 +362,11 @@ local function metroidLocalBeamTrigger(targetAddr, mask, nameMap) -- check bit t
 							bitNameVal = 8
 						end
 						if nameMap[bitNameVal] ~= nil then
-							send("messageRead","Partner got " .. nameMap[bitNameVal])
+							sendPayload[3] = nameMap[bitNameVal]
 						elseif nameMap[1] ~= nil then
-							send ("messageRead","Partner got " .. nameMap[1])
+							sendPayload[3] = nameMap[1]
 						end
+						send("msyncbeam", sendPayload)
 					end
 					previous[targetAddr] = value
 				end
@@ -359,19 +379,21 @@ end
 local function metroidForeignExpTrigger(targetAddr, localFunc, nameMap)
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 0 and noSend == false then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			if value ~= nil and value > previous[targetAddr] then
-				local sendPayload = targetAddr .. value
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				if nameMap[value] ~= nil then
+					sendPayload[3] = nameMap[value]
+				elseif nameMap[1] ~= nil then
+					sendPayload[3] = nameMap[1]
+				end
 				if previous[targetAddr] ~= value then
 					send(localFunc, sendPayload)
-					if nameMap[value] ~= nil then
-						send("messageRead","Partner got " .. nameMap[value])
-					elseif nameMap[1] ~= nil then
-						send ("messageRead","Partner got " .. nameMap[1])
-					end	
 				end
 				previous[targetAddr] = value
 			end
@@ -382,16 +404,19 @@ end
 local function metroidForeignBitTrigger(targetAddr, mask, nameMap) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
 			end
 			local rising = value - previous[targetAddr]
+			local newBitVal = OR(value, previous[targetAddr])
 			if AND(rising, previous[targetAddr]) == 0 then
 				local newBitVal = OR(value, previous[targetAddr])
-				local sendPayload = targetAddr .. mask .. newBitVal
+				sendPayload[1] = targetAddr
+				sendPayload[2] = value
+				sendPayload[4] = newBitVal
 				if previous[targetAddr] ~= value then
-					send("msync", sendPayload)
 					local rising = value - previous[targetAddr]
 					local bitNameVal = 1
 					if rising == 1 then
@@ -412,10 +437,11 @@ local function metroidForeignBitTrigger(targetAddr, mask, nameMap) -- check bit 
 						bitNameVal = 8
 					end
 					if nameMap[bitNameVal] ~= nil then
-						send("messageRead","Partner got " .. nameMap[bitNameVal])
+						sendPayload[3] = nameMap[bitNameVal]
 					elseif nameMap[1] ~= nil then
-						send ("messageRead","Partner got " .. nameMap[1])
+						sendPayload[3] = nameMap[1]
 					end
+					send("msync", sendPayload)
 				end
 				previous[targetAddr] = newBitVal
 			end
@@ -426,6 +452,7 @@ end
 local function metroidForeignBeamTrigger(targetAddr, mask, nameMap) -- check bit to ensure extra value is not being added on second pickup
 	return function(value, previousValue, forceSend)
 		local currentGame = memoryRead(0xA173FE)
+		local sendPayload = {}
 		if currentGame == 0 and value ~= 0 then
 			if previous[targetAddr] == nil then	
 				previous[targetAddr] = 0
@@ -434,9 +461,10 @@ local function metroidForeignBeamTrigger(targetAddr, mask, nameMap) -- check bit
 			if value ~= previous[targetAddr] then
 				if AND(rising, previous[targetAddr]) == 0 then
 					local newBitVal = OR(value, previous[targetAddr])
-					local sendPayload = targetAddr .. newBitVal
+					sendPayload[1] = targetAddr
+					sendPayload[2] = value
+					sendPayload[4] = newBitVal
 					if previous[targetAddr] ~= value then
-						send("msyncbeam", sendPayload)
 						send("msyncbeamequip", sendPayload)
 						local rising = value - previous[targetAddr]
 						local bitNameVal = 1
@@ -458,10 +486,11 @@ local function metroidForeignBeamTrigger(targetAddr, mask, nameMap) -- check bit
 							bitNameVal = 8
 						end
 						if nameMap[bitNameVal] ~= nil then
-							send("messageRead","Partner got " .. nameMap[bitNameVal])
+							sendPayload[3] = nameMap[bitNameVal]
 						elseif nameMap[1] ~= nil then
-							send ("messageRead","Partner got " .. nameMap[1])
+							sendPayload[3] = nameMap[1]
 						end
+						send("msyncbeam", sendPayload)
 					end
 					previous[targetAddr] = value
 				end
@@ -685,15 +714,15 @@ local function metroidQueueTrigger(targetAddr, syncType)
 			--message("Mqueue active")
 			--message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
 			if syncType == "high" then
-				local sendPayload = targetAddr .. value
+				sendPayload = targetAddr .. value
 				send("msyncqueuehigh", sendPayload)
 				previous[targetAddr] = value
 			elseif syncType == "bitOr" then
-				local sendPayload = targetAddr .. value
+				sendPayload = targetAddr .. value
 				send("msyncqueuebit", sendPayload)
 				previous[targetAddr] = value
 			elseif syncType == "either" then
-				local sendPayload = targetAddr .. value
+				sendPayload = targetAddr .. value
 				send("msyncqueueval", sendPayload)
 				previous[targetAddr] = value
 			else
@@ -720,15 +749,15 @@ local function zeldaQueueTrigger(targetAddr, syncType)
 			--message("Zqueue active")
 			--message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
 			if syncType == "high" then
-				local sendPayload = targetAddr .. value
+				sendPayload = targetAddr .. value
 				send("zsyncqueuehigh", sendPayload)
 				previous[targetAddr] = value
 			elseif syncType == "bitOr" then
-				local sendPayload = targetAddr .. value
+				sendPayload = targetAddr .. value
 				send("zsyncqueuebit", sendPayload)
 				previous[targetAddr] = value
 			elseif syncType == "either" then
-				local sendPayload = targetAddr .. value
+				sendPayload = targetAddr .. value
 				send("zsyncqueueval", sendPayload)
 				previous[targetAddr] = value
 			else
@@ -755,7 +784,7 @@ local function zeldaKeyQueueTrigger(targetAddr)
 		if currentGame == 0 and testVal == true and noSend == false and value ~= previous[targetAddr] then
 			--message("Zqueue active")
 			--message(targetAddr .. "    " .. value .. "    " .. previous[targetAddr])
-			local sendPayload = targetAddr .. value
+			sendPayload = targetAddr .. value
 			send("zsyncqueueval", sendPayload)
 			previous[targetAddr] = value
 		elseif currentGame == 0 and noSend == true then
@@ -2042,8 +2071,9 @@ return {
 	custom = { -- sync high and bit values to take only high or OR'ed values, and set previous for target address
 		
 		zsync = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9), 10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true and backup[address] ~= nil then
 				if currentGame == 0 then
@@ -2054,11 +2084,17 @@ return {
 			else
 				if currentGame == 0 then
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value 
 					--message("wrote val to Zelda while in Zelda")
 				else
 					local addressHex = address + ZSTORAGE
 					memoryWrite(addressHex, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 					--message("wrote val to Zelda while in Metroid")
 				end
@@ -2066,18 +2102,25 @@ return {
 		end,
 		
 		zsyncqueueval = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9),10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
 				if noSend == true and backup[address] ~= nil then
 					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				else
 					--message("valSync")
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				end
 			else 
@@ -2095,6 +2138,9 @@ return {
 					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				else
 					--message("bitSync")
@@ -2102,6 +2148,9 @@ return {
 						previous[address] = memoryRead(address)
 					end
 					memoryWrite(address, OR(value, previous[address]))
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = OR(value, previous[address])
 				end
 			else 
@@ -2119,6 +2168,9 @@ return {
 					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				else
 					--message("hiSync")
@@ -2127,6 +2179,9 @@ return {
 					end
 					if value > previous[address] then
 						memoryWrite(address, value)
+						if previous[address] ~= value and itemName ~= nil then
+							message("Partner got " .. itemName)
+						end
 					end
 				end
 			else 
@@ -2138,8 +2193,9 @@ return {
 		
 		zsyncbit = function(payload)
 		if payload ~= nil then
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9), 10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true and backup[address] ~= nil then
 				if currentGame == 0 then
@@ -2154,6 +2210,10 @@ return {
 						previousValue = 0
 					end
 					memoryWrite(address, OR(value, previousValue))
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
+					previous[address] = value
 				else
 					local addressHex = address + ZSTORAGE
 					local previousValue = memoryRead(addressHex)
@@ -2161,15 +2221,20 @@ return {
 						previousValue = 0
 					end
 					memoryWrite(addressHex, OR(value, previousValue))
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
+					previous[address] = value
 				end
 			end
 		end
 		end,
 		
 		msync = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local mask = tonumber(string.sub(payload, 9, 12), 16)
-			local value = tonumber(string.sub(payload, 13),10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
+			local mask = payload[4]
 			local currentGame = memoryRead(0xA173FE)
 			--message(string.sub(payload, 1, 8))
 			--message(string.sub(payload, 9, 12))
@@ -2181,6 +2246,10 @@ return {
 					previousValue = 0
 				end
 				memoryWrite(addressHex, OR(value, previousValue))
+				if previous[address] ~= value and itemName ~= nil then
+					message("Partner got " .. itemName)
+				end
+				previous[address] = value
 				makeItemTrigger(addressHex-2, mask, value, previousValue)
 			else
 				local previousValue = memoryRead(address)
@@ -2188,6 +2257,10 @@ return {
 					previousValue = 0
 				end
 				memoryWrite(address, OR(value, previousValue))
+				if previous[address] ~= value and itemName ~= nil then
+					message("Partner got " .. itemName)
+				end
+				previous[address] = value
 				makeItemTrigger(address-2, mask, value, previousValue)
 			end
 		end,
@@ -2200,10 +2273,16 @@ return {
 				if noSend == true and backup[address] ~= nil then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				else
 					--message("valSync")
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				end
 			else 
@@ -2221,6 +2300,9 @@ return {
 				if noSend == true and backup[address] ~= nil then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				else
 					--message("bitSync")
@@ -2228,6 +2310,9 @@ return {
 						previous[address] = memoryRead(address)
 					end
 					memoryWrite(address, OR(value, previous[address]))
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = OR(value, previous[address])
 				end
 			else 
@@ -2244,6 +2329,9 @@ return {
 				if noSend == true and backup[address] ~= nil then
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
 					memoryWrite(address, value)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
 					previous[address] = value
 				else
 					--message("hiSync")
@@ -2252,6 +2340,9 @@ return {
 					end
 					if value > previous[address] then
 						memoryWrite(address, value)
+						if previous[address] ~= value and itemName ~= nil then
+							message("Partner got " .. itemName)
+						end
 						previous[address] = value
 					end
 				end
@@ -2262,8 +2353,9 @@ return {
 		end,
 		
 		msyncbit = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9), 10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
@@ -2279,32 +2371,50 @@ return {
 						previousValue = 0
 					end
 					memoryWrite(addressHex, OR(value, previousValue), 2)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
+					previous[address] = value
 				else
 					local previousValue = memoryRead(address)
 					if previousValue == nil then
 						previousValue = 0
 					end
 					memoryWrite(address, OR(value, previousValue), 2)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
+					previous[address] = value
 				end
 			end
 		end,
 		
 		msyncbeam = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9),10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			--message("recieved value " .. value .. "for beam sync")
 			local currentGame = memoryRead(0xA173FE)
 			if currentGame == 0 then
 				local addressHex = address + MSTORAGE
 				memoryWrite(addressHex, value)
+				if previous[address] ~= value and itemName ~= nil then
+					message("Partner got " .. itemName)
+				end
+				previous[address] = value
 			else
 				memoryWrite(address, value)
+				if previous[address] ~= value and itemName ~= nil then
+					message("Partner got " .. itemName)
+				end
+				previous[address] = value
 			end
 		end,
 		
 		msyncbeamequip = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = tonumber(string.sub(payload, 9),10)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			--message("recieved value " .. value .. "for beam equip")
 			if currentGame == 0 then
 				local current = memory.readbyte(address + MSTORAGE)
@@ -2345,8 +2455,9 @@ return {
 		end,
 		
 		msyncexp = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = string.sub(payload, 9)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local newVal = tonumber(value, 10)
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true and backup[address] ~= nil then
@@ -2362,6 +2473,10 @@ return {
 					local oldVal = memory.readword(addressHex)
 					if newVal > oldVal then
 						memoryWrite(addressHex, value, 2)
+						if previous[address] ~= value and itemName ~= nil then
+							message("Partner got " .. itemName)
+						end
+						previous[address] = value
 						--message("wrote expansion to Metroid while in Zelda")
 						memory.writeword(addressHex - 2, ammoCount + 5) -- Add 5 ammo
 					end
@@ -2370,6 +2485,10 @@ return {
 					local oldVal = memory.readword(address)
 					if newVal > oldVal then
 						memoryWrite(address, value, 2)
+						if previous[address] ~= value and itemName ~= nil then
+							message("Partner got " .. itemName)
+						end
+						previous[address] = value
 						--message("wrote expansion to Metroid while in Metroid")
 						memory.writeword(address - 2, ammoCount + 5) -- Add 5 ammo
 					end
@@ -2378,8 +2497,9 @@ return {
 		end,
 		
 		msynctank = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = string.sub(payload, 9)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
 			local newVal = tonumber(value, 10)
 			if noSend == true and backup[address] ~= nil then
@@ -2395,6 +2515,10 @@ return {
 					if newVal > oldVal then
 						memory.writeword(0x7E09C2 + MSTORAGE, value) -- Refill health on any Etank collection
 						memoryWrite(addressHex, value, 2)
+						if previous[address] ~= value and itemName ~= nil then
+							message("Partner got " .. itemName)
+						end
+						previous[address] = value
 						--message("wrote E-tank to Metroid while in Zelda")
 					end
 				else
@@ -2402,6 +2526,10 @@ return {
 					if newVal > oldVal then
 						memory.writeword(0x7E09C2, value) -- Refill health on any Etank collection
 						memoryWrite(address, value, 2)
+						if previous[address] ~= value and itemName ~= nil then
+							message("Partner got " .. itemName)
+						end
+						previous[address] = value
 						--message("wrote E-tank to Metroid while in Metroid")
 					end
 				end
@@ -2409,8 +2537,9 @@ return {
 		end,
 		
 		msynctankreserve = function(payload)
-			local address = tonumber(string.sub(payload, 1, 8), 16)
-			local value = string.sub(payload, 9)
+			local address = payload[1]
+			local value = payload[2]
+			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
 			if noSend == true and backup[address] ~= nil then
 				if currentGame == 255 then
@@ -2422,9 +2551,17 @@ return {
 				if currentGame == 0 then
 					local addressHex = address + MSTORAGE
 					memoryWrite(addressHex, value, 2)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
+					previous[address] = value
 					--message("wrote R-tank to Metroid while in Zelda")
 				else
 					memoryWrite(address, value, 2)
+					if previous[address] ~= value and itemName ~= nil then
+						message("Partner got " .. itemName)
+					end
+					previous[address] = value
 					--message("wrote R-tank to Metroid while in Metroid")
 				end
 			end
