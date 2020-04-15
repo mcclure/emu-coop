@@ -13,15 +13,14 @@
 
 
 
---------------------------------
------Mod by Trevor Thompson-----
---------------------------------
---Current Revision: Beta 3.1.0--
---------------------------------
-------------12/2/2019-----------
---------------------------------
------------11:00AM EST----------
---------------------------------
+----------------------------------
+------Mod by Trevor Thompson------
+----------------------------------
+--Current Revision: Release 1.0.0-
+----------------------------------
+-------------3/3/2020-------------
+----------------------------------
+
 
 --Memory Addresses to check:
 --0xA17402 SM COMPLETED
@@ -2125,7 +2124,9 @@ return {
 				end
 			else 
 				--message("hiQ")
-				queuezval[address] = value
+				if address ~= nil then
+					queuezval[address] = value
+				end
 			end
 		end,
 		
@@ -2411,48 +2412,48 @@ return {
 			end
 		end,
 		
-		msyncbeamequip = function(payload)
-			local address = payload[1]
-			local value = payload[2]
-			local itemName = payload[3]
-			--message("recieved value " .. value .. "for beam equip")
-			if currentGame == 0 then
-				local current = memory.readbyte(address + MSTORAGE)
-				local currentEquip = memory.readbyte(address-2 + MSTORAGE)
-				if current == nil then
-					current = 0
-				end
-				if currentEquip == nil then
-					currentEquip = 0
-				end
-				newItem = value
-				newVal = OR(currentEquip, newItem)
-				--message(newVal)
-				if newVal >= 12 and address == 0x7E09A8 then
-					newVal = newVal - 4
-				end
-				memory.writebyte(address - 2 + MSTORAGE, newVal)
-				--message("wrote beamequip to Metroid while in Metroid")
-			else
-				local current = memory.readbyte(address)
-				local currentEquip = memory.readbyte(address - 2)
-				if current == nil then
-					current = 0
-				end
-				if currentEquip == nil then
-					currentEquip = 0
-				end
-				--message(value)
-				newItem = value
-				newVal = OR(currentEquip, newItem)
-				--message(newVal)
-				if newVal >= 12 and address == 0x7E09A8 then
-					newVal = newVal - 4
-				end
-				memory.writebyte(address - 2, newVal)
-				--message("wrote beamequip to Metroid while in Metroid")
-			end
-		end,
+		-- msyncbeamequip = function(payload)
+			-- local address = payload[1]
+			-- local value = payload[2]
+			-- local itemName = payload[3]
+			-- --message("recieved value " .. value .. "for beam equip")
+			-- if currentGame == 0 then
+				-- local current = memory.readbyte(address + MSTORAGE)
+				-- local currentEquip = memory.readbyte(address-2 + MSTORAGE)
+				-- if current == nil then
+					-- current = 0
+				-- end
+				-- if currentEquip == nil then
+					-- currentEquip = 0
+				-- end
+				-- newItem = value
+				-- newVal = OR(currentEquip, newItem)
+				-- --message(newVal)
+				-- if newVal >= 12 and address == 0x7E09A8 then
+					-- newVal = newVal - 4
+				-- end
+				-- memory.writebyte(address - 2 + MSTORAGE, newVal)
+				-- --message("wrote beamequip to Metroid while in Metroid")
+			-- else
+				-- local current = memory.readbyte(address)
+				-- local currentEquip = memory.readbyte(address - 2)
+				-- if current == nil then
+					-- current = 0
+				-- end
+				-- if currentEquip == nil then
+					-- currentEquip = 0
+				-- end
+				-- --message(value)
+				-- newItem = value
+				-- newVal = OR(currentEquip, newItem)
+				-- --message(newVal)
+				-- if newVal >= 12 and address == 0x7E09A8 then
+					-- newVal = newVal - 4
+				-- end
+				-- memory.writebyte(address - 2, newVal)
+				-- --message("wrote beamequip to Metroid while in Metroid")
+			-- end
+		-- end,
 		
 		msyncexp = function(payload)
 			local address = payload[1]
