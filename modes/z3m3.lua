@@ -2105,7 +2105,7 @@ return {
 			local value = payload[2]
 			local itemName = payload[3]
 			local currentGame = memoryRead(0xA173FE)
-			if currentGame == 0 then
+			if currentGame == 0 and address ~= nil then
 				if noSend == true and backup[address] ~= nil then
 					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
@@ -2134,7 +2134,7 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
-			if currentGame == 0 then
+			if currentGame == 0 and address ~= nil then
 				if noSend == true and backup[address] ~= nil then
 					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
@@ -2164,7 +2164,7 @@ return {
 			local address = tonumber(string.sub(payload, 1, 8), 16)
 			local value = tonumber(string.sub(payload, 9),10)
 			local currentGame = memoryRead(0xA173FE)
-			if currentGame == 0 then
+			if currentGame == 0 and address ~= nil then
 				if noSend == true and backup[address] ~= nil then
 					--message("wrote " .. value .. " at " .. address .. ";  previous was " .. memoryRead(address))
 					backup[address] = {value, backup[address][2], backup[address][3], backup[address][4]}
