@@ -1,13 +1,10 @@
-# emu-coop
-x
-Contact txcrnr#9668 on Discord or @txcrnr on twitter if you run into any issues or have feedback on the Z3M3 Randomizer co-op mode script.
+This is the source code repo for emu-coop. **[Probably you would rather be looking at the project webpage](https://mcclure.github.io/emu-coop/), which has more detail and a downloadable SNES emulator for Windows.**
 
+# emu-coop
 
 This directory contains some Lua scripts that, when loaded by a compliant emulator such as snes9x-rr or FCEUX, can synchronize emulator state over the internet (allowing "cooperative" playthroughs of single-player games).
 
 Each game you want to use this with requires a "mode" file in the modes/ directory. Currently included are modes for Link to the Past, the Link to the Past "Randomizer", Zelda 1 and Super Metroid. **WARNING: Modes are PROGRAMS, like a .exe file. Do not install a mode file unless it came from someone you know and trust.** 
-
-This version of emu-coop comes pre-built with the Zelda 3: A Link to the Past + Metroid 3: Super Metroid (henceforth referred to as Z3M3) co-op randomizer.
 
 To run, run coop.lua. To run with additional debug messages (more verbose errors, and visibility for every message sent) run debug.lua instead.
 
@@ -17,7 +14,10 @@ When using the Z3M3 co-op mode, make sure that you are in-game and NOT on the ti
 
 ## Author / License
 
-These files were written by <<andi.m.mcclure@gmail.com>>. The "tloz_" modes (Zelda 1) were written by megmacAttack.
+These files were written by <<andi.m.mcclure@gmail.com>> except:
+
+* The "tloz_" modes (Zelda 1) were written by megmacAttack.
+* The Z3M3 mode was by txcnr.
 
 Big thanks to:
 * The LTTP Randomizer team, esp. Mike Trethewey, Zarby89 and Karkat, for information
@@ -25,7 +25,7 @@ Big thanks to:
 
 Unless otherwise noted, the license is:
 
-	Copyright (C) 2017 Andi McClure
+	Copyright (C) 2017-2020 Andi McClure
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
