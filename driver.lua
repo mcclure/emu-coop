@@ -26,7 +26,7 @@ function memoryWrite(addr, value, size)
 		if not cacheSize[addr] then
 			cacheSize[addr] = size
 		elseif (size or 1) ~= (cacheSize[addr] or 1) then
-			--error(string.format("Size argument to memoryWrite [%s] doesn't match previous size [%s] for address %x", size, cacheSize[addr], addr))
+			error(string.format("Size argument to memoryWrite [%s] doesn't match previous size [%s] for address %x", size, cacheSize[addr], addr))
 		end
 	end
 	if not size or size == 1 then
@@ -189,7 +189,6 @@ function GameDriver:childWake()
 			for offset=0,1 do
 				local checkAddr = baseAddr + offset
 				local record = syncTable[checkAddr]
-				--print(string.format("%x", a), string.format("%x", checkAddr), record)
 				if record then self:caughtWrite(checkAddr, b, record, size) end
 			end
 		end
