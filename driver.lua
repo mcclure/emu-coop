@@ -4,6 +4,17 @@ if not BNOT then
 	local bit = require("bit") -- for binary not
 	BNOT = bit.bnot
 end
+if not RSHIFT then
+	local bit = require("bit")
+	RSHIFT, LSHIFT = bit.rshift, bit.lshift
+end
+-- Add support for size 2 values in FCEUX
+if not memory.writeword then
+	memory.writeword = function(addr, value)
+		memory.writebyte(addr, AND(value, 0xff))
+		memory.writebyte(addr + 1, AND(RSHIFT(value, 8), 0xff))
+	end
+end
 
 local cache = {}
 local cacheSize = {}
@@ -87,6 +98,7 @@ function recordChanged(record, value, previousValue, receiving)
 			if record.deltaMin and maskedSum < record.deltaMin then maskedSum = record.deltaMin end
 			if record.deltaMax and maskedSum > record.deltaMax then maskedSum = record.deltaMax end
 			value = OR( AND(inverseMask, previousValue), AND(mask, maskedSum) )
+			maskedValue = maskedSum
 		end
 	else
 		allow = maskedValue ~= previousValue
