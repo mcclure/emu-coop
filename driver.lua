@@ -142,7 +142,7 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 
 			if self.forceSend then -- Restoring after a crash send all values regardless of importance
 				if value ~= 0 then -- FIXME: This is adequate for all current specs but maybe it will not be in future?!
-					if driverDebug then print("Sending address " .. tostring(k) .. " at startup") end
+					if driverDebug then print("Sending address " .. toxstring(k) .. " at startup") end
 
 					self:sendTable {addr=k, value=value}
 				end
@@ -295,13 +295,13 @@ function GameDriver:handleTable(t)
 						message("Partner " .. verb .. " " .. v)
 					end
 				else
-					if driverDebug then print("Updated anonymous address " .. tostring(addr) .. " to " .. tostring(value)) end
+					if driverDebug then print("Updated anonymous address " .. toxstring(addr) .. " to " .. tostring(value)) end
 				end
 				record.cache = value
 				memoryWrite(addr, value, record.size)
 			end
 		else
-			if driverDebug then print("Unknown memory address was " .. tostring(addr)) end
+			if driverDebug then print("Unknown memory address was " .. toxstring(addr)) end
 			message("Partner changed unknown memory address...? Uh oh")
 		end
 	else
