@@ -32,7 +32,13 @@ function memoryWrite(addr, value, size)
 	if not size or size == 1 then
 		memory.writebyte(addr, value)
 	elseif size == 2 then
-		memory.writeword(addr, value)
+		if memory["writeword"] ~= nil then
+			memory.writeword(addr, value)
+		else
+			-- fceux doesn't have a writeword, so do it ourselves.
+			memory.writebyte(addr, AND(0xff, value))
+			memory.writebyte(addr+1, AND(0xff, bit.rshift(value, 8)))
+		end
 	elseif size == 4 then
 		memory.writedword(addr, value)
 	else
