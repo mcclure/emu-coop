@@ -92,3 +92,13 @@ function printMessage()
 		gui.text(5, 254-40, msg)
 	end
 end
+
+-- convert to a hex encoded string instead of decimal
+function toxstring(num)
+	return string.format("0x%X", num)
+end
+
+-- endian swap a word-sized value
+function bswap16(x)
+    return OR(bit.lshift(AND(0xff, x), 8), AND(0xff, bit.rshift(x, 8)))
+end
