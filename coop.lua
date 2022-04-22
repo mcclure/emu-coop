@@ -1,6 +1,6 @@
 class   = require "pl.class"
 pretty  = require "pl.pretty"
-List    = require "pl.list"
+List    = require "pl.List"
 stringx = require "pl.stringx"
 tablex  = require "pl.tablex"
 
