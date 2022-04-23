@@ -1,10 +1,5 @@
 -- ACTUAL WORK HAPPENS HERE
 
-if not BNOT then
-	local bit = require("bit") -- for binary not
-	BNOT = bit.bnot
-end
-
 local cache = {}
 local cacheSize = {}
 

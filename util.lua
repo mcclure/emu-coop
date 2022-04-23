@@ -102,3 +102,22 @@ end
 function bswap16(x)
     return OR(bit.lshift(AND(0xff, x), 8), AND(0xff, bit.rshift(x, 8)))
 end
+
+-- polyfills for running outside an emulator environment that provides these,
+-- or an emulator environment that only provides some.
+if not BNOT then
+	local bit = require("bit") -- for binary not
+	BNOT = bit.bnot
+end
+if not OR then
+	local bit = require("bit")
+	OR = bit.bor
+end
+if not AND then
+	local bit = require("bit")
+	AND = bit.band
+end
+if not BIT then
+	local bit = require("bit")
+	function BIT(n) bit.lshift(1, n) end
+end
