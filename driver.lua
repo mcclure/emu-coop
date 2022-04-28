@@ -1,10 +1,5 @@
 -- ACTUAL WORK HAPPENS HERE
 
-if not BNOT then
-	local bit = require("bit") -- for binary not
-	BNOT = bit.bnot
-end
-
 local cache = {}
 local cacheSize = {}
 
@@ -32,7 +27,13 @@ function memoryWrite(addr, value, size)
 	if not size or size == 1 then
 		memory.writebyte(addr, value)
 	elseif size == 2 then
-		memory.writeword(addr, value)
+		if memory["writeword"] ~= nil then
+			memory.writeword(addr, value)
+		else
+			-- fceux doesn't have a writeword, so do it ourselves.
+			memory.writebyte(addr, AND(0xff, value))
+			memory.writebyte(addr+1, AND(0xff, bit.rshift(value, 8)))
+		end
 	elseif size == 4 then
 		memory.writedword(addr, value)
 	else
@@ -75,6 +76,11 @@ function recordChanged(record, value, previousValue, receiving)
 		allow = maskedValue ~= previousValue               -- Did operated-on bits change?
 		if receiving then
 			value = OR(maskedValue, previousValue)
+		end
+	elseif record.kind == "bitAnd" then
+		allow = maskedValue ~= previousValue               -- Did operated-on bits change?
+		if receiving then
+			value = AND(maskedValue, previousValue)
 		end
 	elseif record.kind == "delta" then
 		if not receiving then
@@ -142,7 +148,7 @@ function GameDriver:checkFirstRunning() -- Do first-frame bootup-- only call if 
 
 			if self.forceSend then -- Restoring after a crash send all values regardless of importance
 				if value ~= 0 then -- FIXME: This is adequate for all current specs but maybe it will not be in future?!
-					if driverDebug then print("Sending address " .. tostring(k) .. " at startup") end
+					if driverDebug then print("Sending address " .. toxstring(k) .. " at startup") end
 
 					self:sendTable {addr=k, value=value}
 				end
@@ -295,13 +301,13 @@ function GameDriver:handleTable(t)
 						message("Partner " .. verb .. " " .. v)
 					end
 				else
-					if driverDebug then print("Updated anonymous address " .. tostring(addr) .. " to " .. tostring(value)) end
+					if driverDebug then print("Updated anonymous address " .. toxstring(addr) .. " to " .. tostring(value)) end
 				end
 				record.cache = value
 				memoryWrite(addr, value, record.size)
 			end
 		else
-			if driverDebug then print("Unknown memory address was " .. tostring(addr)) end
+			if driverDebug then print("Unknown memory address was " .. toxstring(addr)) end
 			message("Partner changed unknown memory address...? Uh oh")
 		end
 	else

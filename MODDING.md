@@ -262,7 +262,7 @@ The following functions are available to code written in a mode file.
 
     Warning, if you send a sufficiently long or complicated string or table as payload, it might get cut off by the IRC server and then everything will break.
 
-* `AND(x, y)`, `OR(x, y)`, `XOR(x, y)`, `SHIFT(a, b)`, `BIT(n)`, `BNOT(x)`
+* `AND(x, y)`, `OR(x, y)`, `XOR(x, y)`, `BIT(n)`, `BNOT(x)`
 
     Bit operation functions.
 
