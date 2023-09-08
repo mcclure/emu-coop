@@ -125,10 +125,12 @@ function IrcPipe:handle(s)
 
 	elseif cmd:sub(1,1) == ":" then -- A message from a server or user
 		local source = cmd:sub(2)
+		local msg = stringx.split(args, nil, 2)[1]
 		if self.state == IrcState.login then
-			if source == self.data.nick then -- This is the initial mode set from the server, we are logged in
+			if msg == "001" then -- This is the welcome response from the server, we are logged in
 				if pipeDebug then print("Logged in to server") end
 
+				self.data.server = source -- We also now know the name of the server we finally connected to
 				self.state = IrcState.searching
 				self:whoisCheck()
 			end
@@ -179,9 +181,8 @@ function IrcPipe:handle(s)
 				end
 
 			elseif self.state == IrcState.searching and source == self.data.server then
-				local splits2 = stringx.split(args, nil, 2)
-				local msg = tonumber(splits2[1])
-				if msg and msg >= 311 and msg <= 317 then -- This is a whois response
+				local msgNum = tonumber(msg)
+				if msg and msgNum >= 311 and msgNum <= 317 then -- This is a whois response
 					if pipeDebug then print("Whois response") end
 
 					statusMessage("Connecting to partner...")
